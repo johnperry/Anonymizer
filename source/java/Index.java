@@ -63,7 +63,7 @@ public class Index {
 	public void addPatient(String origPtName, String origPtID, String anonPtName, String anonPtID) {
 		try {
 			PatientIndexEntry fwdEntry = new PatientIndexEntry(origPtID, anonPtName, anonPtID);
-			PatientIndexEntry invEntry = new PatientIndexEntry(anonPtName, origPtName, origPtID);
+			PatientIndexEntry invEntry = new PatientIndexEntry(anonPtID, origPtName, origPtID);
 			fwdPatientIndex.put(fwdEntry.key.toLowerCase(), fwdEntry);
 			invPatientIndex.put(invEntry.key.toLowerCase(), invEntry);
 		}
@@ -95,8 +95,8 @@ public class Index {
 	
 	/**
 	 * Get an entry from the inverse patient index (mapping an anonymized 
-	 * PtName to its PHI PatientIndexEntry.
-	 * @param key the anonymized PtName
+	 * PatientID to its PHI PatientIndexEntry.
+	 * @param key the anonymized PatientID
 	 * @return the PHI PatientIndexEntry corresponding to the anonymized PtName.
 	 */
 	public PatientIndexEntry getInvEntry(String key) {
@@ -106,8 +106,8 @@ public class Index {
 	
 	/**
 	 * Get an entry from the forward patient index (mapping a PHI 
-	 * PtName to its anonymized PatientIndexEntry.
-	 * @param key the PHI PtName
+	 * PatientID to its anonymized PatientIndexEntry.
+	 * @param key the PHI PatientID
 	 * @return the anonymized PatientIndexEntry corresponding to the PHI PtName.
 	 */
 	public PatientIndexEntry getFwdEntry(String key) {

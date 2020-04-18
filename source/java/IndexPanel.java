@@ -103,7 +103,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 	
 	class SearchPanel extends JPanel {
 		public JTextField searchField = new JTextField("", 20);
-		JLabel searchLabel = new JLabel("Trial PatientName: ");
+		JLabel searchLabel = new JLabel("Anonymized PatientID: ");
 		JLabel nameLabel = new JLabel("Original PatientName: ");
 		JLabel idLabel = new JLabel("Original PatientID: ");
 		JLabel nameResult = new JLabel("???");
@@ -118,6 +118,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 			java.awt.Font sans = new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 16 );
 			java.awt.Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 16 );
 			searchField.setFont( mono );
+			searchField.setAlignmentX(0f);
 			searchLabel.setFont( sans );
 			nameLabel.setFont( sans );
 			idLabel.setFont( sans );

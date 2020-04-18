@@ -23,6 +23,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
     private String					windowTitle = "RSNA Anonymizer - version 3";
     private MainPanel				mainPanel;
     private JPanel					splitPanel;
+    private WelcomePanel			welcomePanel;
     private SCUPanel				scuPanel;
     private SCPPanel				scpPanel;
     private SourcePanel				sourcePanel;
@@ -71,6 +72,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 		mainPanel = new MainPanel();
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
 		
+		welcomePanel = WelcomePanel.getInstance();
 		scuPanel = SCUPanel.getInstance();
 		scpPanel = SCPPanel.getInstance();
 		sourcePanel = new SourcePanel(config.getProps(), "Directory", config.background);
@@ -89,6 +91,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 		helpPanel = new HtmlJPanel( FileUtil.getText( new File(config.helpfile) ) );
 		
 		mainPanel.addTabs(
+			welcomePanel,
 			scuPanel,
 			scpPanel,
 			splitPanel,
@@ -126,6 +129,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 			this.add(tabbedPane,BorderLayout.CENTER);
 		}
 		public void addTabs(
+						 WelcomePanel wp,
 						 SCUPanel scu,
 						 SCPPanel scp,
 						 JPanel source,
@@ -136,6 +140,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 						 IndexPanel index,
 						 LogPanel logPanel,
 						 JPanel help) {
+			tabbedPane.addTab("Welcome", wp);
 			tabbedPane.addTab("Q/R SCU", scu);
 			tabbedPane.addTab("Storage SCP", scp);
 			tabbedPane.addTab("Directory", source);
@@ -146,7 +151,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 			tabbedPane.addTab("Index", index);
 			tabbedPane.addTab("Log", logPanel);
 			tabbedPane.addTab("Help", help);
-			tabbedPane.setSelectedIndex(2);
+			tabbedPane.setSelectedIndex(0);
 			tabbedPane.addChangeListener(viewer);
 		}
 	}

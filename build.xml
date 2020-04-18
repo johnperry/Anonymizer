@@ -115,7 +115,7 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 "/>
 			</manifest>
 			<fileset dir="${build}"
-				includes="${anonymizer}/** icons/**"
+				includes="${anonymizer}/** icons/** RSNAlogo.PNG"
 				excludes="${installer}/Installer**"/>
 		</jar>
 

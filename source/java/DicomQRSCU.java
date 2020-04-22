@@ -71,7 +71,7 @@ public class DicomQRSCU {
 	
     /**
      * DicomQRSCP constructor
-     * @param  url  the QR SCP URL
+     * @param url the QR SCP URL
      */
     public DicomQRSCU(DcmURL url) {
         this.url = url;

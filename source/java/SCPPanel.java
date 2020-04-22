@@ -214,11 +214,13 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	// Anonymize the selected file(s).
 	private boolean anonymize(File file) {
 		String filterScript = FilterPanel.getInstance().getText().trim();
+		boolean filterSRs = FilterPanel.getInstance().getFilterSRs();
 		boolean filterResult = true;
 		cp.print(Color.black, file.getName());
 		DicomObject dob;
 		if ( ((dob=getDicomObject(file)) != null)
-				&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript))) ) {
+				&& ( !filterSRs || !dob.isSR() )
+				&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript)) ) ) {
 			File temp;
 			File storageDir;
 			try { 

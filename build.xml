@@ -119,7 +119,7 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 				excludes="${installer}/Installer**"/>
 		</jar>
 
-		<mkdir dir="${build}/Deidentifier"/>
+		<mkdir dir="${build}/Anonymizer"/>
 
 		<copy overwrite="true" todir="${build}/Anonymizer">
 			<fileset dir="${products}" includes="Anonymizer.jar"/>

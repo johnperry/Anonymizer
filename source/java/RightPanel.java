@@ -132,12 +132,14 @@ public class RightPanel extends JPanel
 	// Anonymize the selected file(s).
 	private void anonymize(File file) {
 		String filterScript = FilterPanel.getInstance().getText().trim();
+		boolean filterSRs = FilterPanel.getInstance().getFilterSRs();
 		boolean filterResult = true;
 		if (file.isFile()) {
 			resultsPane.newItem(file.getAbsolutePath());
 			DicomObject dob;
 			if ( ((dob=getDicomObject(file)) != null)
-					&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript))) ) {
+					&& ( !filterSRs || !dob.isSR() )
+					&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript)) ) ) {
 				File temp;
 				File storageDir;
 				try { 

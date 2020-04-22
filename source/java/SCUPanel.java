@@ -573,8 +573,8 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				ampCP.setText("");
 				int studyCount = 0;
 				int imageCount = 0;
-				if (dicomQRSCU.open()) {
-					for (String line : lines) {
+				for (String line : lines) {
+					if (dicomQRSCU.open()) {
 						String an = filter(line);
 						if (!an.equals("")) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
@@ -587,23 +587,25 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							long time = System.currentTimeMillis();
 							if (list.size() > 0) {
 								for (Object obj : list) {
-									Dimse dimse = (Dimse)obj;
-									try {
-										Dataset ds = dimse.getDataset();
-										int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
-										if (dicomQRSCU.doMove(ds, destination) == 0) {;
-											studyCount++;
+										Dimse dimse = (Dimse)obj;
+										try {
+											Dataset ds = dimse.getDataset();
+											int result;
+											int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
+											if ( (result = dicomQRSCU.doMove(ds, destination)) == 0) {;
+												studyCount++;
+											}
+											else {
+												String resultString = String.format("%04x", result);
+												logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
+												ampCP.print("; ");
+												ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
+												ampCP.print(Color.BLACK, "");
+												ok = false;
+											}
+											if (ok) accessionImageCount += n;
 										}
-										else {
-											logger.warn("Retrieve Failed: +qrURL");
-											ampCP.print("; ");
-											ampCP.print(Color.RED, "[xfr failed]");
-											ampCP.print(Color.BLACK, "");
-											ok = false;
-										}
-										if (ok) accessionImageCount += n;
-									}
-									catch (Exception ignore) { }
+										catch (Exception ex) { logger.warn("Transfer failed", ex); }
 								}
 								if (ok) ampCP.print("; "+accessionImageCount+" images");
 								time = System.currentTimeMillis() - time;
@@ -611,15 +613,18 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								imageCount += accessionImageCount;
 							}
 							else ampCP.println("");
+							try { Thread.sleep(60000); }
+							catch (Exception ignore) { }
 						}
+						close();
 					}
-					ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
-									+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
+					else {
+						ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
+						logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+					}
 				}
-				else {
-					ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
-					logger.warn("Unable to connect to Q/R SCP at "+qrURL);
-				}
+				ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
+								+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
 			}
 			catch (Exception unable) {
 				logger.warn("Retrieve Failed: +qrURL", unable);

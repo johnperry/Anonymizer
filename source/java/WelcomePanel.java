@@ -3,6 +3,7 @@ package org.rsna.anonymizer;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -27,11 +28,16 @@ public class WelcomePanel extends BasePanel {
 	static final Logger logger = Logger.getLogger(WelcomePanel.class);
 	
 	Configuration config;
-	Color bg;
+	Color bg = Color.white;
 	Color rsna = new Color(0, 93, 169);
 	Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
 	Font titleFont = new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 36 );
 	Font textFont = new java.awt.Font( "SansSerif", java.awt.Font.PLAIN, 16 );
+	
+	int hereStart;
+	int hereEnd;
+	Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+	Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 	
 	static WelcomePanel instance = null;
 
@@ -43,8 +49,6 @@ public class WelcomePanel extends BasePanel {
 	protected WelcomePanel() {
 		super();
 		config = Configuration.getInstance();
-		bg = config.background;
-		bg = Color.white;
 		setLayout(new BorderLayout());
 		setBackground(bg);
 		
@@ -75,6 +79,9 @@ public class WelcomePanel extends BasePanel {
 		jsp.setViewportView(p);
 		jsp.getViewport().setBackground(bg);
 		add(jsp, BorderLayout.CENTER);
+		
+		hereStart = messageText.indexOf("here.");
+		hereEnd = hereStart + "here".length();
 	}
 
 	class TitleLabel extends JLabel {
@@ -113,7 +120,7 @@ public class WelcomePanel extends BasePanel {
 		}
 	}
 	
-	class MessageArea extends JTextArea implements MouseListener {
+	class MessageArea extends JTextArea implements MouseListener, MouseMotionListener {
 		public MessageArea(String text) {
 			super();
 			setWrapStyleWord(true);
@@ -130,7 +137,9 @@ public class WelcomePanel extends BasePanel {
 			setEditable(false);
 			setText(text);
 			addMouseListener(this);
+			addMouseMotionListener(this);
 		}
+		//MouseListener
 		public void mouseEntered(MouseEvent me) { }
 		public void mouseExited(MouseEvent me) { }
 		public void mousePressed(MouseEvent me) { }
@@ -140,17 +149,27 @@ public class WelcomePanel extends BasePanel {
 				int x = me.getX();
 				int y = me.getY();
 				int offset = viewToModel(new Point(x, y));
-				String text = getText();
 				int k1 = offset;
 				int k2 = offset;
-				while ((k1 >= 0) && !Character.isWhitespace(text.charAt(k1))) k1--;
-				while ((k2 < text.length()) && !Character.isWhitespace(text.charAt(k2))) k2++;
-				if (text.substring(k1+1, k2).equals("here.")) {
+				while ((k1 >= 0) && !Character.isWhitespace(messageText.charAt(k1))) k1--;
+				while ((k2 < messageText.length()) && !Character.isWhitespace(messageText.charAt(k2))) k2++;
+				if (messageText.substring(k1+1, k2).equals("here.")) {
 					Desktop.getDesktop().browse(new URI("http://www.rsna.org/covid-19"));
 				}
 			}
 			catch (Exception ex) { ex.printStackTrace(); }
 		}
+		//MouseMotionListener
+		public void mouseMoved(MouseEvent me) {
+			int x = me.getX();
+			int y = me.getY();
+			int offset = viewToModel(new Point(x, y));
+			if ((offset >= hereStart) && (offset <= hereEnd)) {
+				setCursor(handCursor);
+			}
+			else setCursor(defaultCursor);
+		}
+		public void mouseDragged(MouseEvent me) { }			
 	}
 	
 	String messageText = 

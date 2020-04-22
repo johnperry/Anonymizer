@@ -15,6 +15,8 @@ public class FilterPanel extends BasePanel implements ActionListener {
 	JButton reset;
 	JButton save;
 	File file = new File("filter.script");
+	JCheckBox filterSRs;
+	Configuration config;
 
 	static FilterPanel filterPanel = null;
 
@@ -25,6 +27,7 @@ public class FilterPanel extends BasePanel implements ActionListener {
 
 	protected FilterPanel() {
 		super();
+		config = Configuration.getInstance();
 
 		cp = new ColorPane();
 		cp.setScrollableTracksViewportWidth(false);
@@ -39,12 +42,18 @@ public class FilterPanel extends BasePanel implements ActionListener {
 		jsp.getViewport().setBackground(Color.white);
 		add(jsp, BorderLayout.CENTER);
 
+		filterSRs = new JCheckBox("Remove SR Objects");
+		String sel = config.getProps().getProperty("filterSRs", "yes");
+		filterSRs.setSelected(!sel.equals("no"));
+		filterSRs.setBackground(config.background);
+		filterSRs.addActionListener(this);
 		reset = new JButton("Reset");
 		reset.addActionListener(this);
 		save = new JButton("Save");
 		save.addActionListener(this);
 
 		Box footer = Box.createHorizontalBox();
+		footer.add(filterSRs);
 		footer.add(Box.createHorizontalGlue());
 		footer.add(reset);
 		footer.add(Box.createHorizontalStrut(3));
@@ -69,11 +78,19 @@ public class FilterPanel extends BasePanel implements ActionListener {
 			catch (Exception ignore) { }
 		}
 	}
+	
+	public boolean getFilterSRs() {
+		return filterSRs.isSelected();
+	}
 
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource().equals(reset)) reload();
-		else if (event.getSource().equals(save)) {
+		Object source = event.getSource();
+		if (source.equals(reset)) reload();
+		else if (source.equals(save)) {
 			FileUtil.setText(file, cp.getText());
+		}
+		else if (source.equals(filterSRs)) {
+			config.getProps().setProperty("filterSRs", (filterSRs.isSelected() ? "yes" : "no"));
 		}
 	}
 

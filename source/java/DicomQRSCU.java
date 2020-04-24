@@ -46,6 +46,7 @@ public class DicomQRSCU {
 
     private final static int PCID_FIND = 1;
     private final static int PCID_MOVE = 3;
+    private final static int PCID_GET = 5;
     private final static String STUDY_LABEL = "STUDY";
     private final static String ENHANCED_LABEL = "ENHANCED";
     private final static String[] TS = {
@@ -103,6 +104,8 @@ public class DicomQRSCU {
                 UIDs.StudyRootQueryRetrieveInformationModelFIND, TS));
         assocRQ.addPresContext(af.newPresContext(PCID_MOVE,
                 UIDs.StudyRootQueryRetrieveInformationModelMOVE, TS));
+        assocRQ.addPresContext(af.newPresContext(PCID_GET,
+                UIDs.StudyRootQueryRetrieveInformationModelGET, TS));
     }
 
     private void initTLS() {

@@ -20,6 +20,7 @@ import org.rsna.ui.SourcePanel;
 import org.rsna.util.BrowserUtil;
 import org.rsna.util.FileUtil;
 import org.rsna.util.ImageIOTools;
+import org.rsna.util.JarUtil;
 import org.rsna.util.StringUtil;
 
 /**
@@ -27,7 +28,7 @@ import org.rsna.util.StringUtil;
  */
 public class Anonymizer extends JFrame implements ChangeListener {
 
-    private String					windowTitle = "RSNA Anonymizer - version 3";
+    private String					windowTitle = "RSNA Anonymizer - version 4";
     private MainPanel				mainPanel;
     private JPanel					splitPanel;
     private WelcomePanel			welcomePanel;
@@ -74,6 +75,14 @@ public class Anonymizer extends JFrame implements ChangeListener {
 		logPanel = LogPanel.getInstance();
 
 		Configuration config = Configuration.getInstance();
+		
+		try {
+			File program = new File("Anonymizer.jar");
+			String date = JarUtil.getManifestAttributes(program).get("Date");
+			windowTitle += " - " + date;
+		}
+		catch (Exception ignore) { }
+		
 		setTitle(windowTitle);
 		addWindowListener(new WindowCloser(this));
 		mainPanel = new MainPanel();

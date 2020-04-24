@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------
+*  Copyright 2020 by the Radiological Society of North America
+*
+*  This source software is released under the terms of the
+*  RSNA Public License (http://mirc.rsna.org/rsnapubliclicense.pdf)
+*----------------------------------------------------------------*/
+
 package org.rsna.anonymizer;
 
 import java.awt.*;
@@ -117,6 +124,7 @@ public class Anonymizer extends JFrame implements ChangeListener {
 		if (comp.equals(indexPanel)) indexPanel.setFocus();
 		else if (comp.equals(filterPanel)) filterPanel.setFocus();
 		else if (comp.equals(logPanel)) logPanel.reload();
+		else if (comp.equals(scuPanel)) scuPanel.setFocus();
 	}
 	
 	class MainPanel extends JPanel {

@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------
+*  Copyright 2020 by the Radiological Society of North America
+*
+*  This source software is released under the terms of the
+*  RSNA Public License (http://mirc.rsna.org/rsnapubliclicense.pdf)
+*----------------------------------------------------------------*/
+
 package org.rsna.anonymizer;
 
 import java.awt.BorderLayout;
@@ -63,6 +70,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	QueryPanel queryPanel;
 	DicomQRSCU dicomQRSCU = null;
 	JFileChooser chooser = null;
+	CGetCMovePanel getmove = null;
 	
 	ExecutorService queryExecutor = Executors.newSingleThreadExecutor();
 	ExecutorService retrieveExecutor = Executors.newSingleThreadExecutor();
@@ -103,6 +111,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		String scpPortString = config.getProps().getProperty("qrscpPort","106");
 		String scpAETString = config.getProps().getProperty("qrscpAET","");
 		String scuAETString = config.getProps().getProperty("qrscuAET","ANONQR");
+		getmove = new CGetCMovePanel();
 		scpIP = new PanelField(scpIPString, 150);
 		scpIP.addKeyListener(this);
 		scpPort = new PanelField(scpPortString);
@@ -121,6 +130,8 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		header.add(scpPort);
 		header.add(new JLabel("   AET:  "));
 		header.add(scpAET);
+		header.add(Box.createHorizontalStrut(10));
+		header.add(getmove);
 		header.add(Box.createHorizontalGlue());
 		header.add(new JLabel("DICOM Q/R SCU AET: "));
 		header.add(scuAET);
@@ -170,6 +181,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		//Accession Number list panel
 		JPanel ampListPanel = new JPanel();
 		ampCP = new ColorPane();
+		ampCP.setText("// Enter a list of Accession Numbers, one per line.\n\n");
 		JScrollPane ampScrollPane = new JScrollPane();
 		ampScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 		ampScrollPane.setViewportView(ampCP);
@@ -205,6 +217,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			deselectAll.setVisible(false);
 			query.setVisible(false);
 			openFile.setVisible(true);
+			ampCP.requestFocus();
 		}
 		else {
 			switchModes.setText("Switch to Accession Mode");
@@ -218,7 +231,44 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		}
 		queryMode = !queryMode;
 		updateUI();
-	}			
+	}
+	
+	public void setFocus() {
+		if (queryMode) queryPanel.patientName.requestFocus();
+		else ampCP.requestFocus();
+	}
+	
+	class CGetCMovePanel extends JPanel implements ActionListener {
+		JRadioButton cget;
+		JRadioButton cmove;
+		public CGetCMovePanel() {
+			super();
+			setBackground(config.background);
+			boolean cmoveSel = config.getProps().getProperty("cmove", "yes").equals("yes");
+			cget = new JRadioButton("C-GET");
+			cget.setBackground(config.background);
+			cget.setSelected(!cmoveSel);
+			cget.addActionListener(this);
+			cmove = new JRadioButton("C-MOVE");
+			cmove.setBackground(config.background);
+			cmove.setSelected(cmoveSel);
+			cmove.addActionListener(this);
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(cget);
+			bg.add(cmove);
+			add(cget);
+			add(cmove);
+		}
+		public void actionPerformed(ActionEvent e) {
+			config.getProps().setProperty("cmove", (cget.isSelected() ? "no" : "yes"));
+		}
+		public boolean isCGet() {
+			return cget.isSelected();
+		}
+		public boolean isCMove() {
+			return cmove.isSelected();
+		}
+	}
 	
 	class ParamsPanel extends JPanel {
 		public ParamsPanel(String title, int marginTop, int marginBottom, QueryPanel queryPanel) {
@@ -560,10 +610,12 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		String accNums;
 		String destination;
 		DicomQRSCU dicomQRSCU;
+		boolean cget;
 		public AccessionThread(String qrURL, String accNums, String destination) {
 			this.qrURL = qrURL;
 			this.accNums = accNums;
 			this.destination = destination;
+			cget = getmove.isCGet();
 		}
 		public void run() {
 			List list = null;

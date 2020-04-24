@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------
+*  Copyright 2020 by the Radiological Society of North America
+*
+*  This source software is released under the terms of the
+*  RSNA Public License (http://mirc.rsna.org/rsnapubliclicense.pdf)
+*----------------------------------------------------------------*/
+
 package org.rsna.anonymizer;
 
 import java.io.IOException;
@@ -8,6 +15,7 @@ import java.security.GeneralSecurityException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,9 +24,11 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.dcm4che.data.Command;
 import org.dcm4che.data.Dataset;
+import org.dcm4che.data.DcmElement;
 import org.dcm4che.data.DcmObjectFactory;
 import org.dcm4che.dict.Tags;
 import org.dcm4che.dict.UIDs;
+import org.dcm4che.dict.VRs;
 import org.dcm4che.net.AAssociateAC;
 import org.dcm4che.net.AAssociateRQ;
 import org.dcm4che.net.ActiveAssociation;
@@ -131,8 +141,8 @@ public class DicomQRSCU {
 
     /**
      * Query the SCP.
-     * @return                Description of the Return Value
-     * @exception Exception  Description of the Exception
+     * @return 
+     * @exception Exception
      */
     public List doQuery( Hashtable<String,String> keyTable ) throws Exception {
 		initKeys(keyTable);
@@ -154,7 +164,7 @@ public class DicomQRSCU {
         String studyDate = findRspDs.getString(Tags.StudyDate);
         String prompt = "Study[" + suid + "] from " + studyDate
                  + " for Patient[" + patID + "]: " + patName;
-        log.info("Moving " + prompt);
+        log.info("C-MOVE " + prompt);
         Command rqCmd = dof.newCommand();
         rqCmd.initCMoveRQ(assoc.nextMsgID(),
                 UIDs.StudyRootQueryRetrieveInformationModelMOVE,
@@ -171,6 +181,46 @@ public class DicomQRSCU {
         int status = rspCmd.getStatus(); //0x0000=OK, 0xB000=Failed
         return status;
     }
+
+    public int doGet(Dataset findRspDs) throws Exception {
+        String suid = findRspDs.getString(Tags.StudyInstanceUID);
+        String patName = findRspDs.getString(Tags.PatientName);
+        String patID = findRspDs.getString(Tags.PatientID);
+        String studyDate = findRspDs.getString(Tags.StudyDate);
+        String sopClassUID = findRspDs.getString(Tags.SOPClassUID);
+        String prompt = " ["+sopClassUID+"] )" + "Study[" + suid + "] from " + studyDate
+                 + " for Patient[" + patID + "]: " + patName;
+        log.info("C-GET " + prompt);
+        Command rqCmd = dof.newCommand();
+        rqCmd.initCGetRQ(assoc.nextMsgID(),
+                UIDs.StudyRootQueryRetrieveInformationModelGET,
+                priority);
+        Dataset rqDs = dof.newDataset();
+        rqDs.putCS(Tags.QueryRetrieveLevel, STUDY_LABEL);
+        rqDs.putCS(Tags.QueryRetrieveView, ENHANCED_LABEL);
+        rqDs.putUI(Tags.StudyInstanceUID, suid);
+        Dimse moveRq = af.newDimse(PCID_MOVE, rqCmd, rqDs);
+        FutureRSP future = aassoc.invoke(moveRq);
+        Dimse moveRsp = future.get();
+        Command rspCmd = moveRsp.getCommand();
+        int status = rspCmd.getStatus(); //0x0000=OK, 0xB000=Failed
+        return status;
+    }
+    
+    private void log(Dataset ds) {
+		for (Iterator it=ds.iterator(); it.hasNext(); ) {
+			DcmElement el = (DcmElement)it.next();
+			int tag = el.tag();
+			String tagString = Tags.toString(tag);
+			String tagName;
+			int vr = el.vr();
+			String vrString = VRs.toString(vr);
+			String value;
+			if (vrString.equals("SQ")) value = "SQ";
+			else value = ds.getString(tag);
+			log.info(tagString + value);
+		}
+	}
 
     /**
      * Open the association

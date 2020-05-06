@@ -29,6 +29,9 @@ import org.dcm4che.data.DcmObjectFactory;
 import org.dcm4che.dict.Tags;
 import org.dcm4che.dict.UIDs;
 import org.dcm4che.dict.VRs;
+import org.dcm4che.dict.DictionaryFactory;
+import org.dcm4che.dict.TagDictionary;
+import org.dcm4che.dict.UIDDictionary;
 import org.dcm4che.net.AAssociateAC;
 import org.dcm4che.net.AAssociateRQ;
 import org.dcm4che.net.ActiveAssociation;
@@ -43,20 +46,25 @@ import org.dcm4che.util.SSLContextAdapter;
 import org.apache.log4j.*;
 
 public class DicomQRSCU {
-
+	
     private final static int PCID_FIND = 1;
     private final static int PCID_MOVE = 3;
     private final static int PCID_GET = 5;
     private final static String STUDY_LABEL = "STUDY";
+    private final static String IMAGE_LABEL = "IMAGE";
     private final static String ENHANCED_LABEL = "ENHANCED";
     private final static String[] TS = {
 		UIDs.ExplicitVRLittleEndian,
 		UIDs.ImplicitVRLittleEndian
 	};
 
-    private final static Logger log = Logger.getLogger(DicomQRSCU.class);
+    private final static Logger logger = Logger.getLogger(DicomQRSCU.class);
     private final static AssociationFactory af = AssociationFactory.getInstance();
     private final static DcmObjectFactory dof = DcmObjectFactory.getInstance();
+
+	private static final DictionaryFactory dFact = DictionaryFactory.getInstance();
+	private static final TagDictionary tagDictionary = dFact.getDefaultTagDictionary();
+	private static final UIDDictionary uidDictionary = dFact.getDefaultUIDDictionary();
 
     private DcmURL url = null;
     private int priority = Command.MEDIUM;
@@ -89,7 +97,6 @@ public class DicomQRSCU {
         priority = 0;
         initAssocParam(url);
         initTLS();
-        //this.dest = cfg.getProperty("dest");
     }
 
     private static String maskNull(String aet) {
@@ -143,11 +150,9 @@ public class DicomQRSCU {
 	}
 
     /**
-     * Query the SCP.
-     * @return 
-     * @exception Exception
+     * Query the SCP at the Study level.
      */
-    public List doQuery( Hashtable<String,String> keyTable ) throws Exception {
+    public List doStudyRootQuery( Hashtable<String,String> keyTable ) throws Exception {
 		initKeys(keyTable);
 		FutureRSP future = null;
 		if (aassoc == null) {  throw new Exception("No Association established"); }
@@ -155,6 +160,8 @@ public class DicomQRSCU {
 		rqCmd.initCFindRQ(assoc.nextMsgID(),
 				UIDs.StudyRootQueryRetrieveInformationModelFIND, priority);
 		Dimse findRq = af.newDimse(PCID_FIND, rqCmd, keys);
+		findRq.getDataset().putCS(Tags.QueryRetrieveLevel, STUDY_LABEL);
+		log("About to send C_FIND with dataset:", findRq.getDataset());
 		future = aassoc.invoke(findRq);
 		Dimse findRsp = future.get();
 		return future.listPending();
@@ -165,9 +172,7 @@ public class DicomQRSCU {
         String patName = findRspDs.getString(Tags.PatientName);
         String patID = findRspDs.getString(Tags.PatientID);
         String studyDate = findRspDs.getString(Tags.StudyDate);
-        String prompt = "Study[" + suid + "] from " + studyDate
-                 + " for Patient[" + patID + "]: " + patName;
-        log.info("C-MOVE " + prompt);
+        log("Constructing C-MOVE-RQ from findRspDs:", findRspDs);
         Command rqCmd = dof.newCommand();
         rqCmd.initCMoveRQ(assoc.nextMsgID(),
                 UIDs.StudyRootQueryRetrieveInformationModelMOVE,
@@ -178,6 +183,7 @@ public class DicomQRSCU {
         rqDs.putCS(Tags.QueryRetrieveView, ENHANCED_LABEL);
         rqDs.putUI(Tags.StudyInstanceUID, suid);
         Dimse moveRq = af.newDimse(PCID_MOVE, rqCmd, rqDs);
+        log("About to send moveRq with rqDs:", rqDs);
         FutureRSP future = aassoc.invoke(moveRq);
         Dimse moveRsp = future.get();
         Command rspCmd = moveRsp.getCommand();
@@ -190,10 +196,7 @@ public class DicomQRSCU {
         String patName = findRspDs.getString(Tags.PatientName);
         String patID = findRspDs.getString(Tags.PatientID);
         String studyDate = findRspDs.getString(Tags.StudyDate);
-        String sopClassUID = findRspDs.getString(Tags.SOPClassUID);
-        String prompt = " ["+sopClassUID+"] )" + "Study[" + suid + "] from " + studyDate
-                 + " for Patient[" + patID + "]: " + patName;
-        log.info("C-GET " + prompt);
+        log("Constructing C-GET-RQ from findRspDs:", findRspDs);
         Command rqCmd = dof.newCommand();
         rqCmd.initCGetRQ(assoc.nextMsgID(),
                 UIDs.StudyRootQueryRetrieveInformationModelGET,
@@ -202,29 +205,66 @@ public class DicomQRSCU {
         rqDs.putCS(Tags.QueryRetrieveLevel, STUDY_LABEL);
         rqDs.putCS(Tags.QueryRetrieveView, ENHANCED_LABEL);
         rqDs.putUI(Tags.StudyInstanceUID, suid);
-        Dimse moveRq = af.newDimse(PCID_MOVE, rqCmd, rqDs);
-        FutureRSP future = aassoc.invoke(moveRq);
-        Dimse moveRsp = future.get();
-        Command rspCmd = moveRsp.getCommand();
+        Dimse getRq = af.newDimse(PCID_GET, rqCmd, rqDs);
+        log("About to send getRq with rqDs:", rqDs);
+        FutureRSP future = aassoc.invoke(getRq);
+        Dimse getRsp = future.get();
+        Command rspCmd = getRsp.getCommand();
+        log("Received response with Command:", rspCmd);
+        log("getRsp.getDataset:", getRsp.getDataset());
         int status = rspCmd.getStatus(); //0x0000=OK, 0xB000=Failed
         return status;
     }
     
-    private void log(Dataset ds) {
-		for (Iterator it=ds.iterator(); it.hasNext(); ) {
-			DcmElement el = (DcmElement)it.next();
-			int tag = el.tag();
-			String tagString = Tags.toString(tag);
-			String tagName;
-			int vr = el.vr();
-			String vrString = VRs.toString(vr);
-			String value;
-			if (vrString.equals("SQ")) value = "SQ";
-			else value = ds.getString(tag);
-			log.info(tagString + value);
+    private void log(String title, Dataset ds) {
+		if (logger.isDebugEnabled()) {
+			if (ds == null) logger.info(title+ " ds is null");
+			else {
+				logger.info(title);
+				for (Iterator it=ds.iterator(); it.hasNext(); ) {
+					DcmElement el = (DcmElement)it.next();
+					int tag = el.tag();
+					String tagString = Tags.toString(tag);
+					String tagName;
+					String name = "";
+					try { name = tagDictionary.lookup(tag).name; }
+					catch (Exception ignore) { }
+					int vr = el.vr();
+					String vrString = VRs.toString(vr);
+					String value;
+					if (vrString.equals("SQ")) value = "SQ";
+					else value = ds.getString(tag);
+					logger.info("    "+tagString + " ["+name+"] " + value);
+				}
+			}
+		}
+	}
+    private void log(String title, Command cmd) {
+		if (logger.isDebugEnabled()) {
+			if (cmd == null) logger.info(title+ " cmd is null");
+			else {
+				logger.info(title);
+				logger.info("    CommandField: "+cmd.getCommandField());
+				logger.info("    MessageID: "+cmd.getMessageID());
+				logger.info("    AffectedSopClassUID: "+cmd.getAffectedSOPClassUID());
+				logger.info("    RequestedSOPClassUID: "+cmd.getRequestedSOPClassUID());
+				logger.info("    AffectedSOPInstanceUID: "+cmd.getAffectedSOPInstanceUID());
+				logger.info("    RequestedSOPInstanceUID: "+cmd.getRequestedSOPInstanceUID());
+				logger.info("    Status: "+Integer.toHexString(cmd.getStatus()));
+			}
 		}
 	}
 
+    /**
+     * Open the association
+     * @param logText text to log before issuing the open
+     * @return true if the association was created; false otherwise.
+     */
+    public boolean open(String logText) throws IOException, GeneralSecurityException {
+		logger.info(logText);
+		return open();
+	}
+	
     /**
      * Open the association
      * @return true if the association was created; false otherwise.

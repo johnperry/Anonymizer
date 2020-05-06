@@ -131,7 +131,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		header.add(new JLabel("   AET:  "));
 		header.add(scpAET);
 		header.add(Box.createHorizontalStrut(10));
-		header.add(getmove);
+		//header.add(getmove);
 		header.add(Box.createHorizontalGlue());
 		header.add(new JLabel("DICOM Q/R SCU AET: "));
 		header.add(scuAET);
@@ -244,7 +244,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		public CGetCMovePanel() {
 			super();
 			setBackground(config.background);
-			boolean cmoveSel = config.getProps().getProperty("cmove", "yes").equals("yes");
+			boolean cmoveSel = true; //was config.getProps().getProperty("cmove", "yes").equals("yes");
 			cget = new JRadioButton("C-GET");
 			cget.setBackground(config.background);
 			cget.setSelected(!cmoveSel);
@@ -547,7 +547,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			try {
 				dicomQRSCU = new DicomQRSCU(qrURL);
 				if (dicomQRSCU.open()) {
-					final List list = dicomQRSCU.doQuery(params);
+					final List list = dicomQRSCU.doStudyRootQuery(params);
 					final ResultsPanel panel = resultsPanel;
 					final JButton button = retrieve;
 					SwingUtilities.invokeLater(
@@ -588,14 +588,14 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				if (dicomQRSCU.open()) {
 					for (Dataset ds : datasets) {
 						if (dicomQRSCU.doMove(ds, destination) != 0) {
-							logger.warn("Retrieve Failed: +qrURL");
+							logger.warn("Retrieve Failed: "+qrURL);
 						}
 					}
 				}
 				else logger.warn("Unable to connect to Q/R SCP at "+qrURL);
 			}
 			catch (Exception unable) {
-				logger.warn("Retrieve Failed: +qrURL", unable);
+				logger.warn("Retrieve Failed: "+qrURL, unable);
 			}
 			finally { close(); }
 		}
@@ -610,14 +610,19 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		String accNums;
 		String destination;
 		DicomQRSCU dicomQRSCU;
-		boolean cget;
+		boolean useCGet;
 		public AccessionThread(String qrURL, String accNums, String destination) {
 			this.qrURL = qrURL;
 			this.accNums = accNums;
 			this.destination = destination;
-			cget = getmove.isCGet();
+			useCGet = getmove.isCGet();
 		}
 		public void run() {
+			if (!useCGet) doCMove();
+			else doCGet();
+		}
+		
+		private void doCMove() {
 			List list = null;
 			try {
 				dicomQRSCU = new DicomQRSCU(qrURL);
@@ -626,13 +631,13 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				int studyCount = 0;
 				int imageCount = 0;
 				for (String line : lines) {
-					if (dicomQRSCU.open()) {
-						String an = filter(line);
-						if (!an.equals("")) {
+					String an = filter(line);
+					if (!an.equals("")) {
+						if (dicomQRSCU.open()) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
 							params.put("AccessionNumber", an);
 							ampCP.print(an+": ");
-							list = dicomQRSCU.doQuery(params);
+							list = dicomQRSCU.doStudyRootQuery(params);
 							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
 							int accessionImageCount = 0;
 							boolean ok = true;
@@ -665,14 +670,14 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								imageCount += accessionImageCount;
 							}
 							else ampCP.println("");
-							try { Thread.sleep(60000); }
+							try { Thread.sleep(2000); }
 							catch (Exception ignore) { }
+							close();
 						}
-						close();
-					}
-					else {
-						ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
-						logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+						else {
+							ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
+							logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+						}
 					}
 				}
 				ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
@@ -683,10 +688,84 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			}
 			finally { close(); }
 		}
+		
+		private void doCGet() {
+			ampCP.println("C-GET not implemented");
+			if (true) return;
+			List list = null;
+			try {
+				dicomQRSCU = new DicomQRSCU(qrURL);
+				String[] lines = accNums.split("\n");
+				ampCP.setText("");
+				int studyCount = 0;
+				int imageCount = 0;
+				for (String line : lines) {
+					String an = filter(line);
+					if (!an.equals("")) {
+						if (dicomQRSCU.open("C-GET open for AccessionNumber: "+an)) {
+							Hashtable<String,String> params = new Hashtable<String,String>();
+							params.put("AccessionNumber", an);
+							ampCP.print(an+": ");
+							list = dicomQRSCU.doStudyRootQuery(params);
+							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
+							int accessionImageCount = 0;
+							boolean ok = true;
+							long time = System.currentTimeMillis();
+							if (list.size() > 0) {
+								for (Object obj : list) {
+										Dimse dimse = (Dimse)obj;
+										try {
+											Dataset ds = dimse.getDataset();
+											int result;
+											int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
+											logger.debug("NumberOfStudyRelatedInstances = "+n);
+											if ( (result = dicomQRSCU.doGet(ds)) == 0) {;
+												studyCount++;
+											}
+											else {
+												String resultString = String.format("%04x", result);
+												logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
+												ampCP.print("; ");
+												ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
+												ampCP.print(Color.BLACK, "");
+												ok = false;
+											}
+											if (ok) accessionImageCount += n;
+										}
+										catch (Exception ex) { logger.warn("Transfer failed", ex); }
+								}
+								if (ok) ampCP.print("; "+accessionImageCount+" images");
+								time = System.currentTimeMillis() - time;
+								ampCP.println(String.format(" [%.3f seconds]", ((double)time)/1000.));
+								imageCount += accessionImageCount;
+							}
+							else ampCP.println("");
+							try { Thread.sleep(1000); }
+							catch (Exception ignore) { }
+							//close("C-GET close for AccessionNumber: \""+an+"\"");
+						}
+						else {
+							ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
+							logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+						}
+					}
+				}
+				ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
+								+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
+			}
+			catch (Exception unable) {
+				logger.warn("Retrieve Failed: +qrURL", unable);
+			}
+			finally { /*close("C-GET close in finally clause");*/ }
+		}
 		private String filter(String s) {
 			int k = s.indexOf("//");
 			if (k != -1) s = s.substring(0,k);
 			return s.trim();
+		}
+		private void close(String logText) {
+			if (logText != null) logger.info(logText);
+			close();
 		}
 		private void close() {
 			try { dicomQRSCU.close(); }

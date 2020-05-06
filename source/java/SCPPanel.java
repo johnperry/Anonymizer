@@ -41,6 +41,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	JCheckBox autoStart;
 	PanelField port;
 	PanelField aet;
+	String aetString;
 	boolean forceIVRLE = false;
 	boolean renameToSOPIUID = false;
 
@@ -78,7 +79,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		String portString = config.getProps().getProperty("storagescpPort","104");
 		port = new PanelField(portString);
 		port.addKeyListener(this);
-		String aetString = config.getProps().getProperty("storagescpAET","ANONSTORE");
+		aetString = config.getProps().getProperty("storagescpAET","ANONSTORE");
 		aet = new PanelField(aetString, 70);
 		aet.addKeyListener(this);
 		
@@ -167,6 +168,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		try {
 			int scpPort = Integer.parseInt(port.getText().trim());
 			scp = new SimpleDicomStorageSCP(scpDirectory, scpPort);
+			scp.setCalledAET(aetString);
 			scp.start();
 			String adrs = IPUtil.getIPAddress() + ":" + scpPort + " [AET:"+getAET()+"]";
 			cp.println("DICOM Storage SCP open on "+adrs);

@@ -14,6 +14,7 @@ import java.util.*;
 import javax.swing.*;
 import org.dcm4che.dict.Tags;
 import org.rsna.ctp.objects.DicomObject;
+import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerStatus;
 import org.rsna.ctp.stdstages.anonymizer.IntegerTable;
 import org.rsna.ctp.stdstages.anonymizer.LookupTable;
@@ -187,6 +188,7 @@ public class RightPanel extends JPanel
 					//It is already in the root of the storageDir.
 					//It needs to go in the appropriate series subdirectory
 					dob = getDicomObject(temp);
+					String modality = dob.getModality();
 					String anonPtName = dob.getPatientName();
 					String anonPtID = dob.getPatientID();
 					String anonSOPInstanceUID = dob.getSOPInstanceUID();
@@ -202,8 +204,11 @@ public class RightPanel extends JPanel
 					String anonSeriesNumber = dob.getSeriesNumber();
 					String anonInstanceNumber = dob.getInstanceNumber();
 					String anonAccessionNumber = dob.getAccessionNumber();
+					String hash = "";
+					try { hash = "-" + AnonymizerFunctions.hash(anonStudyInstanceUID, 4); }
+					catch (Exception unable) { }
 					File imgdir = new File(storageDir, anonPtID + "/" 
-									+ "Study-"+anonStudyDateTime + "/" 
+									+ "Study-"+modality+"-"+anonStudyDateTime+hash + "/" 
 									+ "Series-"+anonSeriesNumber);
 					imgdir.mkdirs();
 					File dest = new File(imgdir, "Image-"+anonInstanceNumber+".dcm");

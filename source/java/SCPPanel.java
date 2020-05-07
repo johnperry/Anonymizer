@@ -314,6 +314,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		else {
 			if (dob == null) cp.println(Color.red,"    File rejected (not a DICOM file)");
 			else if (!filterResult) cp.println(Color.red,"    File rejected (filter)");
+			else if (filterSRs && dob.isSR()) cp.println(Color.red,"    File rejected (SR)");
 			else cp.println(Color.red,"    File rejected (unknown reason)");
 			return false;
 		}

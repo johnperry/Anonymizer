@@ -252,7 +252,7 @@
  <e en="T" t="00101001" n="OtherPatientNames">@remove()</e>
  <e en="T" t="00101002" n="OtherPatientIDSeq">@remove()</e>
  <e en="T" t="00101005" n="PatientBirthName">@remove()</e>
- <e en="F" t="00101010" n="PatientAge"></e>
+ <e en="T" t="00101010" n="PatientAge">@round(this,5)</e>
  <e en="F" t="00101020" n="PatientSize"></e>
  <e en="F" t="00101021" n="PatientSizeCodeSeq"></e>
  <e en="F" t="00101022" n="PatientBodyMassIndex"></e>

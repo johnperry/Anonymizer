@@ -4660,4 +4660,11 @@
  <e en="F" t="FFFEE000" n="Item"></e>
  <e en="F" t="FFFEE00D" n="ItemDelimitationItem"></e>
  <e en="F" t="FFFEE0DD" n="SeqDelimitationItem"></e>
+ <k en="F" t="0018">Keep group 0018</k>
+ <k en="F" t="0020">Keep group 0020</k>
+ <k en="F" t="0028">Keep group 0028</k>
+ <r en="T" t="curves">Remove curves</r>
+ <r en="T" t="overlays">Remove overlays</r>
+ <r en="T" t="privategroups">Remove private groups</r>
+ <r en="F" t="unspecifiedelements">Remove unchecked elements</r>
 </script>

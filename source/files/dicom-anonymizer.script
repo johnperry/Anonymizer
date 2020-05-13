@@ -1,106 +1,19 @@
 <script>
  <p t="SITEID">SITE1</p>
  <p t="UIDROOT">1.2.826.0.1.3680043.10.474</p>
- <e en="F" t="00000000" n="CommandGroupLength"></e>
- <e en="F" t="00000001" n="CommandLengthToEndRetired"></e>
- <e en="F" t="00000002" n="AffectedSOPClassUID"></e>
- <e en="F" t="00000003" n="RequestedSOPClassUID"></e>
- <e en="F" t="00000010" n="CommandRecognitionCodeRetired"></e>
- <e en="F" t="00000100" n="CommandField"></e>
- <e en="F" t="00000110" n="MessageID"></e>
- <e en="F" t="00000120" n="MessageIDToBeingRespondedTo"></e>
- <e en="F" t="00000200" n="InitiatorRetired"></e>
- <e en="F" t="00000300" n="ReceiverRetired"></e>
- <e en="F" t="00000400" n="FindLocationRetired"></e>
- <e en="F" t="00000600" n="MoveDestination"></e>
- <e en="F" t="00000700" n="Priority"></e>
- <e en="F" t="00000800" n="DataSetType"></e>
- <e en="F" t="00000850" n="NumberOfMatchesRetired"></e>
- <e en="F" t="00000860" n="ResponseSequenceNumberRetired"></e>
- <e en="F" t="00000900" n="Status"></e>
- <e en="F" t="00000901" n="OffendingElement"></e>
- <e en="F" t="00000902" n="ErrorComment"></e>
- <e en="F" t="00000903" n="ErrorID"></e>
- <e en="T" t="00001000" n="AffectedSOPInstanceUID">@remove()</e>
- <e en="T" t="00001001" n="RequestedSOPInstanceUID">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="00001002" n="EventTypeID"></e>
- <e en="F" t="00001005" n="AttributeIdentifierList"></e>
- <e en="F" t="00001008" n="ActionTypeID"></e>
- <e en="F" t="00001020" n="NumberOfRemainingSubOperations"></e>
- <e en="F" t="00001021" n="NumberOfCompletedSubOperations"></e>
- <e en="F" t="00001022" n="NumberOfFailedSubOperations"></e>
- <e en="F" t="00001023" n="NumberOfWarningSubOperations"></e>
- <e en="F" t="00001030" n="MoveOriginatorAET"></e>
- <e en="F" t="00001031" n="MoveOriginatorMessageID"></e>
- <e en="F" t="00004000" n="DialogReceiverRetired"></e>
- <e en="F" t="00004010" n="TerminalTypeRetired"></e>
- <e en="F" t="00005010" n="MessageSetIDRetired"></e>
- <e en="F" t="00005020" n="EndMessageIDRetired"></e>
- <e en="F" t="00005110" n="DisplayFormatRetired"></e>
- <e en="F" t="00005120" n="PagePositionIDRetired"></e>
- <e en="F" t="00005130" n="TextFormatIDRetired"></e>
- <e en="F" t="00005140" n="NorRevRetired"></e>
- <e en="F" t="00005150" n="AddGrayScaleRetired"></e>
- <e en="F" t="00005160" n="BordersRetired"></e>
- <e en="F" t="00005170" n="CopiesRetired"></e>
- <e en="F" t="00005180" n="MagnificationTypeRetired"></e>
- <e en="F" t="00005190" n="EraseRetired"></e>
- <e en="F" t="000051A0" n="PrintRetired"></e>
- <e en="F" t="000051B0" n="Overlays"></e>
- <e en="F" t="00020000" n="FileMetaInformationGroupLength"></e>
- <e en="F" t="00020001" n="FileMetaInformationVersion"></e>
- <e en="F" t="00020002" n="MediaStorageSOPClassUID"></e>
- <e en="T" t="00020003" n="MediaStorageSOPInstanceUID">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="00020010" n="TransferSyntaxUID"></e>
- <e en="F" t="00020012" n="ImplementationClassUID"></e>
- <e en="F" t="00020013" n="ImplementationVersionName"></e>
- <e en="F" t="00020016" n="SourceApplicationEntityTitle"></e>
- <e en="F" t="00020017" n="SendingAET"></e>
- <e en="F" t="00020018" n="ReceivingAET"></e>
- <e en="F" t="00020026" n="SourcePresentationAddress"></e>
- <e en="F" t="00020027" n="SendingPresentationAddress"></e>
- <e en="F" t="00020028" n="ReceivingPresentationAddress"></e>
- <e en="F" t="00020031" n="RTVMetaInformationVersion"></e>
- <e en="F" t="00020032" n="RTVCommunicationSOPClassUID"></e>
- <e en="F" t="00020033" n="RTVCommunicationSOPInstanceUID"></e>
- <e en="F" t="00020035" n="RTVSourceIdentifier"></e>
- <e en="F" t="00020036" n="RTVFlowIdentifier"></e>
- <e en="F" t="00020037" n="RTVFlowRTPSamplingRate"></e>
- <e en="F" t="00020038" n="RTVFlowActualFrameDuration"></e>
- <e en="F" t="00020100" n="PrivateInformationCreatorUID"></e>
- <e en="F" t="00020102" n="PrivateInformation"></e>
- <e en="F" t="00041130" n="FileSetID"></e>
- <e en="F" t="00041141" n="FileSetDescriptorFileID"></e>
- <e en="F" t="00041142" n="SpecificCharacterSetOfFileSetDescriptorFile"></e>
- <e en="F" t="00041200" n="OffsetOfFirstRootDirectoryRecord"></e>
- <e en="F" t="00041202" n="OffsetOfLastRootDirectoryRecord"></e>
- <e en="F" t="00041212" n="FileSetConsistencyFlag"></e>
- <e en="F" t="00041220" n="DirectoryRecordSeq"></e>
- <e en="F" t="00041400" n="OffsetOfNextDirectoryRecord"></e>
- <e en="F" t="00041410" n="RecordInUseFlag"></e>
- <e en="F" t="00041420" n="OffsetOfLowerLevelDirectoryEntity"></e>
- <e en="F" t="00041430" n="DirectoryRecordType"></e>
- <e en="F" t="00041432" n="PrivateRecordUID"></e>
- <e en="F" t="00041500" n="RefFileID"></e>
- <e en="F" t="00041504" n="MRDRDirectoryRecordOffset"></e>
- <e en="F" t="00041510" n="RefSOPClassUIDInFile"></e>
- <e en="T" t="00041511" n="RefSOPInstanceUIDInFile">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="00041512" n="RefSOPTransferSyntaxUIDInFile"></e>
- <e en="F" t="0004151A" n="RefRelatedGeneralSOPClassUIDInFile"></e>
- <e en="F" t="00041600" n="NumberOfReferences"></e>
- <e en="F" t="00080001" n="LengthToEndRetired"></e>
+ <e en="T" t="00080001" n="LengthToEndRetired">@remove()</e>
  <e en="F" t="00080005" n="SpecificCharacterSet"></e>
- <e en="F" t="00080006" n="LanguageCodeSeq"></e>
+ <e en="T" t="00080006" n="LanguageCodeSeq">@remove()</e>
  <e en="F" t="00080008" n="ImageType"></e>
- <e en="F" t="00080010" n="RecognitionCodeRetired"></e>
- <e en="F" t="00080012" n="InstanceCreationDate"></e>
- <e en="F" t="00080013" n="InstanceCreationTime"></e>
- <e en="T" t="00080014" n="InstanceCreatorUID">@hashuid(@UIDROOT,this)</e>
- <e en="T" t="00080015" n="InstanceCoercionDateTime">@hashdate(this,PatientID)</e>
+ <e en="T" t="00080010" n="RecognitionCodeRetired">@remove()</e>
+ <e en="T" t="00080012" n="InstanceCreationDate">@remove()</e>
+ <e en="T" t="00080013" n="InstanceCreationTime">@remove()</e>
+ <e en="T" t="00080014" n="InstanceCreatorUID">@remove()</e>
+ <e en="T" t="00080015" n="InstanceCoercionDateTime">@remove()</e>
  <e en="F" t="00080016" n="SOPClassUID"></e>
- <e en="T" t="00080018" n="SOPInstanceUID">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="0008001A" n="RelatedGeneralSOPClassUID"></e>
- <e en="F" t="0008001B" n="OriginalSpecializedSOPClassUID"></e>
+ <e en="T" t="00080018" n="SOPInstanceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
+ <e en="T" t="0008001A" n="RelatedGeneralSOPClassUID">@remove()</e>
+ <e en="T" t="0008001B" n="OriginalSpecializedSOPClassUID">@remove()</e>
  <e en="T" t="00080020" n="StudyDate">@hashdate(this,PatientID)</e>
  <e en="T" t="00080021" n="SeriesDate">@hashdate(this,PatientID)</e>
  <e en="T" t="00080022" n="AcquisitionDate">@hashdate(this,PatientID)</e>
@@ -114,89 +27,89 @@
  <e en="F" t="00080033" n="ContentTime"></e>
  <e en="F" t="00080034" n="OverlayTime"></e>
  <e en="F" t="00080035" n="CurveTime"></e>
- <e en="F" t="00080040" n="DataSetTypeRetired"></e>
- <e en="F" t="00080041" n="DataSetSubtypeRetired"></e>
- <e en="F" t="00080042" n="NuclearMedicineSeriesTypeRetired"></e>
- <e en="T" t="00080050" n="AccessionNumber">@hash(this,8)</e>
- <e en="F" t="00080051" n="IssuerOfAccessionNumberSeq"></e>
- <e en="F" t="00080052" n="QueryRetrieveLevel"></e>
- <e en="F" t="00080053" n="QueryRetrieveView"></e>
- <e en="F" t="00080054" n="RetrieveAET"></e>
- <e en="F" t="00080055" n="StationAET"></e>
- <e en="F" t="00080056" n="InstanceAvailability"></e>
+ <e en="T" t="00080040" n="DataSetTypeRetired">@remove()</e>
+ <e en="T" t="00080041" n="DataSetSubtypeRetired">@remove()</e>
+ <e en="T" t="00080042" n="NuclearMedicineSeriesTypeRetired">@remove()</e>
+ <e en="T" t="00080050" n="AccessionNumber">@integer(this,acc,1)</e>
+ <e en="T" t="00080051" n="IssuerOfAccessionNumberSeq">@remove()</e>
+ <e en="T" t="00080052" n="QueryRetrieveLevel">@remove()</e>
+ <e en="T" t="00080053" n="QueryRetrieveView">@remove()</e>
+ <e en="T" t="00080054" n="RetrieveAET">@remove()</e>
+ <e en="T" t="00080055" n="StationAET">@remove()</e>
+ <e en="T" t="00080056" n="InstanceAvailability">@remove()</e>
  <e en="T" t="00080058" n="FailedSOPInstanceUIDList">@remove()</e>
  <e en="F" t="00080060" n="Modality"></e>
- <e en="F" t="00080061" n="ModalitiesInStudy"></e>
- <e en="F" t="00080062" n="SOPClassesInStudy"></e>
- <e en="F" t="00080063" n="AnatomicRegionsInStudyCodeSeq"></e>
- <e en="F" t="00080064" n="ConversionType"></e>
- <e en="F" t="00080068" n="PresentationIntentType"></e>
- <e en="F" t="00080070" n="Manufacturer"></e>
- <e en="T" t="00080080" n="InstitutionName">@empty()</e>
+ <e en="T" t="00080061" n="ModalitiesInStudy">@remove()</e>
+ <e en="T" t="00080062" n="SOPClassesInStudy">@remove()</e>
+ <e en="T" t="00080063" n="AnatomicRegionsInStudyCodeSeq">@remove()</e>
+ <e en="T" t="00080064" n="ConversionType">@remove()</e>
+ <e en="T" t="00080068" n="PresentationIntentType">@remove()</e>
+ <e en="T" t="00080070" n="Manufacturer">@remove()</e>
+ <e en="T" t="00080080" n="InstitutionName">@remove()</e>
  <e en="T" t="00080081" n="InstitutionAddress">@remove()</e>
  <e en="T" t="00080082" n="InstitutionCodeSeq">@remove()</e>
- <e en="T" t="00080090" n="ReferringPhysicianName">@empty()</e>
+ <e en="T" t="00080090" n="ReferringPhysicianName">@remove()</e>
  <e en="T" t="00080092" n="ReferringPhysicianAddress">@remove()</e>
  <e en="T" t="00080094" n="ReferringPhysicianPhoneNumbers">@remove()</e>
  <e en="T" t="00080096" n="ReferringPhysicianIdentificationSeq">@remove()</e>
- <e en="T" t="0008009C" n="ConsultingPhysicianName">@empty()</e>
+ <e en="T" t="0008009C" n="ConsultingPhysicianName">@remove()</e>
  <e en="T" t="0008009D" n="ConsultingPhysicianIdentificationSeq">@remove()</e>
- <e en="F" t="00080100" n="CodeValue"></e>
- <e en="F" t="00080101" n="ExtendedCodeValue"></e>
- <e en="F" t="00080102" n="CodingSchemeDesignator"></e>
- <e en="F" t="00080103" n="CodingSchemeVersion"></e>
- <e en="F" t="00080104" n="CodeMeaning"></e>
- <e en="F" t="00080105" n="MappingResource"></e>
- <e en="F" t="00080106" n="ContextGroupVersion"></e>
- <e en="F" t="00080107" n="ContextGroupLocalVersion"></e>
- <e en="F" t="00080108" n="ExtendedCodeMeaning"></e>
- <e en="F" t="00080109" n="CodingSchemeResourcesSeq"></e>
- <e en="F" t="0008010A" n="CodingSchemeURLType"></e>
- <e en="F" t="0008010B" n="ContextGroupExtensionFlag"></e>
- <e en="F" t="0008010C" n="CodingSchemeUID"></e>
- <e en="F" t="0008010D" n="ContextGroupExtensionCreatorUID"></e>
- <e en="F" t="0008010E" n="CodingSchemeURL"></e>
- <e en="F" t="0008010F" n="ContextIdentifier"></e>
- <e en="F" t="00080110" n="CodingSchemeIdentificationSeq"></e>
- <e en="F" t="00080112" n="CodingSchemeRegistry"></e>
- <e en="F" t="00080114" n="CodingSchemeExternal"></e>
- <e en="F" t="00080115" n="CodingSchemeName"></e>
- <e en="F" t="00080116" n="CodingSchemeResponsibleOrganization"></e>
- <e en="F" t="00080117" n="ContextUID"></e>
- <e en="F" t="00080118" n="MappingResourceUID"></e>
- <e en="F" t="00080119" n="LongCodeValue"></e>
- <e en="F" t="00080120" n="URNCodeValue"></e>
- <e en="F" t="00080121" n="EquivalentCodeSeq"></e>
- <e en="F" t="00080122" n="MappingResourceName"></e>
- <e en="F" t="00080123" n="ContextGroupIdentificationSeq"></e>
- <e en="F" t="00080124" n="MappingResourceIdentificationSeq"></e>
- <e en="F" t="00080201" n="TimezoneOffsetFromUTC"></e>
- <e en="F" t="00080220" n="ResponsibleGroupCodeSeq"></e>
- <e en="F" t="00080221" n="EquipmentModality"></e>
- <e en="F" t="00080222" n="ManufacturerRelatedModelGroup"></e>
- <e en="F" t="00080300" n="PrivateDataElementCharacteristicsSeq"></e>
- <e en="F" t="00080301" n="PrivateGroupReference"></e>
- <e en="F" t="00080302" n="PrivateCreatorReference"></e>
- <e en="F" t="00080303" n="BlockIdentifyingInformationStatus"></e>
- <e en="F" t="00080304" n="NonidentifyingPrivateElements"></e>
- <e en="F" t="00080305" n="DeidentificationActionSeq"></e>
- <e en="F" t="00080306" n="IdentifyingPrivateElements"></e>
- <e en="F" t="00080307" n="DeidentificationAction"></e>
- <e en="F" t="00080308" n="PrivateDataElement"></e>
- <e en="F" t="00080309" n="PrivateDataElementValueMultiplicity"></e>
- <e en="F" t="0008030A" n="PrivateDataElementValueRepresentation"></e>
- <e en="F" t="0008030B" n="PrivateDataElementNumberOfItems"></e>
- <e en="F" t="0008030C" n="PrivateDataElementName"></e>
- <e en="F" t="0008030D" n="PrivateDataElementKeyword"></e>
- <e en="F" t="0008030E" n="PrivateDataElementDescription"></e>
- <e en="F" t="0008030F" n="PrivateDataElementEncoding"></e>
- <e en="F" t="00080310" n="PrivateDataElementDefinitionSeq"></e>
- <e en="F" t="00081000" n="NetworkIDRetired"></e>
- <e en="T" t="00081010" n="StationName">@empty()</e>
+ <e en="T" t="00080100" n="CodeValue">@remove()</e>
+ <e en="T" t="00080101" n="ExtendedCodeValue">@remove()</e>
+ <e en="T" t="00080102" n="CodingSchemeDesignator">@remove()</e>
+ <e en="T" t="00080103" n="CodingSchemeVersion">@remove()</e>
+ <e en="T" t="00080104" n="CodeMeaning">@remove()</e>
+ <e en="T" t="00080105" n="MappingResource">@remove()</e>
+ <e en="T" t="00080106" n="ContextGroupVersion">@remove()</e>
+ <e en="T" t="00080107" n="ContextGroupLocalVersion">@remove()</e>
+ <e en="T" t="00080108" n="ExtendedCodeMeaning">@remove()</e>
+ <e en="T" t="00080109" n="CodingSchemeResourcesSeq">@remove()</e>
+ <e en="T" t="0008010A" n="CodingSchemeURLType">@remove()</e>
+ <e en="T" t="0008010B" n="ContextGroupExtensionFlag">@remove()</e>
+ <e en="T" t="0008010C" n="CodingSchemeUID">@remove()</e>
+ <e en="T" t="0008010D" n="ContextGroupExtensionCreatorUID">@remove()</e>
+ <e en="T" t="0008010E" n="CodingSchemeURL">@remove()</e>
+ <e en="T" t="0008010F" n="ContextIdentifier">@remove()</e>
+ <e en="T" t="00080110" n="CodingSchemeIdentificationSeq">@remove()</e>
+ <e en="T" t="00080112" n="CodingSchemeRegistry">@remove()</e>
+ <e en="T" t="00080114" n="CodingSchemeExternal">@remove()</e>
+ <e en="T" t="00080115" n="CodingSchemeName">@remove()</e>
+ <e en="T" t="00080116" n="CodingSchemeResponsibleOrganization">@remove()</e>
+ <e en="T" t="00080117" n="ContextUID">@remove()</e>
+ <e en="T" t="00080118" n="MappingResourceUID">@remove()</e>
+ <e en="T" t="00080119" n="LongCodeValue">@remove()</e>
+ <e en="T" t="00080120" n="URNCodeValue">@remove()</e>
+ <e en="T" t="00080121" n="EquivalentCodeSeq">@remove()</e>
+ <e en="T" t="00080122" n="MappingResourceName">@remove()</e>
+ <e en="T" t="00080123" n="ContextGroupIdentificationSeq">@remove()</e>
+ <e en="T" t="00080124" n="MappingResourceIdentificationSeq">@remove()</e>
+ <e en="T" t="00080201" n="TimezoneOffsetFromUTC">@remove()</e>
+ <e en="T" t="00080220" n="ResponsibleGroupCodeSeq">@remove()</e>
+ <e en="T" t="00080221" n="EquipmentModality">@remove()</e>
+ <e en="T" t="00080222" n="ManufacturerRelatedModelGroup">@remove()</e>
+ <e en="T" t="00080300" n="PrivateDataElementCharacteristicsSeq">@remove()</e>
+ <e en="T" t="00080301" n="PrivateGroupReference">@remove()</e>
+ <e en="T" t="00080302" n="PrivateCreatorReference">@remove()</e>
+ <e en="T" t="00080303" n="BlockIdentifyingInformationStatus">@remove()</e>
+ <e en="T" t="00080304" n="NonidentifyingPrivateElements">@remove()</e>
+ <e en="T" t="00080305" n="DeidentificationActionSeq">@remove()</e>
+ <e en="T" t="00080306" n="IdentifyingPrivateElements">@remove()</e>
+ <e en="T" t="00080307" n="DeidentificationAction">@remove()</e>
+ <e en="T" t="00080308" n="PrivateDataElement">@remove()</e>
+ <e en="T" t="00080309" n="PrivateDataElementValueMultiplicity">@remove()</e>
+ <e en="T" t="0008030A" n="PrivateDataElementValueRepresentation">@remove()</e>
+ <e en="T" t="0008030B" n="PrivateDataElementNumberOfItems">@remove()</e>
+ <e en="T" t="0008030C" n="PrivateDataElementName">@remove()</e>
+ <e en="T" t="0008030D" n="PrivateDataElementKeyword">@remove()</e>
+ <e en="T" t="0008030E" n="PrivateDataElementDescription">@remove()</e>
+ <e en="T" t="0008030F" n="PrivateDataElementEncoding">@remove()</e>
+ <e en="T" t="00080310" n="PrivateDataElementDefinitionSeq">@remove()</e>
+ <e en="T" t="00081000" n="NetworkIDRetired">@remove()</e>
+ <e en="T" t="00081010" n="StationName">@remove()</e>
  <e en="F" t="00081030" n="StudyDescription"></e>
- <e en="F" t="00081032" n="ProcedureCodeSeq"></e>
+ <e en="T" t="00081032" n="ProcedureCodeSeq">@remove()</e>
  <e en="F" t="0008103E" n="SeriesDescription"></e>
- <e en="F" t="0008103F" n="SeriesDescriptionCodeSeq"></e>
+ <e en="T" t="0008103F" n="SeriesDescriptionCodeSeq">@remove()</e>
  <e en="T" t="00081040" n="InstitutionalDepartmentName">@remove()</e>
  <e en="T" t="00081041" n="InstitutionalDepartmentTypeCodeSeq">@remove()</e>
  <e en="T" t="00081048" n="PhysicianOfRecord">@remove()</e>
@@ -205,136 +118,136 @@
  <e en="T" t="00081052" n="PerformingPhysicianIdentificationSeq">@remove()</e>
  <e en="T" t="00081060" n="NameOfPhysicianReadingStudy">@remove()</e>
  <e en="T" t="00081062" n="PhysicianReadingStudyIdentificationSeq">@remove()</e>
- <e en="T" t="00081070" n="OperatorName">@empty()</e>
+ <e en="T" t="00081070" n="OperatorName">@remove()</e>
  <e en="T" t="00081072" n="OperatorIdentificationSeq">@remove()</e>
  <e en="T" t="00081080" n="AdmittingDiagnosisDescription">@remove()</e>
  <e en="T" t="00081084" n="AdmittingDiagnosisCodeSeq">@remove()</e>
- <e en="F" t="00081090" n="ManufacturerModelName"></e>
- <e en="F" t="00081100" n="RefResultsSeq"></e>
+ <e en="T" t="00081090" n="ManufacturerModelName">@remove()</e>
+ <e en="T" t="00081100" n="RefResultsSeq">@remove()</e>
  <e en="T" t="00081110" n="RefStudySeq">@remove()</e>
  <e en="T" t="00081111" n="RefPPSSeq">@remove()</e>
- <e en="F" t="00081115" n="RefSeriesSeq"></e>
+ <e en="T" t="00081115" n="RefSeriesSeq">@remove()</e>
  <e en="T" t="00081120" n="RefPatientSeq">@remove()</e>
- <e en="F" t="00081125" n="RefVisitSeq"></e>
- <e en="F" t="00081130" n="RefOverlaySeq"></e>
- <e en="F" t="00081134" n="RefStereometricInstanceSeq"></e>
- <e en="F" t="0008113A" n="RefWaveformSeq"></e>
+ <e en="T" t="00081125" n="RefVisitSeq">@remove()</e>
+ <e en="T" t="00081130" n="RefOverlaySeq">@remove()</e>
+ <e en="T" t="00081134" n="RefStereometricInstanceSeq">@remove()</e>
+ <e en="T" t="0008113A" n="RefWaveformSeq">@remove()</e>
  <e en="T" t="00081140" n="RefImageSeq">@remove()</e>
- <e en="F" t="00081145" n="RefCurveSeq"></e>
- <e en="F" t="0008114A" n="RefInstanceSeq"></e>
- <e en="F" t="0008114B" n="RefRealWorldValueMappingInstanceSeq"></e>
- <e en="F" t="00081150" n="RefSOPClassUID"></e>
+ <e en="T" t="00081145" n="RefCurveSeq">@remove()</e>
+ <e en="T" t="0008114A" n="RefInstanceSeq">@remove()</e>
+ <e en="T" t="0008114B" n="RefRealWorldValueMappingInstanceSeq">@remove()</e>
+ <e en="T" t="00081150" n="RefSOPClassUID">@remove()</e>
  <e en="T" t="00081155" n="RefSOPInstanceUID">@remove()</e>
- <e en="F" t="00081156" n="DefinitionSourceSeq"></e>
- <e en="F" t="0008115A" n="SOPClassesSupported"></e>
- <e en="F" t="00081160" n="RefFrameNumber"></e>
- <e en="F" t="00081161" n="SimpleFrameList"></e>
- <e en="F" t="00081162" n="CalculatedFrameList"></e>
- <e en="F" t="00081163" n="TimeRange"></e>
- <e en="F" t="00081164" n="FrameExtractionSeq"></e>
- <e en="F" t="00081167" n="MultiFrameSourceSOPInstanceUID"></e>
- <e en="F" t="00081190" n="RetrieveURL"></e>
+ <e en="T" t="00081156" n="DefinitionSourceSeq">@remove()</e>
+ <e en="T" t="0008115A" n="SOPClassesSupported">@remove()</e>
+ <e en="T" t="00081160" n="RefFrameNumber">@remove()</e>
+ <e en="T" t="00081161" n="SimpleFrameList">@remove()</e>
+ <e en="T" t="00081162" n="CalculatedFrameList">@remove()</e>
+ <e en="T" t="00081163" n="TimeRange">@remove()</e>
+ <e en="T" t="00081164" n="FrameExtractionSeq">@remove()</e>
+ <e en="T" t="00081167" n="MultiFrameSourceSOPInstanceUID">@remove()</e>
+ <e en="T" t="00081190" n="RetrieveURL">@remove()</e>
  <e en="T" t="00081195" n="TransactionUID">@remove()</e>
- <e en="F" t="00081196" n="WarningReason"></e>
- <e en="F" t="00081197" n="FailureReason"></e>
- <e en="F" t="00081198" n="FailedSOPSeq"></e>
- <e en="F" t="00081199" n="RefSOPSeq"></e>
- <e en="F" t="0008119A" n="OtherFailuresSeq"></e>
- <e en="F" t="00081200" n="StudiesContainingOtherRefInstancesSeq"></e>
- <e en="F" t="00081250" n="RelatedSeriesSeq"></e>
- <e en="F" t="00082110" n="LossyImageCompressionRetired"></e>
+ <e en="T" t="00081196" n="WarningReason">@remove()</e>
+ <e en="T" t="00081197" n="FailureReason">@remove()</e>
+ <e en="T" t="00081198" n="FailedSOPSeq">@remove()</e>
+ <e en="T" t="00081199" n="RefSOPSeq">@remove()</e>
+ <e en="T" t="0008119A" n="OtherFailuresSeq">@remove()</e>
+ <e en="T" t="00081200" n="StudiesContainingOtherRefInstancesSeq">@remove()</e>
+ <e en="T" t="00081250" n="RelatedSeriesSeq">@remove()</e>
+ <e en="T" t="00082110" n="LossyImageCompressionRetired">@remove()</e>
  <e en="T" t="00082111" n="DerivationDescription">@remove()</e>
  <e en="T" t="00082112" n="SourceImageSeq">@remove()</e>
- <e en="F" t="00082120" n="StageName"></e>
- <e en="F" t="00082122" n="StageNumber"></e>
- <e en="F" t="00082124" n="NumberOfStages"></e>
- <e en="F" t="00082127" n="ViewName"></e>
- <e en="F" t="00082128" n="ViewNumber"></e>
- <e en="F" t="00082129" n="NumberOfEventTimers"></e>
- <e en="F" t="0008212A" n="NumberOfViewsInStage"></e>
- <e en="F" t="00082130" n="EventElapsedTime"></e>
- <e en="F" t="00082132" n="EventTimerName"></e>
- <e en="F" t="00082133" n="EventTimerSeq"></e>
- <e en="F" t="00082134" n="EventTimeOffset"></e>
- <e en="F" t="00082135" n="EventCodeSeq"></e>
- <e en="F" t="00082142" n="StartTrim"></e>
- <e en="F" t="00082143" n="StopTrim"></e>
- <e en="F" t="00082144" n="RecommendedDisplayFrameRate"></e>
- <e en="F" t="00082200" n="TransducerPositionRetired"></e>
- <e en="F" t="00082204" n="TransducerOrientationRetired"></e>
- <e en="F" t="00082208" n="AnatomicStructureRetired"></e>
- <e en="F" t="00082218" n="AnatomicRegionSeq"></e>
- <e en="F" t="00082220" n="AnatomicRegionModifierSeq"></e>
- <e en="F" t="00082228" n="PrimaryAnatomicStructureSeq"></e>
- <e en="F" t="00082229" n="AnatomicStructureSpaceRegionSeq"></e>
- <e en="F" t="00082230" n="PrimaryAnatomicStructureModifierSeq"></e>
- <e en="F" t="00082240" n="TransducerPositionSeq"></e>
- <e en="F" t="00082242" n="TransducerPositionModifierSeq"></e>
- <e en="F" t="00082244" n="TransducerOrientationSeq"></e>
- <e en="F" t="00082246" n="TransducerOrientationModifierSeq"></e>
- <e en="F" t="00082251" n="AnatomicStructureSpaceOrRegionCodeSequenceTrial"></e>
- <e en="F" t="00082253" n="AnatomicPortalOfEntranceCodeSequenceTrial"></e>
- <e en="F" t="00082255" n="AnatomicApproachDirectionCodeSequenceTrial"></e>
- <e en="F" t="00082256" n="AnatomicPerspectiveDescriptionTrial"></e>
- <e en="F" t="00082257" n="AnatomicPerspectiveCodeSequenceTrial"></e>
- <e en="F" t="00082258" n="AnatomicLocationOfExaminingInstrumentDescriptionTrial"></e>
- <e en="F" t="00082259" n="AnatomicLocationOfExaminingInstrumentCodeSequenceTrial"></e>
- <e en="F" t="0008225A" n="AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial"></e>
- <e en="F" t="0008225C" n="OnAxisBackgroundAnatomicStructureCodeSequenceTrial"></e>
- <e en="F" t="00083001" n="AlternateRepresentationSeq"></e>
- <e en="F" t="00083002" n="AvailableTransferSyntaxUID"></e>
+ <e en="T" t="00082120" n="StageName">@remove()</e>
+ <e en="T" t="00082122" n="StageNumber">@remove()</e>
+ <e en="T" t="00082124" n="NumberOfStages">@remove()</e>
+ <e en="T" t="00082127" n="ViewName">@remove()</e>
+ <e en="T" t="00082128" n="ViewNumber">@remove()</e>
+ <e en="T" t="00082129" n="NumberOfEventTimers">@remove()</e>
+ <e en="T" t="0008212A" n="NumberOfViewsInStage">@remove()</e>
+ <e en="T" t="00082130" n="EventElapsedTime">@remove()</e>
+ <e en="T" t="00082132" n="EventTimerName">@remove()</e>
+ <e en="T" t="00082133" n="EventTimerSeq">@remove()</e>
+ <e en="T" t="00082134" n="EventTimeOffset">@remove()</e>
+ <e en="T" t="00082135" n="EventCodeSeq">@remove()</e>
+ <e en="T" t="00082142" n="StartTrim">@remove()</e>
+ <e en="T" t="00082143" n="StopTrim">@remove()</e>
+ <e en="T" t="00082144" n="RecommendedDisplayFrameRate">@remove()</e>
+ <e en="T" t="00082200" n="TransducerPositionRetired">@remove()</e>
+ <e en="T" t="00082204" n="TransducerOrientationRetired">@remove()</e>
+ <e en="T" t="00082208" n="AnatomicStructureRetired">@remove()</e>
+ <e en="T" t="00082218" n="AnatomicRegionSeq">@remove()</e>
+ <e en="T" t="00082220" n="AnatomicRegionModifierSeq">@remove()</e>
+ <e en="T" t="00082228" n="PrimaryAnatomicStructureSeq">@remove()</e>
+ <e en="T" t="00082229" n="AnatomicStructureSpaceRegionSeq">@remove()</e>
+ <e en="T" t="00082230" n="PrimaryAnatomicStructureModifierSeq">@remove()</e>
+ <e en="T" t="00082240" n="TransducerPositionSeq">@remove()</e>
+ <e en="T" t="00082242" n="TransducerPositionModifierSeq">@remove()</e>
+ <e en="T" t="00082244" n="TransducerOrientationSeq">@remove()</e>
+ <e en="T" t="00082246" n="TransducerOrientationModifierSeq">@remove()</e>
+ <e en="T" t="00082251" n="AnatomicStructureSpaceOrRegionCodeSequenceTrial">@remove()</e>
+ <e en="T" t="00082253" n="AnatomicPortalOfEntranceCodeSequenceTrial">@remove()</e>
+ <e en="T" t="00082255" n="AnatomicApproachDirectionCodeSequenceTrial">@remove()</e>
+ <e en="T" t="00082256" n="AnatomicPerspectiveDescriptionTrial">@remove()</e>
+ <e en="T" t="00082257" n="AnatomicPerspectiveCodeSequenceTrial">@remove()</e>
+ <e en="T" t="00082258" n="AnatomicLocationOfExaminingInstrumentDescriptionTrial">@remove()</e>
+ <e en="T" t="00082259" n="AnatomicLocationOfExaminingInstrumentCodeSequenceTrial">@remove()</e>
+ <e en="T" t="0008225A" n="AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial">@remove()</e>
+ <e en="T" t="0008225C" n="OnAxisBackgroundAnatomicStructureCodeSequenceTrial">@remove()</e>
+ <e en="T" t="00083001" n="AlternateRepresentationSeq">@remove()</e>
+ <e en="T" t="00083002" n="AvailableTransferSyntaxUID">@remove()</e>
  <e en="T" t="00083010" n="IrradiationEventUID">@remove()</e>
- <e en="F" t="00083011" n="SourceIrradiationEventSeq"></e>
- <e en="F" t="00083012" n="RadiopharmaceuticalAdministrationEventUID"></e>
+ <e en="T" t="00083011" n="SourceIrradiationEventSeq">@remove()</e>
+ <e en="T" t="00083012" n="RadiopharmaceuticalAdministrationEventUID">@remove()</e>
  <e en="T" t="00084000" n="IdentifyingCommentsRetired">@remove()</e>
- <e en="F" t="00089007" n="FrameType"></e>
- <e en="F" t="00089092" n="RefImageEvidenceSeq"></e>
- <e en="F" t="00089121" n="RefRawDataSeq"></e>
- <e en="F" t="00089123" n="CreatorVersionUID"></e>
- <e en="F" t="00089124" n="DerivationImageSeq"></e>
- <e en="F" t="00089154" n="SourceImageEvidenceSeq"></e>
- <e en="F" t="00089205" n="PixelPresentation"></e>
- <e en="F" t="00089206" n="VolumetricProperties"></e>
- <e en="F" t="00089207" n="VolumeBasedCalculationTechnique"></e>
- <e en="F" t="00089208" n="ComplexImageComponent"></e>
- <e en="F" t="00089209" n="AcquisitionContrast"></e>
- <e en="F" t="00089215" n="DerivationCodeSeq"></e>
- <e en="F" t="00089237" n="RefGrayscalePresentationStateSeq"></e>
- <e en="F" t="00089410" n="RefOtherPlaneSeq"></e>
- <e en="F" t="00089458" n="FrameDisplaySeq"></e>
- <e en="F" t="00089459" n="RecommendedDisplayFrameRateInFloat"></e>
- <e en="F" t="00089460" n="SkipFrameRangeFlag"></e>
+ <e en="T" t="00089007" n="FrameType">@remove()</e>
+ <e en="T" t="00089092" n="RefImageEvidenceSeq">@remove()</e>
+ <e en="T" t="00089121" n="RefRawDataSeq">@remove()</e>
+ <e en="T" t="00089123" n="CreatorVersionUID">@remove()</e>
+ <e en="T" t="00089124" n="DerivationImageSeq">@remove()</e>
+ <e en="T" t="00089154" n="SourceImageEvidenceSeq">@remove()</e>
+ <e en="T" t="00089205" n="PixelPresentation">@remove()</e>
+ <e en="T" t="00089206" n="VolumetricProperties">@remove()</e>
+ <e en="T" t="00089207" n="VolumeBasedCalculationTechnique">@remove()</e>
+ <e en="T" t="00089208" n="ComplexImageComponent">@remove()</e>
+ <e en="T" t="00089209" n="AcquisitionContrast">@remove()</e>
+ <e en="T" t="00089215" n="DerivationCodeSeq">@remove()</e>
+ <e en="T" t="00089237" n="RefGrayscalePresentationStateSeq">@remove()</e>
+ <e en="T" t="00089410" n="RefOtherPlaneSeq">@remove()</e>
+ <e en="T" t="00089458" n="FrameDisplaySeq">@remove()</e>
+ <e en="T" t="00089459" n="RecommendedDisplayFrameRateInFloat">@remove()</e>
+ <e en="T" t="00089460" n="SkipFrameRangeFlag">@remove()</e>
  <e en="T" t="00100010" n="PatientName">@param(@SITEID)-@integer(PatientID,"ptid",6)</e>
  <e en="T" t="00100020" n="PatientID">@param(@SITEID)-@integer(PatientID,"ptid",6)</e>
  <e en="T" t="00100021" n="IssuerOfPatientID">@remove()</e>
- <e en="F" t="00100022" n="TypeOfPatientID"></e>
- <e en="F" t="00100024" n="IssuerOfPatientIDQualifiersSeq"></e>
- <e en="F" t="00100026" n="SourcePatientGroupIdentificationSeq"></e>
- <e en="F" t="00100027" n="GroupOfPatientsIdentificationSeq"></e>
- <e en="F" t="00100028" n="SubjectRelativePositionInImage"></e>
- <e en="T" t="00100030" n="PatientBirthDate">@hashdate(this,PatientID)</e>
- <e en="F" t="00100032" n="PatientBirthTime"></e>
- <e en="F" t="00100033" n="PatientBirthDateInAlternativeCalendar"></e>
- <e en="F" t="00100034" n="PatientDeathDateInAlternativeCalendar"></e>
- <e en="F" t="00100035" n="PatientAlternativeCalendar"></e>
+ <e en="T" t="00100022" n="TypeOfPatientID">@remove()</e>
+ <e en="T" t="00100024" n="IssuerOfPatientIDQualifiersSeq">@remove()</e>
+ <e en="T" t="00100026" n="SourcePatientGroupIdentificationSeq">@remove()</e>
+ <e en="T" t="00100027" n="GroupOfPatientsIdentificationSeq">@remove()</e>
+ <e en="T" t="00100028" n="SubjectRelativePositionInImage">@remove()</e>
+ <e en="T" t="00100030" n="PatientBirthDate">@remove()</e>
+ <e en="T" t="00100032" n="PatientBirthTime">@remove()</e>
+ <e en="T" t="00100033" n="PatientBirthDateInAlternativeCalendar">@remove()</e>
+ <e en="T" t="00100034" n="PatientDeathDateInAlternativeCalendar">@remove()</e>
+ <e en="T" t="00100035" n="PatientAlternativeCalendar">@remove()</e>
  <e en="F" t="00100040" n="PatientSex"></e>
  <e en="T" t="00100050" n="PatientInsurancePlanCodeSeq">@remove()</e>
  <e en="T" t="00100101" n="PatientPrimaryLanguageCodeSeq">@remove()</e>
  <e en="T" t="00100102" n="PatientPrimaryLanguageModifierCodeSeq">@remove()</e>
- <e en="F" t="00100200" n="QualityControlSubject"></e>
- <e en="F" t="00100201" n="QualityControlSubjectTypeCodeSeq"></e>
- <e en="F" t="00100212" n="StrainDescription"></e>
- <e en="F" t="00100213" n="StrainNomenclature"></e>
- <e en="F" t="00100214" n="StrainStockNumber"></e>
- <e en="F" t="00100215" n="StrainSourceRegistryCodeSeq"></e>
- <e en="F" t="00100216" n="StrainStockSeq"></e>
- <e en="F" t="00100217" n="StrainSource"></e>
- <e en="F" t="00100218" n="StrainAdditionalInformation"></e>
- <e en="F" t="00100219" n="StrainCodeSeq"></e>
- <e en="F" t="00100221" n="GeneticModificationsSeq"></e>
- <e en="F" t="00100222" n="GeneticModificationsDescription"></e>
- <e en="F" t="00100223" n="GeneticModificationsNomenclature"></e>
- <e en="F" t="00100229" n="GeneticModificationsCodeSeq"></e>
+ <e en="T" t="00100200" n="QualityControlSubject">@remove()</e>
+ <e en="T" t="00100201" n="QualityControlSubjectTypeCodeSeq">@remove()</e>
+ <e en="T" t="00100212" n="StrainDescription">@remove()</e>
+ <e en="T" t="00100213" n="StrainNomenclature">@remove()</e>
+ <e en="T" t="00100214" n="StrainStockNumber">@remove()</e>
+ <e en="T" t="00100215" n="StrainSourceRegistryCodeSeq">@remove()</e>
+ <e en="T" t="00100216" n="StrainStockSeq">@remove()</e>
+ <e en="T" t="00100217" n="StrainSource">@remove()</e>
+ <e en="T" t="00100218" n="StrainAdditionalInformation">@remove()</e>
+ <e en="T" t="00100219" n="StrainCodeSeq">@remove()</e>
+ <e en="T" t="00100221" n="GeneticModificationsSeq">@remove()</e>
+ <e en="T" t="00100222" n="GeneticModificationsDescription">@remove()</e>
+ <e en="T" t="00100223" n="GeneticModificationsNomenclature">@remove()</e>
+ <e en="T" t="00100229" n="GeneticModificationsCodeSeq">@remove()</e>
  <e en="T" t="00101000" n="OtherPatientIDs">@remove()</e>
  <e en="T" t="00101001" n="OtherPatientNames">@remove()</e>
  <e en="T" t="00101002" n="OtherPatientIDSeq">@remove()</e>
@@ -363,23 +276,23 @@
  <e en="T" t="00102180" n="Occupation">@remove()</e>
  <e en="F" t="001021A0" n="SmokingStatus"></e>
  <e en="T" t="001021B0" n="AdditionalPatientHistory">@remove()</e>
- <e en="F" t="001021C0" n="PregnancyStatus"></e>
- <e en="T" t="001021D0" n="LastMenstrualDate">@hashdate(this,PatientID)</e>
+ <e en="T" t="001021C0" n="PregnancyStatus">@remove()</e>
+ <e en="T" t="001021D0" n="LastMenstrualDate">@remove()</e>
  <e en="T" t="001021F0" n="PatientReligiousPreference">@remove()</e>
- <e en="F" t="00102201" n="PatientSpeciesDescription"></e>
- <e en="F" t="00102202" n="PatientSpeciesCodeSeq"></e>
- <e en="F" t="00102203" n="PatientSexNeutered"></e>
- <e en="F" t="00102210" n="AnatomicalOrientationType"></e>
- <e en="F" t="00102292" n="PatientBreedDescription"></e>
- <e en="F" t="00102293" n="PatientBreedCodeSeq"></e>
- <e en="F" t="00102294" n="BreedRegistrationSeq"></e>
- <e en="F" t="00102295" n="BreedRegistrationNumber"></e>
- <e en="F" t="00102296" n="BreedRegistryCodeSeq"></e>
+ <e en="T" t="00102201" n="PatientSpeciesDescription">@remove()</e>
+ <e en="T" t="00102202" n="PatientSpeciesCodeSeq">@remove()</e>
+ <e en="T" t="00102203" n="PatientSexNeutered">@remove()</e>
+ <e en="T" t="00102210" n="AnatomicalOrientationType">@remove()</e>
+ <e en="T" t="00102292" n="PatientBreedDescription">@remove()</e>
+ <e en="T" t="00102293" n="PatientBreedCodeSeq">@remove()</e>
+ <e en="T" t="00102294" n="BreedRegistrationSeq">@remove()</e>
+ <e en="T" t="00102295" n="BreedRegistrationNumber">@remove()</e>
+ <e en="T" t="00102296" n="BreedRegistryCodeSeq">@remove()</e>
  <e en="T" t="00102297" n="ResponsiblePerson">@remove()</e>
- <e en="F" t="00102298" n="ResponsiblePersonRole"></e>
+ <e en="T" t="00102298" n="ResponsiblePersonRole">@remove()</e>
  <e en="T" t="00102299" n="ResponsibleOrganization">@remove()</e>
  <e en="T" t="00104000" n="PatientComments">@remove()</e>
- <e en="F" t="00109431" n="ExaminedBodyThickness"></e>
+ <e en="T" t="00109431" n="ExaminedBodyThickness">@remove()</e>
  <e en="T" t="00120010" n="ClinicalTrialSponsorName">@empty()</e>
  <e en="T" t="00120020" n="ClinicalTrialProtocolID">@empty()</e>
  <e en="T" t="00120021" n="ClinicalTrialProtocolName">@empty()</e>
@@ -404,272 +317,272 @@
  <e en="F" t="00120085" n="ConsentForDistributionFlag"></e>
  <e en="F" t="00120086" n="EthicsCommitteeApprovalEffectivenessStartDate"></e>
  <e en="F" t="00120087" n="EthicsCommitteeApprovalEffectivenessEndDate"></e>
- <e en="F" t="00140023" n="CADFileFormat"></e>
- <e en="F" t="00140024" n="ComponentReferenceSystem"></e>
- <e en="F" t="00140025" n="ComponentManufacturingProcedure"></e>
- <e en="F" t="00140028" n="ComponentManufacturer"></e>
- <e en="F" t="00140030" n="MaterialThickness"></e>
- <e en="F" t="00140032" n="MaterialPipeDiameter"></e>
- <e en="F" t="00140034" n="MaterialIsolationDiameter"></e>
- <e en="F" t="00140042" n="MaterialGrade"></e>
- <e en="F" t="00140044" n="MaterialPropertiesDescription"></e>
- <e en="F" t="00140045" n="MaterialPropertiesFileFormatRetired"></e>
- <e en="F" t="00140046" n="MaterialNotes"></e>
- <e en="F" t="00140050" n="ComponentShape"></e>
- <e en="F" t="00140052" n="CurvatureType"></e>
- <e en="F" t="00140054" n="OuterDiameter"></e>
- <e en="F" t="00140056" n="InnerDiameter"></e>
- <e en="F" t="00140100" n="ComponentWelderIDs"></e>
- <e en="F" t="00140101" n="SecondaryApprovalStatus"></e>
- <e en="F" t="00140102" n="SecondaryReviewDate"></e>
- <e en="F" t="00140103" n="SecondaryReviewTime"></e>
- <e en="F" t="00140104" n="SecondaryReviewerName"></e>
- <e en="F" t="00140105" n="RepairID"></e>
- <e en="F" t="00140106" n="MultipleComponentApprovalSeq"></e>
- <e en="F" t="00140107" n="OtherApprovalStatus"></e>
- <e en="F" t="00140108" n="OtherSecondaryApprovalStatus"></e>
- <e en="F" t="00141010" n="ActualEnvironmentalConditions"></e>
- <e en="F" t="00141020" n="ExpiryDate"></e>
- <e en="F" t="00141040" n="EnvironmentalConditions"></e>
- <e en="F" t="00142002" n="EvaluatorSeq"></e>
- <e en="F" t="00142004" n="EvaluatorNumber"></e>
- <e en="F" t="00142006" n="EvaluatorName"></e>
- <e en="F" t="00142008" n="EvaluationAttempt"></e>
- <e en="F" t="00142012" n="IndicationSeq"></e>
- <e en="F" t="00142014" n="IndicationNumber"></e>
- <e en="F" t="00142016" n="IndicationLabel"></e>
- <e en="F" t="00142018" n="IndicationDescription"></e>
- <e en="F" t="0014201A" n="IndicationType"></e>
- <e en="F" t="0014201C" n="IndicationDisposition"></e>
- <e en="F" t="0014201E" n="IndicationROISeq"></e>
- <e en="F" t="00142030" n="IndicationPhysicalPropertySeq"></e>
- <e en="F" t="00142032" n="PropertyLabel"></e>
- <e en="F" t="00142202" n="CoordinateSystemNumberOfAxes"></e>
- <e en="F" t="00142204" n="CoordinateSystemAxesSeq"></e>
- <e en="F" t="00142206" n="CoordinateSystemAxisDescription"></e>
- <e en="F" t="00142208" n="CoordinateSystemDataSetMapping"></e>
- <e en="F" t="0014220A" n="CoordinateSystemAxisNumber"></e>
- <e en="F" t="0014220C" n="CoordinateSystemAxisType"></e>
- <e en="F" t="0014220E" n="CoordinateSystemAxisUnits"></e>
- <e en="F" t="00142210" n="CoordinateSystemAxisValues"></e>
- <e en="F" t="00142220" n="CoordinateSystemTransformSeq"></e>
- <e en="F" t="00142222" n="TransformDescription"></e>
- <e en="F" t="00142224" n="TransformNumberOfAxes"></e>
- <e en="F" t="00142226" n="TransformOrderOfAxes"></e>
- <e en="F" t="00142228" n="TransformedAxisUnits"></e>
- <e en="F" t="0014222A" n="CoordinateSystemTransformRotationAndScaleMatrix"></e>
- <e en="F" t="0014222C" n="CoordinateSystemTransformTranslationMatrix"></e>
- <e en="F" t="00143011" n="InternalDetectorFrameTime"></e>
- <e en="F" t="00143012" n="NumberOfFramesIntegrated"></e>
- <e en="F" t="00143020" n="DetectorTemperatureSeq"></e>
- <e en="F" t="00143022" n="SensorName"></e>
- <e en="F" t="00143024" n="HorizontalOffsetOfSensor"></e>
- <e en="F" t="00143026" n="VerticalOffsetOfSensor"></e>
- <e en="F" t="00143028" n="SensorTemperature"></e>
- <e en="F" t="00143040" n="DarkCurrentSeq"></e>
- <e en="F" t="00143050" n="DarkCurrentCounts"></e>
- <e en="F" t="00143060" n="GainCorrectionReferenceSeq"></e>
- <e en="F" t="00143070" n="AirCounts"></e>
- <e en="F" t="00143071" n="KVUsedInGainCalibration"></e>
- <e en="F" t="00143072" n="MAUsedInGainCalibration"></e>
- <e en="F" t="00143073" n="NumberOfFramesUsedForIntegration"></e>
- <e en="F" t="00143074" n="FilterMaterialUsedInGainCalibration"></e>
- <e en="F" t="00143075" n="FilterThicknessUsedInGainCalibration"></e>
- <e en="F" t="00143076" n="DateOfGainCalibration"></e>
- <e en="F" t="00143077" n="TimeOfGainCalibration"></e>
- <e en="F" t="00143080" n="BadPixelImage"></e>
- <e en="F" t="00143099" n="CalibrationNotes"></e>
- <e en="F" t="00144002" n="PulserEquipmentSeq"></e>
- <e en="F" t="00144004" n="PulserType"></e>
- <e en="F" t="00144006" n="PulserNotes"></e>
- <e en="F" t="00144008" n="ReceiverEquipmentSeq"></e>
- <e en="F" t="0014400A" n="AmplifierType"></e>
- <e en="F" t="0014400C" n="ReceiverNotes"></e>
- <e en="F" t="0014400E" n="PreAmplifierEquipmentSeq"></e>
- <e en="F" t="0014400F" n="PreAmplifierNotes"></e>
- <e en="F" t="00144010" n="TransmitTransducerSeq"></e>
- <e en="F" t="00144011" n="ReceiveTransducerSeq"></e>
- <e en="F" t="00144012" n="NumberOfElements"></e>
- <e en="F" t="00144013" n="ElementShape"></e>
- <e en="F" t="00144014" n="ElementDimensionA"></e>
- <e en="F" t="00144015" n="ElementDimensionB"></e>
- <e en="F" t="00144016" n="ElementPitchA"></e>
- <e en="F" t="00144017" n="MeasuredBeamDimensionA"></e>
- <e en="F" t="00144018" n="MeasuredBeamDimensionB"></e>
- <e en="F" t="00144019" n="LocationOfMeasuredBeamDiameter"></e>
- <e en="F" t="0014401A" n="NominalFrequency"></e>
- <e en="F" t="0014401B" n="MeasuredCenterFrequency"></e>
- <e en="F" t="0014401C" n="MeasuredBandwidth"></e>
- <e en="F" t="0014401D" n="ElementPitchB"></e>
- <e en="F" t="00144020" n="PulserSettingsSeq"></e>
- <e en="F" t="00144022" n="PulseWidth"></e>
- <e en="F" t="00144024" n="ExcitationFrequency"></e>
- <e en="F" t="00144026" n="ModulationType"></e>
- <e en="F" t="00144028" n="Damping"></e>
- <e en="F" t="00144030" n="ReceiverSettingsSeq"></e>
- <e en="F" t="00144031" n="AcquiredSoundpathLength"></e>
- <e en="F" t="00144032" n="AcquisitionCompressionType"></e>
- <e en="F" t="00144033" n="AcquisitionSampleSize"></e>
- <e en="F" t="00144034" n="RectifierSmoothing"></e>
- <e en="F" t="00144035" n="DACSeq"></e>
- <e en="F" t="00144036" n="DACType"></e>
- <e en="F" t="00144038" n="DACGainPoints"></e>
- <e en="F" t="0014403A" n="DACTimePoints"></e>
- <e en="F" t="0014403C" n="DACAmplitude"></e>
- <e en="F" t="00144040" n="PreAmplifierSettingsSeq"></e>
- <e en="F" t="00144050" n="TransmitTransducerSettingsSeq"></e>
- <e en="F" t="00144051" n="ReceiveTransducerSettingsSeq"></e>
- <e en="F" t="00144052" n="IncidentAngle"></e>
- <e en="F" t="00144054" n="CouplingTechnique"></e>
- <e en="F" t="00144056" n="CouplingMedium"></e>
- <e en="F" t="00144057" n="CouplingVelocity"></e>
- <e en="F" t="00144058" n="ProbeCenterLocationX"></e>
- <e en="F" t="00144059" n="ProbeCenterLocationZ"></e>
- <e en="F" t="0014405A" n="SoundPathLength"></e>
- <e en="F" t="0014405C" n="DelayLawIdentifier"></e>
- <e en="F" t="00144060" n="GateSettingsSeq"></e>
- <e en="F" t="00144062" n="GateThreshold"></e>
- <e en="F" t="00144064" n="VelocityOfSound"></e>
- <e en="F" t="00144070" n="CalibrationSettingsSeq"></e>
- <e en="F" t="00144072" n="CalibrationProcedure"></e>
- <e en="F" t="00144074" n="ProcedureVersion"></e>
- <e en="F" t="00144076" n="ProcedureCreationDate"></e>
- <e en="F" t="00144078" n="ProcedureExpirationDate"></e>
- <e en="F" t="0014407A" n="ProcedureLastModifiedDate"></e>
- <e en="F" t="0014407C" n="CalibrationTime"></e>
- <e en="F" t="0014407E" n="CalibrationDate"></e>
- <e en="F" t="00144080" n="ProbeDriveEquipmentSeq"></e>
- <e en="F" t="00144081" n="DriveType"></e>
- <e en="F" t="00144082" n="ProbeDriveNotes"></e>
- <e en="F" t="00144083" n="DriveProbeSeq"></e>
- <e en="F" t="00144084" n="ProbeInductance"></e>
- <e en="F" t="00144085" n="ProbeResistance"></e>
- <e en="F" t="00144086" n="ReceiveProbeSeq"></e>
- <e en="F" t="00144087" n="ProbeDriveSettingsSeq"></e>
- <e en="F" t="00144088" n="BridgeResistors"></e>
- <e en="F" t="00144089" n="ProbeOrientationAngle"></e>
- <e en="F" t="0014408B" n="UserSelectedGainY"></e>
- <e en="F" t="0014408C" n="UserSelectedPhase"></e>
- <e en="F" t="0014408D" n="UserSelectedOffsetX"></e>
- <e en="F" t="0014408E" n="UserSelectedOffsetY"></e>
- <e en="F" t="00144091" n="ChannelSettingsSeq"></e>
- <e en="F" t="00144092" n="ChannelThreshold"></e>
- <e en="F" t="0014409A" n="ScannerSettingsSeq"></e>
- <e en="F" t="0014409B" n="ScanProcedure"></e>
- <e en="F" t="0014409C" n="TranslationRateX"></e>
- <e en="F" t="0014409D" n="TranslationRateY"></e>
- <e en="F" t="0014409F" n="ChannelOverlap"></e>
- <e en="F" t="001440A0" n="ImageQualityIndicatorType"></e>
- <e en="F" t="001440A1" n="ImageQualityIndicatorMaterial"></e>
- <e en="F" t="001440A2" n="ImageQualityIndicatorSize"></e>
- <e en="F" t="00145002" n="LINACEnergy"></e>
- <e en="F" t="00145004" n="LINACOutput"></e>
- <e en="F" t="00145100" n="ActiveAperture"></e>
- <e en="F" t="00145101" n="TotalAperture"></e>
- <e en="F" t="00145102" n="ApertureElevation"></e>
- <e en="F" t="00145103" n="MainLobeAngle"></e>
- <e en="F" t="00145104" n="MainRoofAngle"></e>
- <e en="F" t="00145105" n="ConnectorType"></e>
- <e en="F" t="00145106" n="WedgeModelNumber"></e>
- <e en="F" t="00145107" n="WedgeAngleFloat"></e>
- <e en="F" t="00145108" n="WedgeRoofAngle"></e>
- <e en="F" t="00145109" n="WedgeElement1Position"></e>
- <e en="F" t="0014510A" n="WedgeMaterialVelocity"></e>
- <e en="F" t="0014510B" n="WedgeMaterial"></e>
- <e en="F" t="0014510C" n="WedgeOffsetZ"></e>
- <e en="F" t="0014510D" n="WedgeOriginOffsetX"></e>
- <e en="F" t="0014510E" n="WedgeTimeDelay"></e>
- <e en="F" t="0014510F" n="WedgeName"></e>
- <e en="F" t="00145110" n="WedgeManufacturerName"></e>
- <e en="F" t="00145111" n="WedgeDescription"></e>
- <e en="F" t="00145112" n="NominalBeamAngle"></e>
- <e en="F" t="00145113" n="WedgeOffsetX"></e>
- <e en="F" t="00145114" n="WedgeOffsetY"></e>
- <e en="F" t="00145115" n="WedgeTotalLength"></e>
- <e en="F" t="00145116" n="WedgeInContactLength"></e>
- <e en="F" t="00145117" n="WedgeFrontGap"></e>
- <e en="F" t="00145118" n="WedgeTotalHeight"></e>
- <e en="F" t="00145119" n="WedgeFrontHeight"></e>
- <e en="F" t="0014511A" n="WedgeRearHeight"></e>
- <e en="F" t="0014511B" n="WedgeTotalWidth"></e>
- <e en="F" t="0014511C" n="WedgeInContactWidth"></e>
- <e en="F" t="0014511D" n="WedgeChamferHeight"></e>
- <e en="F" t="0014511E" n="WedgeCurve"></e>
- <e en="F" t="0014511F" n="RadiusAlongWedge"></e>
- <e en="F" t="00160001" n="WhitePoint"></e>
- <e en="F" t="00160002" n="PrimaryChromaticities"></e>
- <e en="F" t="00160003" n="BatteryLevel"></e>
- <e en="F" t="00160004" n="ExposureTimeInSeconds"></e>
- <e en="F" t="00160005" n="FNumber"></e>
- <e en="F" t="00160006" n="OECFRows"></e>
- <e en="F" t="00160007" n="OECFColumns"></e>
- <e en="F" t="00160008" n="OECFColumnNames"></e>
- <e en="F" t="00160009" n="OECFValues"></e>
- <e en="F" t="0016000A" n="SpatialFrequencyResponseRows"></e>
- <e en="F" t="0016000B" n="SpatialFrequencyResponseColumns"></e>
- <e en="F" t="0016000C" n="SpatialFrequencyResponseColumnNames"></e>
- <e en="F" t="0016000D" n="SpatialFrequencyResponseValues"></e>
- <e en="F" t="0016000E" n="ColorFilterArrayPatternRows"></e>
- <e en="F" t="0016000F" n="ColorFilterArrayPatternColumns"></e>
- <e en="F" t="00160010" n="ColorFilterArrayPatternValues"></e>
- <e en="F" t="00160011" n="FlashFiringStatus"></e>
- <e en="F" t="00160012" n="FlashReturnStatus"></e>
- <e en="F" t="00160013" n="FlashMode"></e>
- <e en="F" t="00160014" n="FlashFunctionPresent"></e>
- <e en="F" t="00160015" n="FlashRedEyeMode"></e>
- <e en="F" t="00160016" n="ExposureProgram"></e>
- <e en="F" t="00160017" n="SpectralSensitivity"></e>
- <e en="F" t="00160018" n="PhotographicSensitivity"></e>
- <e en="F" t="00160019" n="SelfTimerMode"></e>
- <e en="F" t="0016001A" n="SensitivityType"></e>
- <e en="F" t="0016001B" n="StandardOutputSensitivity"></e>
- <e en="F" t="0016001C" n="RecommendedExposureIndex"></e>
- <e en="F" t="0016001D" n="ISOSpeed"></e>
- <e en="F" t="0016001E" n="ISOSpeedLatitudeyyy"></e>
- <e en="F" t="0016001F" n="ISOSpeedLatitudezzz"></e>
- <e en="F" t="00160020" n="EXIFVersion"></e>
- <e en="F" t="00160021" n="ShutterSpeedValue"></e>
- <e en="F" t="00160022" n="ApertureValue"></e>
- <e en="F" t="00160023" n="BrightnessValue"></e>
- <e en="F" t="00160024" n="ExposureBiasValue"></e>
- <e en="F" t="00160025" n="MaxApertureValue"></e>
- <e en="F" t="00160026" n="SubjectDistance"></e>
- <e en="F" t="00160027" n="MeteringMode"></e>
- <e en="F" t="00160028" n="LightSource"></e>
- <e en="F" t="00160029" n="FocalLength"></e>
- <e en="F" t="0016002A" n="SubjectArea"></e>
+ <e en="T" t="00140023" n="CADFileFormat">@remove()</e>
+ <e en="T" t="00140024" n="ComponentReferenceSystem">@remove()</e>
+ <e en="T" t="00140025" n="ComponentManufacturingProcedure">@remove()</e>
+ <e en="T" t="00140028" n="ComponentManufacturer">@remove()</e>
+ <e en="T" t="00140030" n="MaterialThickness">@remove()</e>
+ <e en="T" t="00140032" n="MaterialPipeDiameter">@remove()</e>
+ <e en="T" t="00140034" n="MaterialIsolationDiameter">@remove()</e>
+ <e en="T" t="00140042" n="MaterialGrade">@remove()</e>
+ <e en="T" t="00140044" n="MaterialPropertiesDescription">@remove()</e>
+ <e en="T" t="00140045" n="MaterialPropertiesFileFormatRetired">@remove()</e>
+ <e en="T" t="00140046" n="MaterialNotes">@remove()</e>
+ <e en="T" t="00140050" n="ComponentShape">@remove()</e>
+ <e en="T" t="00140052" n="CurvatureType">@remove()</e>
+ <e en="T" t="00140054" n="OuterDiameter">@remove()</e>
+ <e en="T" t="00140056" n="InnerDiameter">@remove()</e>
+ <e en="T" t="00140100" n="ComponentWelderIDs">@remove()</e>
+ <e en="T" t="00140101" n="SecondaryApprovalStatus">@remove()</e>
+ <e en="T" t="00140102" n="SecondaryReviewDate">@remove()</e>
+ <e en="T" t="00140103" n="SecondaryReviewTime">@remove()</e>
+ <e en="T" t="00140104" n="SecondaryReviewerName">@remove()</e>
+ <e en="T" t="00140105" n="RepairID">@remove()</e>
+ <e en="T" t="00140106" n="MultipleComponentApprovalSeq">@remove()</e>
+ <e en="T" t="00140107" n="OtherApprovalStatus">@remove()</e>
+ <e en="T" t="00140108" n="OtherSecondaryApprovalStatus">@remove()</e>
+ <e en="T" t="00141010" n="ActualEnvironmentalConditions">@remove()</e>
+ <e en="T" t="00141020" n="ExpiryDate">@remove()</e>
+ <e en="T" t="00141040" n="EnvironmentalConditions">@remove()</e>
+ <e en="T" t="00142002" n="EvaluatorSeq">@remove()</e>
+ <e en="T" t="00142004" n="EvaluatorNumber">@remove()</e>
+ <e en="T" t="00142006" n="EvaluatorName">@remove()</e>
+ <e en="T" t="00142008" n="EvaluationAttempt">@remove()</e>
+ <e en="T" t="00142012" n="IndicationSeq">@remove()</e>
+ <e en="T" t="00142014" n="IndicationNumber">@remove()</e>
+ <e en="T" t="00142016" n="IndicationLabel">@remove()</e>
+ <e en="T" t="00142018" n="IndicationDescription">@remove()</e>
+ <e en="T" t="0014201A" n="IndicationType">@remove()</e>
+ <e en="T" t="0014201C" n="IndicationDisposition">@remove()</e>
+ <e en="T" t="0014201E" n="IndicationROISeq">@remove()</e>
+ <e en="T" t="00142030" n="IndicationPhysicalPropertySeq">@remove()</e>
+ <e en="T" t="00142032" n="PropertyLabel">@remove()</e>
+ <e en="T" t="00142202" n="CoordinateSystemNumberOfAxes">@remove()</e>
+ <e en="T" t="00142204" n="CoordinateSystemAxesSeq">@remove()</e>
+ <e en="T" t="00142206" n="CoordinateSystemAxisDescription">@remove()</e>
+ <e en="T" t="00142208" n="CoordinateSystemDataSetMapping">@remove()</e>
+ <e en="T" t="0014220A" n="CoordinateSystemAxisNumber">@remove()</e>
+ <e en="T" t="0014220C" n="CoordinateSystemAxisType">@remove()</e>
+ <e en="T" t="0014220E" n="CoordinateSystemAxisUnits">@remove()</e>
+ <e en="T" t="00142210" n="CoordinateSystemAxisValues">@remove()</e>
+ <e en="T" t="00142220" n="CoordinateSystemTransformSeq">@remove()</e>
+ <e en="T" t="00142222" n="TransformDescription">@remove()</e>
+ <e en="T" t="00142224" n="TransformNumberOfAxes">@remove()</e>
+ <e en="T" t="00142226" n="TransformOrderOfAxes">@remove()</e>
+ <e en="T" t="00142228" n="TransformedAxisUnits">@remove()</e>
+ <e en="T" t="0014222A" n="CoordinateSystemTransformRotationAndScaleMatrix">@remove()</e>
+ <e en="T" t="0014222C" n="CoordinateSystemTransformTranslationMatrix">@remove()</e>
+ <e en="T" t="00143011" n="InternalDetectorFrameTime">@remove()</e>
+ <e en="T" t="00143012" n="NumberOfFramesIntegrated">@remove()</e>
+ <e en="T" t="00143020" n="DetectorTemperatureSeq">@remove()</e>
+ <e en="T" t="00143022" n="SensorName">@remove()</e>
+ <e en="T" t="00143024" n="HorizontalOffsetOfSensor">@remove()</e>
+ <e en="T" t="00143026" n="VerticalOffsetOfSensor">@remove()</e>
+ <e en="T" t="00143028" n="SensorTemperature">@remove()</e>
+ <e en="T" t="00143040" n="DarkCurrentSeq">@remove()</e>
+ <e en="T" t="00143050" n="DarkCurrentCounts">@remove()</e>
+ <e en="T" t="00143060" n="GainCorrectionReferenceSeq">@remove()</e>
+ <e en="T" t="00143070" n="AirCounts">@remove()</e>
+ <e en="T" t="00143071" n="KVUsedInGainCalibration">@remove()</e>
+ <e en="T" t="00143072" n="MAUsedInGainCalibration">@remove()</e>
+ <e en="T" t="00143073" n="NumberOfFramesUsedForIntegration">@remove()</e>
+ <e en="T" t="00143074" n="FilterMaterialUsedInGainCalibration">@remove()</e>
+ <e en="T" t="00143075" n="FilterThicknessUsedInGainCalibration">@remove()</e>
+ <e en="T" t="00143076" n="DateOfGainCalibration">@remove()</e>
+ <e en="T" t="00143077" n="TimeOfGainCalibration">@remove()</e>
+ <e en="T" t="00143080" n="BadPixelImage">@remove()</e>
+ <e en="T" t="00143099" n="CalibrationNotes">@remove()</e>
+ <e en="T" t="00144002" n="PulserEquipmentSeq">@remove()</e>
+ <e en="T" t="00144004" n="PulserType">@remove()</e>
+ <e en="T" t="00144006" n="PulserNotes">@remove()</e>
+ <e en="T" t="00144008" n="ReceiverEquipmentSeq">@remove()</e>
+ <e en="T" t="0014400A" n="AmplifierType">@remove()</e>
+ <e en="T" t="0014400C" n="ReceiverNotes">@remove()</e>
+ <e en="T" t="0014400E" n="PreAmplifierEquipmentSeq">@remove()</e>
+ <e en="T" t="0014400F" n="PreAmplifierNotes">@remove()</e>
+ <e en="T" t="00144010" n="TransmitTransducerSeq">@remove()</e>
+ <e en="T" t="00144011" n="ReceiveTransducerSeq">@remove()</e>
+ <e en="T" t="00144012" n="NumberOfElements">@remove()</e>
+ <e en="T" t="00144013" n="ElementShape">@remove()</e>
+ <e en="T" t="00144014" n="ElementDimensionA">@remove()</e>
+ <e en="T" t="00144015" n="ElementDimensionB">@remove()</e>
+ <e en="T" t="00144016" n="ElementPitchA">@remove()</e>
+ <e en="T" t="00144017" n="MeasuredBeamDimensionA">@remove()</e>
+ <e en="T" t="00144018" n="MeasuredBeamDimensionB">@remove()</e>
+ <e en="T" t="00144019" n="LocationOfMeasuredBeamDiameter">@remove()</e>
+ <e en="T" t="0014401A" n="NominalFrequency">@remove()</e>
+ <e en="T" t="0014401B" n="MeasuredCenterFrequency">@remove()</e>
+ <e en="T" t="0014401C" n="MeasuredBandwidth">@remove()</e>
+ <e en="T" t="0014401D" n="ElementPitchB">@remove()</e>
+ <e en="T" t="00144020" n="PulserSettingsSeq">@remove()</e>
+ <e en="T" t="00144022" n="PulseWidth">@remove()</e>
+ <e en="T" t="00144024" n="ExcitationFrequency">@remove()</e>
+ <e en="T" t="00144026" n="ModulationType">@remove()</e>
+ <e en="T" t="00144028" n="Damping">@remove()</e>
+ <e en="T" t="00144030" n="ReceiverSettingsSeq">@remove()</e>
+ <e en="T" t="00144031" n="AcquiredSoundpathLength">@remove()</e>
+ <e en="T" t="00144032" n="AcquisitionCompressionType">@remove()</e>
+ <e en="T" t="00144033" n="AcquisitionSampleSize">@remove()</e>
+ <e en="T" t="00144034" n="RectifierSmoothing">@remove()</e>
+ <e en="T" t="00144035" n="DACSeq">@remove()</e>
+ <e en="T" t="00144036" n="DACType">@remove()</e>
+ <e en="T" t="00144038" n="DACGainPoints">@remove()</e>
+ <e en="T" t="0014403A" n="DACTimePoints">@remove()</e>
+ <e en="T" t="0014403C" n="DACAmplitude">@remove()</e>
+ <e en="T" t="00144040" n="PreAmplifierSettingsSeq">@remove()</e>
+ <e en="T" t="00144050" n="TransmitTransducerSettingsSeq">@remove()</e>
+ <e en="T" t="00144051" n="ReceiveTransducerSettingsSeq">@remove()</e>
+ <e en="T" t="00144052" n="IncidentAngle">@remove()</e>
+ <e en="T" t="00144054" n="CouplingTechnique">@remove()</e>
+ <e en="T" t="00144056" n="CouplingMedium">@remove()</e>
+ <e en="T" t="00144057" n="CouplingVelocity">@remove()</e>
+ <e en="T" t="00144058" n="ProbeCenterLocationX">@remove()</e>
+ <e en="T" t="00144059" n="ProbeCenterLocationZ">@remove()</e>
+ <e en="T" t="0014405A" n="SoundPathLength">@remove()</e>
+ <e en="T" t="0014405C" n="DelayLawIdentifier">@remove()</e>
+ <e en="T" t="00144060" n="GateSettingsSeq">@remove()</e>
+ <e en="T" t="00144062" n="GateThreshold">@remove()</e>
+ <e en="T" t="00144064" n="VelocityOfSound">@remove()</e>
+ <e en="T" t="00144070" n="CalibrationSettingsSeq">@remove()</e>
+ <e en="T" t="00144072" n="CalibrationProcedure">@remove()</e>
+ <e en="T" t="00144074" n="ProcedureVersion">@remove()</e>
+ <e en="T" t="00144076" n="ProcedureCreationDate">@remove()</e>
+ <e en="T" t="00144078" n="ProcedureExpirationDate">@remove()</e>
+ <e en="T" t="0014407A" n="ProcedureLastModifiedDate">@remove()</e>
+ <e en="T" t="0014407C" n="CalibrationTime">@remove()</e>
+ <e en="T" t="0014407E" n="CalibrationDate">@remove()</e>
+ <e en="T" t="00144080" n="ProbeDriveEquipmentSeq">@remove()</e>
+ <e en="T" t="00144081" n="DriveType">@remove()</e>
+ <e en="T" t="00144082" n="ProbeDriveNotes">@remove()</e>
+ <e en="T" t="00144083" n="DriveProbeSeq">@remove()</e>
+ <e en="T" t="00144084" n="ProbeInductance">@remove()</e>
+ <e en="T" t="00144085" n="ProbeResistance">@remove()</e>
+ <e en="T" t="00144086" n="ReceiveProbeSeq">@remove()</e>
+ <e en="T" t="00144087" n="ProbeDriveSettingsSeq">@remove()</e>
+ <e en="T" t="00144088" n="BridgeResistors">@remove()</e>
+ <e en="T" t="00144089" n="ProbeOrientationAngle">@remove()</e>
+ <e en="T" t="0014408B" n="UserSelectedGainY">@remove()</e>
+ <e en="T" t="0014408C" n="UserSelectedPhase">@remove()</e>
+ <e en="T" t="0014408D" n="UserSelectedOffsetX">@remove()</e>
+ <e en="T" t="0014408E" n="UserSelectedOffsetY">@remove()</e>
+ <e en="T" t="00144091" n="ChannelSettingsSeq">@remove()</e>
+ <e en="T" t="00144092" n="ChannelThreshold">@remove()</e>
+ <e en="T" t="0014409A" n="ScannerSettingsSeq">@remove()</e>
+ <e en="T" t="0014409B" n="ScanProcedure">@remove()</e>
+ <e en="T" t="0014409C" n="TranslationRateX">@remove()</e>
+ <e en="T" t="0014409D" n="TranslationRateY">@remove()</e>
+ <e en="T" t="0014409F" n="ChannelOverlap">@remove()</e>
+ <e en="T" t="001440A0" n="ImageQualityIndicatorType">@remove()</e>
+ <e en="T" t="001440A1" n="ImageQualityIndicatorMaterial">@remove()</e>
+ <e en="T" t="001440A2" n="ImageQualityIndicatorSize">@remove()</e>
+ <e en="T" t="00145002" n="LINACEnergy">@remove()</e>
+ <e en="T" t="00145004" n="LINACOutput">@remove()</e>
+ <e en="T" t="00145100" n="ActiveAperture">@remove()</e>
+ <e en="T" t="00145101" n="TotalAperture">@remove()</e>
+ <e en="T" t="00145102" n="ApertureElevation">@remove()</e>
+ <e en="T" t="00145103" n="MainLobeAngle">@remove()</e>
+ <e en="T" t="00145104" n="MainRoofAngle">@remove()</e>
+ <e en="T" t="00145105" n="ConnectorType">@remove()</e>
+ <e en="T" t="00145106" n="WedgeModelNumber">@remove()</e>
+ <e en="T" t="00145107" n="WedgeAngleFloat">@remove()</e>
+ <e en="T" t="00145108" n="WedgeRoofAngle">@remove()</e>
+ <e en="T" t="00145109" n="WedgeElement1Position">@remove()</e>
+ <e en="T" t="0014510A" n="WedgeMaterialVelocity">@remove()</e>
+ <e en="T" t="0014510B" n="WedgeMaterial">@remove()</e>
+ <e en="T" t="0014510C" n="WedgeOffsetZ">@remove()</e>
+ <e en="T" t="0014510D" n="WedgeOriginOffsetX">@remove()</e>
+ <e en="T" t="0014510E" n="WedgeTimeDelay">@remove()</e>
+ <e en="T" t="0014510F" n="WedgeName">@remove()</e>
+ <e en="T" t="00145110" n="WedgeManufacturerName">@remove()</e>
+ <e en="T" t="00145111" n="WedgeDescription">@remove()</e>
+ <e en="T" t="00145112" n="NominalBeamAngle">@remove()</e>
+ <e en="T" t="00145113" n="WedgeOffsetX">@remove()</e>
+ <e en="T" t="00145114" n="WedgeOffsetY">@remove()</e>
+ <e en="T" t="00145115" n="WedgeTotalLength">@remove()</e>
+ <e en="T" t="00145116" n="WedgeInContactLength">@remove()</e>
+ <e en="T" t="00145117" n="WedgeFrontGap">@remove()</e>
+ <e en="T" t="00145118" n="WedgeTotalHeight">@remove()</e>
+ <e en="T" t="00145119" n="WedgeFrontHeight">@remove()</e>
+ <e en="T" t="0014511A" n="WedgeRearHeight">@remove()</e>
+ <e en="T" t="0014511B" n="WedgeTotalWidth">@remove()</e>
+ <e en="T" t="0014511C" n="WedgeInContactWidth">@remove()</e>
+ <e en="T" t="0014511D" n="WedgeChamferHeight">@remove()</e>
+ <e en="T" t="0014511E" n="WedgeCurve">@remove()</e>
+ <e en="T" t="0014511F" n="RadiusAlongWedge">@remove()</e>
+ <e en="T" t="00160001" n="WhitePoint">@remove()</e>
+ <e en="T" t="00160002" n="PrimaryChromaticities">@remove()</e>
+ <e en="T" t="00160003" n="BatteryLevel">@remove()</e>
+ <e en="T" t="00160004" n="ExposureTimeInSeconds">@remove()</e>
+ <e en="T" t="00160005" n="FNumber">@remove()</e>
+ <e en="T" t="00160006" n="OECFRows">@remove()</e>
+ <e en="T" t="00160007" n="OECFColumns">@remove()</e>
+ <e en="T" t="00160008" n="OECFColumnNames">@remove()</e>
+ <e en="T" t="00160009" n="OECFValues">@remove()</e>
+ <e en="T" t="0016000A" n="SpatialFrequencyResponseRows">@remove()</e>
+ <e en="T" t="0016000B" n="SpatialFrequencyResponseColumns">@remove()</e>
+ <e en="T" t="0016000C" n="SpatialFrequencyResponseColumnNames">@remove()</e>
+ <e en="T" t="0016000D" n="SpatialFrequencyResponseValues">@remove()</e>
+ <e en="T" t="0016000E" n="ColorFilterArrayPatternRows">@remove()</e>
+ <e en="T" t="0016000F" n="ColorFilterArrayPatternColumns">@remove()</e>
+ <e en="T" t="00160010" n="ColorFilterArrayPatternValues">@remove()</e>
+ <e en="T" t="00160011" n="FlashFiringStatus">@remove()</e>
+ <e en="T" t="00160012" n="FlashReturnStatus">@remove()</e>
+ <e en="T" t="00160013" n="FlashMode">@remove()</e>
+ <e en="T" t="00160014" n="FlashFunctionPresent">@remove()</e>
+ <e en="T" t="00160015" n="FlashRedEyeMode">@remove()</e>
+ <e en="T" t="00160016" n="ExposureProgram">@remove()</e>
+ <e en="T" t="00160017" n="SpectralSensitivity">@remove()</e>
+ <e en="T" t="00160018" n="PhotographicSensitivity">@remove()</e>
+ <e en="T" t="00160019" n="SelfTimerMode">@remove()</e>
+ <e en="T" t="0016001A" n="SensitivityType">@remove()</e>
+ <e en="T" t="0016001B" n="StandardOutputSensitivity">@remove()</e>
+ <e en="T" t="0016001C" n="RecommendedExposureIndex">@remove()</e>
+ <e en="T" t="0016001D" n="ISOSpeed">@remove()</e>
+ <e en="T" t="0016001E" n="ISOSpeedLatitudeyyy">@remove()</e>
+ <e en="T" t="0016001F" n="ISOSpeedLatitudezzz">@remove()</e>
+ <e en="T" t="00160020" n="EXIFVersion">@remove()</e>
+ <e en="T" t="00160021" n="ShutterSpeedValue">@remove()</e>
+ <e en="T" t="00160022" n="ApertureValue">@remove()</e>
+ <e en="T" t="00160023" n="BrightnessValue">@remove()</e>
+ <e en="T" t="00160024" n="ExposureBiasValue">@remove()</e>
+ <e en="T" t="00160025" n="MaxApertureValue">@remove()</e>
+ <e en="T" t="00160026" n="SubjectDistance">@remove()</e>
+ <e en="T" t="00160027" n="MeteringMode">@remove()</e>
+ <e en="T" t="00160028" n="LightSource">@remove()</e>
+ <e en="T" t="00160029" n="FocalLength">@remove()</e>
+ <e en="T" t="0016002A" n="SubjectArea">@remove()</e>
  <e en="T" t="0016002B" n="MakerNote">@remove()</e>
- <e en="F" t="00160030" n="Temperature"></e>
- <e en="F" t="00160031" n="Humidity"></e>
- <e en="F" t="00160032" n="Pressure"></e>
- <e en="F" t="00160033" n="WaterDepth"></e>
- <e en="F" t="00160034" n="Acceleration"></e>
- <e en="F" t="00160035" n="CameraElevationAngle"></e>
- <e en="F" t="00160036" n="FlashEnergy"></e>
- <e en="F" t="00160037" n="SubjectLocation"></e>
- <e en="F" t="00160038" n="PhotographicExposureIndex"></e>
- <e en="F" t="00160039" n="SensingMethod"></e>
- <e en="F" t="0016003A" n="FileSource"></e>
- <e en="F" t="0016003B" n="SceneType"></e>
- <e en="F" t="00160041" n="CustomRendered"></e>
- <e en="F" t="00160042" n="ExposureMode"></e>
- <e en="F" t="00160043" n="WhiteBalance"></e>
- <e en="F" t="00160044" n="DigitalZoomRatio"></e>
- <e en="F" t="00160045" n="FocalLengthIn35mmFilm"></e>
- <e en="F" t="00160046" n="SceneCaptureType"></e>
- <e en="F" t="00160047" n="GainControl"></e>
- <e en="F" t="00160048" n="Contrast"></e>
- <e en="F" t="00160049" n="Saturation"></e>
- <e en="F" t="0016004A" n="Sharpness"></e>
+ <e en="T" t="00160030" n="Temperature">@remove()</e>
+ <e en="T" t="00160031" n="Humidity">@remove()</e>
+ <e en="T" t="00160032" n="Pressure">@remove()</e>
+ <e en="T" t="00160033" n="WaterDepth">@remove()</e>
+ <e en="T" t="00160034" n="Acceleration">@remove()</e>
+ <e en="T" t="00160035" n="CameraElevationAngle">@remove()</e>
+ <e en="T" t="00160036" n="FlashEnergy">@remove()</e>
+ <e en="T" t="00160037" n="SubjectLocation">@remove()</e>
+ <e en="T" t="00160038" n="PhotographicExposureIndex">@remove()</e>
+ <e en="T" t="00160039" n="SensingMethod">@remove()</e>
+ <e en="T" t="0016003A" n="FileSource">@remove()</e>
+ <e en="T" t="0016003B" n="SceneType">@remove()</e>
+ <e en="T" t="00160041" n="CustomRendered">@remove()</e>
+ <e en="T" t="00160042" n="ExposureMode">@remove()</e>
+ <e en="T" t="00160043" n="WhiteBalance">@remove()</e>
+ <e en="T" t="00160044" n="DigitalZoomRatio">@remove()</e>
+ <e en="T" t="00160045" n="FocalLengthIn35mmFilm">@remove()</e>
+ <e en="T" t="00160046" n="SceneCaptureType">@remove()</e>
+ <e en="T" t="00160047" n="GainControl">@remove()</e>
+ <e en="T" t="00160048" n="Contrast">@remove()</e>
+ <e en="T" t="00160049" n="Saturation">@remove()</e>
+ <e en="T" t="0016004A" n="Sharpness">@remove()</e>
  <e en="T" t="0016004B" n="DeviceSettingDescription">@remove()</e>
- <e en="F" t="0016004C" n="SubjectDistanceRange"></e>
+ <e en="T" t="0016004C" n="SubjectDistanceRange">@remove()</e>
  <e en="T" t="0016004D" n="CameraOwnerName">@remove()</e>
  <e en="T" t="0016004E" n="LensSpecification">@remove()</e>
  <e en="T" t="0016004F" n="LensMake">@remove()</e>
  <e en="T" t="00160050" n="LensModel">@remove()</e>
  <e en="T" t="00160051" n="LensSerialNumber">@remove()</e>
- <e en="F" t="00160061" n="InteroperabilityIndex"></e>
- <e en="F" t="00160062" n="InteroperabilityVersion"></e>
+ <e en="T" t="00160061" n="InteroperabilityIndex">@remove()</e>
+ <e en="T" t="00160062" n="InteroperabilityVersion">@remove()</e>
  <e en="T" t="00160070" n="GPSVersionID">@remove()</e>
  <e en="T" t="00160071" n="GPSLatitudeRef">@remove()</e>
  <e en="T" t="00160072" n="GPSLatitude">@remove()</e>
@@ -717,10 +630,10 @@
  <e en="F" t="00180028" n="InterventionDrugDose"></e>
  <e en="F" t="00180029" n="InterventionDrugCodeSeq"></e>
  <e en="F" t="0018002A" n="AdditionalDrugSeq"></e>
- <e en="F" t="00180030" n="RadionuclideRetired"></e>
+ <e en="T" t="00180030" n="RadionuclideRetired">@remove()</e>
  <e en="F" t="00180031" n="Radiopharmaceutical"></e>
- <e en="F" t="00180032" n="EnergyWindowCenterlineRetired"></e>
- <e en="F" t="00180033" n="EnergyWindowTotalWidthRetired"></e>
+ <e en="T" t="00180032" n="EnergyWindowCenterlineRetired">@remove()</e>
+ <e en="T" t="00180033" n="EnergyWindowTotalWidthRetired">@remove()</e>
  <e en="F" t="00180034" n="InterventionDrugName"></e>
  <e en="F" t="00180035" n="InterventionDrugStartTime"></e>
  <e en="F" t="00180036" n="InterventionalTherapySeq"></e>
@@ -753,18 +666,18 @@
  <e en="F" t="00180093" n="PercentSampling"></e>
  <e en="F" t="00180094" n="PercentPhaseFieldOfView"></e>
  <e en="F" t="00180095" n="PixelBandwidth"></e>
- <e en="T" t="00181000" n="DeviceSerialNumber">@empty()</e>
- <e en="T" t="00181002" n="DeviceUID">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="00181003" n="DeviceID"></e>
+ <e en="T" t="00181000" n="DeviceSerialNumber">@remove()</e>
+ <e en="T" t="00181002" n="DeviceUID">@remove()</e>
+ <e en="T" t="00181003" n="DeviceID">@remove()</e>
  <e en="T" t="00181004" n="PlateID">@remove()</e>
  <e en="T" t="00181005" n="GeneratorID">@remove()</e>
- <e en="F" t="00181006" n="GridID"></e>
+ <e en="T" t="00181006" n="GridID">@remove()</e>
  <e en="T" t="00181007" n="CassetteID">@remove()</e>
  <e en="T" t="00181008" n="GantyID">@remove()</e>
  <e en="T" t="00181009" n="UniqueDeviceIdentifier">@remove()</e>
  <e en="T" t="0018100A" n="UDISeq">@remove()</e>
- <e en="T" t="0018100B" n="ManufacturerDeviceClassUID">@hashuid(@UIDROOT,this)</e>
- <e en="F" t="00181010" n="SecondaryCaptureDeviceID"></e>
+ <e en="T" t="0018100B" n="ManufacturerDeviceClassUID">@remove()</e>
+ <e en="T" t="00181010" n="SecondaryCaptureDeviceID">@remove()</e>
  <e en="F" t="00181011" n="HardcopyCreationDeviceID"></e>
  <e en="F" t="00181012" n="DateOfSecondaryCapture"></e>
  <e en="F" t="00181014" n="TimeOfSecondaryCapture"></e>
@@ -842,7 +755,7 @@
  <e en="F" t="00181143" n="ScanArc"></e>
  <e en="F" t="00181144" n="AngularStep"></e>
  <e en="F" t="00181145" n="CenterOfRotationOffset"></e>
- <e en="F" t="00181146" n="RotationOffsetRetired"></e>
+ <e en="T" t="00181146" n="RotationOffsetRetired">@remove()</e>
  <e en="F" t="00181147" n="FieldOfViewShape"></e>
  <e en="F" t="00181149" n="FieldOfViewDimension"></e>
  <e en="F" t="00181150" n="ExposureTime"></e>
@@ -876,7 +789,7 @@
  <e en="F" t="00181201" n="TimeOfLastCalibration"></e>
  <e en="F" t="00181202" n="DateTimeOfLastCalibration"></e>
  <e en="F" t="00181210" n="ConvolutionKernel"></e>
- <e en="F" t="00181240" n="UpperLowerPixelValuesRetired"></e>
+ <e en="T" t="00181240" n="UpperLowerPixelValuesRetired">@remove()</e>
  <e en="F" t="00181242" n="ActualFrameDuration"></e>
  <e en="F" t="00181243" n="CountRate"></e>
  <e en="F" t="00181244" n="PreferredPlaybackSequencing"></e>
@@ -962,7 +875,7 @@
  <e en="F" t="00182020" n="DigitizingDeviceTransportDirection"></e>
  <e en="F" t="00182030" n="RotationOfScannedFilm"></e>
  <e en="F" t="00182041" n="BiopsyTargetSeq"></e>
- <e en="T" t="00182042" n="TargetUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00182042" n="TargetUID">@remove()</e>
  <e en="F" t="00182043" n="LocalizingCursorPosition"></e>
  <e en="F" t="00182044" n="CalculatedTargetPosition"></e>
  <e en="F" t="00182045" n="TargetLabel"></e>
@@ -985,8 +898,8 @@
  <e en="F" t="00185027" n="SoftTissueThermalIndex"></e>
  <e en="F" t="00185028" n="SoftTissueFocusThermalIndex"></e>
  <e en="F" t="00185029" n="SoftTissueSurfaceThermalIndex"></e>
- <e en="F" t="00185030" n="DynamicRangeRetired"></e>
- <e en="F" t="00185040" n="TotalGainRetired"></e>
+ <e en="T" t="00185030" n="DynamicRangeRetired">@remove()</e>
+ <e en="T" t="00185040" n="TotalGainRetired">@remove()</e>
  <e en="F" t="00185050" n="DepthOfScanField"></e>
  <e en="F" t="00185100" n="PatientPosition"></e>
  <e en="F" t="00185101" n="ViewPosition"></e>
@@ -1162,7 +1075,7 @@
  <e en="F" t="00189093" n="NumberOfKSpaceTrajectories"></e>
  <e en="F" t="00189094" n="CoverageOfKSpace"></e>
  <e en="F" t="00189095" n="SpectroscopyAcquisitionPhaseRows"></e>
- <e en="F" t="00189096" n="ParallelReductionFactorInPlaneRetired"></e>
+ <e en="T" t="00189096" n="ParallelReductionFactorInPlaneRetired">@remove()</e>
  <e en="F" t="00189098" n="TransmitterFrequency"></e>
  <e en="F" t="00189100" n="ResonantNucleus"></e>
  <e en="F" t="00189101" n="FrequencyCorrection"></e>
@@ -1552,45 +1465,45 @@
  <e en="F" t="0018A001" n="ContributingEquipmentSeq"></e>
  <e en="F" t="0018A002" n="ContributionDateTime"></e>
  <e en="T" t="0018A003" n="ContributionDescription">@remove()</e>
- <e en="T" t="0020000D" n="StudyInstanceUID">@hashuid(@UIDROOT,this)</e>
- <e en="T" t="0020000E" n="SeriesInstanceUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="0020000D" n="StudyInstanceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
+ <e en="T" t="0020000E" n="SeriesInstanceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="T" t="00200010" n="StudyID">@empty()</e>
  <e en="F" t="00200011" n="SeriesNumber"></e>
  <e en="F" t="00200012" n="AcquisitionNumber"></e>
  <e en="F" t="00200013" n="InstanceNumber"></e>
- <e en="F" t="00200014" n="IsotopeNumberRetired"></e>
- <e en="F" t="00200015" n="PhaseNumberRetired"></e>
- <e en="F" t="00200016" n="IntervalNumberRetired"></e>
- <e en="F" t="00200017" n="TimeSlotNumberRetired"></e>
- <e en="F" t="00200018" n="AngleNumberRetired"></e>
+ <e en="T" t="00200014" n="IsotopeNumberRetired">@remove()</e>
+ <e en="T" t="00200015" n="PhaseNumberRetired">@remove()</e>
+ <e en="T" t="00200016" n="IntervalNumberRetired">@remove()</e>
+ <e en="T" t="00200017" n="TimeSlotNumberRetired">@remove()</e>
+ <e en="T" t="00200018" n="AngleNumberRetired">@remove()</e>
  <e en="F" t="00200019" n="ItemNumber"></e>
  <e en="F" t="00200020" n="PatientOrientation"></e>
  <e en="F" t="00200022" n="OverlayNumber"></e>
  <e en="F" t="00200024" n="CurveNumber"></e>
  <e en="F" t="00200026" n="LUTNumber"></e>
- <e en="F" t="00200030" n="ImagePositionRetired"></e>
+ <e en="T" t="00200030" n="ImagePositionRetired">@remove()</e>
  <e en="F" t="00200032" n="ImagePosition"></e>
- <e en="F" t="00200035" n="ImageOrientationRetired"></e>
+ <e en="T" t="00200035" n="ImageOrientationRetired">@remove()</e>
  <e en="F" t="00200037" n="ImageOrientation"></e>
- <e en="F" t="00200050" n="LocationRetired"></e>
- <e en="T" t="00200052" n="FrameOfReferenceUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00200050" n="LocationRetired">@remove()</e>
+ <e en="T" t="00200052" n="FrameOfReferenceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00200060" n="Laterality"></e>
  <e en="F" t="00200062" n="ImageLaterality"></e>
- <e en="F" t="00200070" n="ImageGeometryTypeRetired"></e>
- <e en="F" t="00200080" n="MaskingImageRetired"></e>
+ <e en="T" t="00200070" n="ImageGeometryTypeRetired">@remove()</e>
+ <e en="T" t="00200080" n="MaskingImageRetired">@remove()</e>
  <e en="F" t="002000AA" n="ReportNumber"></e>
  <e en="F" t="00200100" n="TemporalPositionIdentifier"></e>
  <e en="F" t="00200105" n="NumberOfTemporalPositions"></e>
  <e en="F" t="00200110" n="TemporalResolution"></e>
- <e en="T" t="00200200" n="SynchronizationFrameOfReferenceUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00200200" n="SynchronizationFrameOfReferenceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00200242" n="SOPInstanceUIDOfConcatenationSource"></e>
  <e en="F" t="00201000" n="SeriesInStudy"></e>
- <e en="F" t="00201001" n="AcquisitionsInSeriesRetired"></e>
+ <e en="T" t="00201001" n="AcquisitionsInSeriesRetired">@remove()</e>
  <e en="F" t="00201002" n="ImagesInAcquisition"></e>
  <e en="F" t="00201003" n="ImagesInSeries"></e>
  <e en="F" t="00201004" n="AcquisitionsInStudy"></e>
  <e en="F" t="00201005" n="ImagesInStudy"></e>
- <e en="F" t="00201020" n="ReferenceRetired"></e>
+ <e en="T" t="00201020" n="ReferenceRetired">@remove()</e>
  <e en="F" t="0020103F" n="TargetPositionReferenceIndicator"></e>
  <e en="F" t="00201040" n="PositionReferenceIndicator"></e>
  <e en="F" t="00201041" n="SliceLocation"></e>
@@ -1601,16 +1514,15 @@
  <e en="F" t="00201206" n="NumberOfStudyRelatedSeries"></e>
  <e en="F" t="00201208" n="NumberOfStudyRelatedInstances"></e>
  <e en="F" t="00201209" n="NumberOfSeriesRelatedInstances"></e>
- <e en="F" t="002031XX" n="SourceImageIDRetired"></e>
  <e en="T" t="00203401" n="ModifyingDeviceIDRetired">@remove()</e>
- <e en="F" t="00203402" n="ModifiedImageIDRetired"></e>
- <e en="F" t="00203403" n="ModifiedImageDateRetired"></e>
- <e en="F" t="00203404" n="ModifyingDeviceManufacturerRetired"></e>
- <e en="F" t="00203405" n="ModifiedImageTimeRetired"></e>
+ <e en="T" t="00203402" n="ModifiedImageIDRetired">@remove()</e>
+ <e en="T" t="00203403" n="ModifiedImageDateRetired">@remove()</e>
+ <e en="T" t="00203404" n="ModifyingDeviceManufacturerRetired">@remove()</e>
+ <e en="T" t="00203405" n="ModifiedImageTimeRetired">@remove()</e>
  <e en="T" t="00203406" n="ModifiedImageDescriptionRetired">@remove()</e>
  <e en="T" t="00204000" n="ImageComments">@remove()</e>
- <e en="F" t="00205000" n="OriginalImageIdentificationRetired"></e>
- <e en="F" t="00205002" n="OriginalImageIdentificationNomenclatureRetired"></e>
+ <e en="T" t="00205000" n="OriginalImageIdentificationRetired">@remove()</e>
+ <e en="T" t="00205002" n="OriginalImageIdentificationNomenclatureRetired">@remove()</e>
  <e en="F" t="00209056" n="StackID"></e>
  <e en="F" t="00209057" n="InStackPositionNumber"></e>
  <e en="F" t="00209071" n="FrameAnatomySeq"></e>
@@ -1625,10 +1537,10 @@
  <e en="F" t="00209156" n="FrameAcquisitionNumber"></e>
  <e en="F" t="00209157" n="DimensionIndexValues"></e>
  <e en="T" t="00209158" n="FrameComments">@remove()</e>
- <e en="T" t="00209161" n="ConcatenationUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00209161" n="ConcatenationUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00209162" n="InConcatenationNumber"></e>
  <e en="F" t="00209163" n="InConcatenationTotalNumber"></e>
- <e en="T" t="00209164" n="DimensionOrganizationUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00209164" n="DimensionOrganizationUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00209165" n="DimensionIndexPointer"></e>
  <e en="F" t="00209167" n="FunctionalGroupPointer"></e>
  <e en="F" t="00209170" n="UnassignedSharedConvertedAttributesSeq"></e>
@@ -1952,7 +1864,7 @@
  <e en="F" t="00280002" n="SamplesPerPixel"></e>
  <e en="F" t="00280003" n="SamplesPerPixelUsed"></e>
  <e en="F" t="00280004" n="PhotometricInterpretation"></e>
- <e en="F" t="00280005" n="ImageDimensionsRetired"></e>
+ <e en="T" t="00280005" n="ImageDimensionsRetired">@remove()</e>
  <e en="F" t="00280006" n="PlanarConfiguration"></e>
  <e en="F" t="00280008" n="NumberOfFrames"></e>
  <e en="F" t="00280009" n="FrameIncrementPointer"></e>
@@ -1965,11 +1877,11 @@
  <e en="F" t="00280031" n="ZoomFactor"></e>
  <e en="F" t="00280032" n="ZoomCenter"></e>
  <e en="F" t="00280034" n="PixelAspectRatio"></e>
- <e en="F" t="00280040" n="ImageFormatRetired"></e>
- <e en="F" t="00280050" n="ManipulatedImageRetired"></e>
+ <e en="T" t="00280040" n="ImageFormatRetired">@remove()</e>
+ <e en="T" t="00280050" n="ManipulatedImageRetired">@remove()</e>
  <e en="F" t="00280051" n="CorrectedImage"></e>
  <e en="F" t="0028005F" n="CompressionRecognitionCode"></e>
- <e en="F" t="00280060" n="CompressionCodeRetired"></e>
+ <e en="T" t="00280060" n="CompressionCodeRetired">@remove()</e>
  <e en="F" t="00280061" n="CompressionOriginator"></e>
  <e en="F" t="00280062" n="CompressionLabel"></e>
  <e en="F" t="00280063" n="CompressionDescription"></e>
@@ -1991,8 +1903,8 @@
  <e en="F" t="00280101" n="BitsStored"></e>
  <e en="F" t="00280102" n="HighBit"></e>
  <e en="F" t="00280103" n="PixelRepresentation"></e>
- <e en="F" t="00280104" n="SmallestValidPixelValueRetired"></e>
- <e en="F" t="00280105" n="LargestValidPixelValueRetired"></e>
+ <e en="T" t="00280104" n="SmallestValidPixelValueRetired">@remove()</e>
+ <e en="T" t="00280105" n="LargestValidPixelValueRetired">@remove()</e>
  <e en="F" t="00280106" n="SmallestImagePixelValue"></e>
  <e en="F" t="00280107" n="LargestImagePixelValue"></e>
  <e en="F" t="00280108" n="SmallestPixelValueInSeries"></e>
@@ -2005,7 +1917,7 @@
  <e en="F" t="00280123" n="DoubleFloatPixelPaddingValue"></e>
  <e en="F" t="00280124" n="FloatPixelPaddingRangeLimit"></e>
  <e en="F" t="00280125" n="DoubleFloatPixelPaddingRangeLimit"></e>
- <e en="F" t="00280200" n="ImageLocationRetired"></e>
+ <e en="T" t="00280200" n="ImageLocationRetired">@remove()</e>
  <e en="F" t="00280300" n="QualityControlImage"></e>
  <e en="F" t="00280301" n="BurnedInAnnotation"></e>
  <e en="F" t="00280302" n="RecognizableVisualFeatures"></e>
@@ -2016,10 +1928,6 @@
  <e en="F" t="00280402" n="NumberOfTransformSteps"></e>
  <e en="F" t="00280403" n="SeqOfCompressedData"></e>
  <e en="F" t="00280404" n="DetailsOfCoefficients"></e>
- <e en="F" t="002804X0" n="RowsForNthOrderCoefficients"></e>
- <e en="F" t="002804X1" n="ColumnsForNthOrderCoefficients"></e>
- <e en="F" t="002804X2" n="CoefficientCoding"></e>
- <e en="F" t="002804X3" n="CoefficientCodingPointers"></e>
  <e en="F" t="00280700" n="DCTLabel"></e>
  <e en="F" t="00280701" n="DataBlockDescription"></e>
  <e en="F" t="00280702" n="DataBlock"></e>
@@ -2029,11 +1937,6 @@
  <e en="F" t="00280722" n="ZonalMapFormat"></e>
  <e en="F" t="00280730" n="AdaptiveMapFormat"></e>
  <e en="F" t="00280740" n="CodeNumberFormat"></e>
- <e en="F" t="002808X0" n="CodeLabel"></e>
- <e en="F" t="002808X2" n="NumberOfTables"></e>
- <e en="F" t="002808X3" n="CodeTableLocation"></e>
- <e en="F" t="002808X4" n="BitsForCodeWord"></e>
- <e en="F" t="002808X8" n="ImageDataLocation"></e>
  <e en="F" t="00280A02" n="PixelSpacingCalibrationType"></e>
  <e en="F" t="00280A04" n="PixelSpacingCalibrationDescription"></e>
  <e en="F" t="00281040" n="PixelIntensityRelationship"></e>
@@ -2045,9 +1948,9 @@
  <e en="F" t="00281054" n="RescaleType"></e>
  <e en="F" t="00281055" n="WindowCenterWidthExplanation"></e>
  <e en="F" t="00281056" n="VOILUTFunction"></e>
- <e en="F" t="00281080" n="GrayScaleRetired"></e>
+ <e en="T" t="00281080" n="GrayScaleRetired">@remove()</e>
  <e en="F" t="00281090" n="RecommendedViewingMode"></e>
- <e en="F" t="00281100" n="GreyLUTDescriptorRetired"></e>
+ <e en="T" t="00281100" n="GreyLUTDescriptorRetired">@remove()</e>
  <e en="F" t="00281101" n="RedPaletteColorLUTDescriptor"></e>
  <e en="F" t="00281102" n="GreenPaletteColorLUTDescriptor"></e>
  <e en="F" t="00281103" n="BluePaletteColorLUTDescriptor"></e>
@@ -2055,7 +1958,7 @@
  <e en="F" t="00281111" n="LargeRedPaletteColorLUTDescriptor"></e>
  <e en="F" t="00281112" n="LargeGreenPaletteColorLUTDescriptor"></e>
  <e en="F" t="00281113" n="LargeBluePaletteColorLUTDescriptor"></e>
- <e en="T" t="00281199" n="PaletteColorLUTUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00281199" n="PaletteColorLUTUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00281200" n="GrayLUTData"></e>
  <e en="F" t="00281201" n="RedPaletteColorLUTData"></e>
  <e en="F" t="00281202" n="GreenPaletteColorLUTData"></e>
@@ -2064,7 +1967,7 @@
  <e en="F" t="00281211" n="LargeRedPaletteColorLUTData"></e>
  <e en="F" t="00281212" n="LargeGreenPaletteColorLUTData"></e>
  <e en="F" t="00281213" n="LargeBluePaletteColorLUTData"></e>
- <e en="T" t="00281214" n="LargePaletteColorLUTUID">@hashuid(@UIDROOT,this)</e>
+ <e en="T" t="00281214" n="LargePaletteColorLUTUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="F" t="00281221" n="SegmentedRedPaletteColorLUTData"></e>
  <e en="F" t="00281222" n="SegmentedGreenPaletteColorLUTData"></e>
  <e en="F" t="00281223" n="SegmentedBluePaletteColorLUTData"></e>
@@ -3576,13 +3479,6 @@
  <e en="T" t="04000564" n="SourceOfPreviousValues">@remove()</e>
  <e en="T" t="04000565" n="ReasonForTheAttributeModification">@remove()</e>
  <e en="T" t="04000600" n="InstanceOriginStatus">@remove()</e>
- <e en="T" t="1000XXX0" n="EscapeTriplet">@remove()</e>
- <e en="T" t="1000XXX1" n="RunLengthTriplet">@remove()</e>
- <e en="T" t="1000XXX2" n="HuffmanTableSize">@remove()</e>
- <e en="T" t="1000XXX3" n="HuffmanTableTriplet">@remove()</e>
- <e en="T" t="1000XXX4" n="ShiftTableSize">@remove()</e>
- <e en="T" t="1000XXX5" n="ShiftTableTriplet">@remove()</e>
- <e en="T" t="1010XXXX" n="ZonalMap">@remove()</e>
  <e en="T" t="20000010" n="NumberOfCopies">@remove()</e>
  <e en="T" t="2000001E" n="PrinterConfigurationSeq">@remove()</e>
  <e en="T" t="20000020" n="PrintPriority">@remove()</e>
@@ -4740,32 +4636,6 @@
  <e en="T" t="4010107D" n="SecondaryInspectionMethodSeq">@remove()</e>
  <e en="T" t="4010107E" n="PRCSToRCSOrientation">@remove()</e>
  <e en="T" t="4FFE0001" n="MACParametersSeq">@remove()</e>
- <e en="T" t="50XX0005" n="CurveDimensions">@remove()</e>
- <e en="T" t="50XX0010" n="NumberOfPoints">@remove()</e>
- <e en="T" t="50XX0020" n="TypeOfData">@remove()</e>
- <e en="T" t="50XX0022" n="CurveDescription">@remove()</e>
- <e en="T" t="50XX0030" n="AxisUnits">@remove()</e>
- <e en="T" t="50XX0040" n="AxisLabels">@remove()</e>
- <e en="T" t="50XX0103" n="DataValueRepresentation">@remove()</e>
- <e en="T" t="50XX0104" n="MinimumCoordinateValue">@remove()</e>
- <e en="T" t="50XX0105" n="MaximumCoordinateValue">@remove()</e>
- <e en="T" t="50XX0106" n="CurveRange">@remove()</e>
- <e en="T" t="50XX0110" n="CurveDataDescriptor">@remove()</e>
- <e en="T" t="50XX0112" n="CoordinateStartValue">@remove()</e>
- <e en="T" t="50XX0114" n="CoordinateStepValue">@remove()</e>
- <e en="T" t="50XX1001" n="CurveActivationLayer">@remove()</e>
- <e en="T" t="50XX2000" n="AudioType">@remove()</e>
- <e en="T" t="50XX2002" n="AudioSampleFormat">@remove()</e>
- <e en="T" t="50XX2004" n="NumberOfChannels">@remove()</e>
- <e en="T" t="50XX2006" n="NumberOfSamples">@remove()</e>
- <e en="T" t="50XX2008" n="SampleRate">@remove()</e>
- <e en="T" t="50XX200A" n="TotalTime">@remove()</e>
- <e en="T" t="50XX200C" n="AudioSampleData">@remove()</e>
- <e en="T" t="50XX200E" n="AudioComments">@remove()</e>
- <e en="T" t="50XX2500" n="CurveLabel">@remove()</e>
- <e en="T" t="50XX2600" n="RefOverlaySeqCurve">@remove()</e>
- <e en="T" t="50XX2610" n="RefOverlayGroup">@remove()</e>
- <e en="T" t="50XX3000" n="CurveData">@remove()</e>
  <e en="T" t="52009229" n="SharedFunctionalGroupsSeq">@remove()</e>
  <e en="T" t="52009230" n="PerFrameFunctionalGroupsSeq">@remove()</e>
  <e en="T" t="54000100" n="WaveformSeq">@remove()</e>
@@ -4777,58 +4647,17 @@
  <e en="T" t="54001010" n="WaveformData">@remove()</e>
  <e en="T" t="56000010" n="FirstOrderPhaseCorrectionAngle">@remove()</e>
  <e en="T" t="56000020" n="SpectroscopyData">@remove()</e>
- <e en="T" t="60XX0010" n="OverlayRows">@remove()</e>
- <e en="T" t="60XX0011" n="OverlayColumns">@remove()</e>
- <e en="T" t="60XX0012" n="OverlayPlanes">@remove()</e>
- <e en="T" t="60XX0015" n="NumberOfFramesInOverlay">@remove()</e>
- <e en="T" t="60XX0022" n="OverlayDescription">@remove()</e>
- <e en="T" t="60XX0040" n="OverlayType">@remove()</e>
- <e en="T" t="60XX0045" n="OverlaySubtype">@remove()</e>
- <e en="T" t="60XX0050" n="OverlayOrigin">@remove()</e>
- <e en="T" t="60XX0051" n="ImageFrameOrigin">@remove()</e>
- <e en="T" t="60XX0052" n="OverlayPlaneOrigin">@remove()</e>
- <e en="T" t="60XX0060" n="OverlayCompressionCodeRetired">@remove()</e>
- <e en="T" t="60XX0061" n="OverlayCompressionOriginator">@remove()</e>
- <e en="T" t="60XX0062" n="OverlayCompressionLabel">@remove()</e>
- <e en="T" t="60XX0063" n="OverlayCompressionDescription">@remove()</e>
- <e en="T" t="60XX0066" n="OverlayCompressionStepPointers">@remove()</e>
- <e en="T" t="60XX0068" n="OverlayRepeatInterval">@remove()</e>
- <e en="T" t="60XX0069" n="OverlayBitsGrouped">@remove()</e>
- <e en="T" t="60XX0100" n="OverlayBitsAllocated">@remove()</e>
- <e en="T" t="60XX0102" n="OverlayBitPosition">@remove()</e>
- <e en="T" t="60XX0110" n="OverlayFormatRetired">@remove()</e>
- <e en="T" t="60XX0200" n="OverlayLocationRetired">@remove()</e>
- <e en="T" t="60XX0800" n="OverlayCodeLabel">@remove()</e>
- <e en="T" t="60XX0802" n="OverlayNumberOfTables">@remove()</e>
- <e en="T" t="60XX0803" n="OverlayCodeTableLocation">@remove()</e>
- <e en="T" t="60XX0804" n="OverlayBitsForCodeWord">@remove()</e>
- <e en="T" t="60XX1001" n="OverlayActivationLayer">@remove()</e>
- <e en="T" t="60XX1100" n="OverlayDescriptorGrayRetired">@remove()</e>
- <e en="T" t="60XX1101" n="OverlayDescriptorRedRetired">@remove()</e>
- <e en="T" t="60XX1102" n="OverlayDescriptorGreenRetired">@remove()</e>
- <e en="T" t="60XX1103" n="OverlayDescriptorBlueRetired">@remove()</e>
- <e en="T" t="60XX1200" n="OverlaysGrayRetired">@remove()</e>
- <e en="T" t="60XX1201" n="OverlaysRedRetired">@remove()</e>
- <e en="T" t="60XX1202" n="OverlaysGreenRetired">@remove()</e>
- <e en="T" t="60XX1203" n="OverlaysBlueRetired">@remove()</e>
- <e en="T" t="60XX1301" n="ROIArea">@remove()</e>
- <e en="T" t="60XX1302" n="ROIMean">@remove()</e>
- <e en="T" t="60XX1303" n="ROIStandardDeviation">@remove()</e>
- <e en="T" t="60XX1500" n="OverlayLabel">@remove()</e>
- <e en="T" t="60XX3000" n="OverlayData">@remove()</e>
- <e en="T" t="60XX4000" n="OverlayCommentsRetired">@remove()</e>
- <e en="T" t="7FE00001" n="ExtendedOffsetTable">@remove()</e>
- <e en="T" t="7FE00002" n="ExtendedOffsetTableLengths">@remove()</e>
- <e en="T" t="7FE00008" n="FloatPixelData">@remove()</e>
- <e en="T" t="7FE00009" n="DoubleFloatPixelData">@remove()</e>
- <e en="T" t="7FE00010" n="PixelData">@remove()</e>
- <e en="T" t="7FE00020" n="CoefficientsSDVN">@remove()</e>
- <e en="T" t="7FE00030" n="CoefficientsSDHN">@remove()</e>
- <e en="T" t="7FE00040" n="CoefficientsSDDN">@remove()</e>
+ <e en="F" t="7FE00001" n="ExtendedOffsetTable"></e>
+ <e en="F" t="7FE00002" n="ExtendedOffsetTableLengths"></e>
+ <e en="F" t="7FE00008" n="FloatPixelData"></e>
+ <e en="F" t="7FE00009" n="DoubleFloatPixelData"></e>
+ <e en="F" t="7FE00010" n="PixelData"></e>
+ <e en="F" t="7FE00020" n="CoefficientsSDVN"></e>
+ <e en="F" t="7FE00030" n="CoefficientsSDHN"></e>
+ <e en="F" t="7FE00040" n="CoefficientsSDDN"></e>
  <e en="T" t="FFFAFFFA" n="DigitalSignaturesSeq">@remove()</e>
  <e en="T" t="FFFCFFFC" n="DataSetTrailingPadding">@remove()</e>
- <e en="T" t="FFFEE000" n="Item">@remove()</e>
- <e en="T" t="FFFEE00D" n="ItemDelimitationItem">@remove()</e>
- <e en="T" t="FFFEE0DD" n="SeqDelimitationItem">@remove()</e>
- <e en="T" t="XXXX0000" n="GroupLength">@remove()</e>
+ <e en="F" t="FFFEE000" n="Item"></e>
+ <e en="F" t="FFFEE00D" n="ItemDelimitationItem"></e>
+ <e en="F" t="FFFEE0DD" n="SeqDelimitationItem"></e>
 </script>

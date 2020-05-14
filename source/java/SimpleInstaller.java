@@ -188,14 +188,15 @@ public class SimpleInstaller extends JFrame {
 					}
 					if (!entry.isDirectory()) {
 						String outName = outFile.getName();
+						if (outName.endsWith(".properties") || outName.endsWith(".script")) backup(outFile);
+						/*
 						if (outName.endsWith(".properties") || outName.endsWith(".script")) {
-							/*
 							if (outFile.exists()) {
 								outName = outName + ".update";
 								outFile = new File(outFile.getParentFile(), outName);
 							}
-							*/
 						}
+						*/
 						BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
 						BufferedInputStream in = new BufferedInputStream(zipFile.getInputStream(entry));
 						int size = 1024;

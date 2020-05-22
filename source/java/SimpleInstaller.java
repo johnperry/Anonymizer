@@ -128,27 +128,16 @@ public class SimpleInstaller extends JFrame {
 
 	//Very clunky function to find the installer program file
 	//so we can read its contents and get the files to install.
-	//The strategy is to get the java.class.path property and
-	//obtain the first path element. If the filename part of that
-	//element starts with [programName]-installer and ends with .jar,
-	//use it as the program file. Otherwise, get the user.dir
-	//property and go for [programName]-installer.jar.
 	private File getProgramFile() {
-		File programFile;
-		String classpath = System.getProperty("java.class.path");
-		if (classpath != null) {
-			String separator = System.getProperty("path.separator");
-			if (separator == null) separator = ";";
-			int k; if ((k=classpath.indexOf(separator)) != -1)
-				classpath = classpath.substring(0,k);
-			programFile = new File(classpath);
-			if (classpath.endsWith(".jar") && programFile.exists()) {
-				if (programFile.getName().startsWith(programName+"-installer"))
-					return programFile;
-			}
+		File programFile = null;
+		try { 
+			programFile = new File(SimpleInstaller.class.getProtectionDomain()
+										.getCodeSource().getLocation().toURI());
 		}
-		String userdir = System.getProperty("user.dir");
-		return new File(userdir + File.separator + programName + "-installer.jar");
+		catch (Exception unable) {
+			System.out.println("Unabled to find installer program file");
+		}
+		return programFile;
 	}
 
 	//Take a tree of files starting in a directory in a zip file

@@ -30,8 +30,8 @@ import org.w3c.dom.Node;
 /**
  * The Anonymizer program base class.
  */
-public class Anonymizer extends JFrame implements ChangeListener {
-
+public class Anonymizer extends JFrame {
+	
     private String					windowTitle = "RSNA Anonymizer - version 4";
     private MainPanel				mainPanel;
     private JPanel					splitPanel;
@@ -44,9 +44,11 @@ public class Anonymizer extends JFrame implements ChangeListener {
     private Editor 					editorPanel;
     private FilterPanel				filterPanel;
     private AnonymizerPanel			anonymizerPanel;
+    private ExportPanel				exportPanel;
     private IndexPanel				indexPanel;
     private HtmlJPanel 				helpPanel;
     private LogPanel				logPanel;
+    private AdminPanel				adminPanel;
 
 	static Logger logger;
 
@@ -136,42 +138,74 @@ public class Anonymizer extends JFrame implements ChangeListener {
 		viewerPanel = new Viewer();
 		editorPanel = new Editor();
 		filterPanel = FilterPanel.getInstance();
+		exportPanel = ExportPanel.getInstance();
 		indexPanel = new IndexPanel();
 		helpPanel = new HtmlJPanel( FileUtil.getText( new File(config.helpfile) ) );
+		adminPanel = new AdminPanel();
+		
+		adminPanel.addTabs(
+			viewerPanel,
+			editorPanel,
+			filterPanel,
+			anonymizerPanel,
+			indexPanel,
+			logPanel);
 		
 		mainPanel.addTabs(
 			welcomePanel,
 			scuPanel,
 			scpPanel,
 			splitPanel,
-			viewerPanel,
-			editorPanel,
-			filterPanel,
-			anonymizerPanel,
-			indexPanel,
-			logPanel,
+			exportPanel,
+			adminPanel,
 			helpPanel);
 		
-		mainPanel.tabbedPane.addChangeListener(this);
 		sourcePanel.addFileListener(viewerPanel);
 		sourcePanel.addFileListener(editorPanel);
 		pack();
 		positionFrame();
 		setVisible(true);
-		System.out.println("Initialization complete");
+		logger.info("Initialization complete");
     }
     
-	public void stateChanged(ChangeEvent event) {
-		Component comp = mainPanel.tabbedPane.getSelectedComponent();
-		if (comp.equals(indexPanel)) indexPanel.setFocus();
-		else if (comp.equals(filterPanel)) filterPanel.setFocus();
-		else if (comp.equals(logPanel)) logPanel.reload();
-		else if (comp.equals(scuPanel)) scuPanel.setFocus();
-	}
-	
-	class MainPanel extends JPanel {
+	class MainPanel extends JPanel implements ChangeListener {
 		public JTabbedPane tabbedPane;
 		public MainPanel() {
+			super();
+			this.setLayout(new BorderLayout());
+			setBackground(Configuration.getInstance().background);
+			tabbedPane = new JTabbedPane();
+			tabbedPane.addChangeListener(this);
+			this.add(tabbedPane,BorderLayout.CENTER);
+			
+		}
+		public void addTabs(
+						 WelcomePanel wp,
+						 SCUPanel scu,
+						 SCPPanel scp,
+						 JPanel source,
+						 ExportPanel export,
+						 AdminPanel admin,
+						 JPanel help) {
+			tabbedPane.addTab("Welcome", wp);
+			tabbedPane.addTab("Q/R SCU", scu);
+			tabbedPane.addTab("Storage SCP", scp);
+			tabbedPane.addTab("Directory", source);
+			tabbedPane.addTab("Export", export);
+			tabbedPane.addTab("Admin", admin);
+			tabbedPane.addTab("Help", help);
+			tabbedPane.setSelectedIndex(0);
+		}
+		public void stateChanged(ChangeEvent event) {
+			Component comp = tabbedPane.getSelectedComponent();
+			if (comp.equals(scuPanel)) scuPanel.setFocus();
+			else if (comp.equals(adminPanel)) adminPanel.stateChanged(event);
+		}
+	}
+
+	class AdminPanel extends JPanel implements ChangeListener {
+		public JTabbedPane tabbedPane;
+		public AdminPanel() {
 			super();
 			this.setLayout(new BorderLayout());
 			setBackground(Configuration.getInstance().background);
@@ -179,30 +213,26 @@ public class Anonymizer extends JFrame implements ChangeListener {
 			this.add(tabbedPane,BorderLayout.CENTER);
 		}
 		public void addTabs(
-						 WelcomePanel wp,
-						 SCUPanel scu,
-						 SCPPanel scp,
-						 JPanel source,
 						 Viewer viewer,
 						 Editor editor,
 						 FilterPanel filter,
 						 AnonymizerPanel script,
 						 IndexPanel index,
-						 LogPanel logPanel,
-						 JPanel help) {
-			tabbedPane.addTab("Welcome", wp);
-			tabbedPane.addTab("Q/R SCU", scu);
-			tabbedPane.addTab("Storage SCP", scp);
-			tabbedPane.addTab("Directory", source);
+						 LogPanel logPanel) {
 			tabbedPane.addTab("Viewer", viewer);
 			tabbedPane.addTab("Elements", editor);
 			tabbedPane.addTab("Filter", filter);
 			tabbedPane.addTab("Script", script);
 			tabbedPane.addTab("Index", index);
 			tabbedPane.addTab("Log", logPanel);
-			tabbedPane.addTab("Help", help);
-			tabbedPane.setSelectedIndex(0);
-			tabbedPane.addChangeListener(viewer);
+			tabbedPane.addChangeListener(this);
+			tabbedPane.setSelectedIndex(4);
+		}
+		public void stateChanged(ChangeEvent event) {
+			Component comp = tabbedPane.getSelectedComponent();
+			if (comp.equals(indexPanel)) indexPanel.setFocus();
+			else if (comp.equals(filterPanel)) filterPanel.setFocus();
+			else if (comp.equals(logPanel)) logPanel.reload();
 		}
 	}
 

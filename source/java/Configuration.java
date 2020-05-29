@@ -47,7 +47,10 @@ public class Configuration {
 
 	//The protected constructor.
 	protected Configuration() {
-		logger.info("\nAvailable Codecs:\n"+org.rsna.util.ImageIOTools.listAvailableCodecs());
+		String thisJava = System.getProperty("java.version");
+		String thisJavaBits = System.getProperty("sun.arch.data.model") + " bits";
+
+		logger.info("\nJava "+thisJava+"  ["+thisJavaBits+"]\nAvailable Codecs:\n"+org.rsna.util.ImageIOTools.listAvailableCodecs());
 		props = new ApplicationProperties(new File(propsFile));
 		File home = new File(System.getProperty("user.dir"));
 		databaseDir = new File(home, "data");
@@ -58,6 +61,7 @@ public class Configuration {
 			String storageDirProp = props.getProperty("storageDir", "Storage");
 			if (storageDirProp != null) storageDir = new File(storageDirProp);
 			props.setProperty("storageDir", storageDir.getAbsolutePath());
+			storageDir.mkdirs();
 			String ext = props.getProperty("extensions", ".dcm,[dcm]");
 			props.setProperty("extensions", ext);
 			props.store();

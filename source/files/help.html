@@ -114,6 +114,20 @@
 		The currently selected output directory is shown in the header of the right pane. Clicking that text
 		repositions the directory tree in the left pane to point to the submisssions directory.
 		
+		<p><b>The Export Tab</b>
+
+		<p>The Export tab lists the patients in the storage directory tree. It provides a DICOM Storage SCU that
+		can export to any DICOM Storage SCP, including the one chosen by the RSNA to store the research dataset.
+		To configure the Export service to send, you must register with the destination SCFP and set the fields in 
+		the header. With that done, check the boxes of the patients to be exported and click the <b>Export</b> button 
+		in the footer. As patients are transmitted, the date is entered in the ExportDate column and the checkbox
+		is cleared. The <b>Select All</b> button in the footer checks the boxes of all patients that have not been exported.
+		
+		<p><b>The Admin Tab</b>
+
+		<p>The Admin tab displays additional tabs for viewing images and DICOM elements, for configuring the filter
+		and anonymizer scripts, and for searching or displaying the patient index.		
+		
 		<p><b>The Viewer Tab</b>
 
 		<p>The Viewer tab displays the currently selected DICOM image. If the image file contains multiple frames,
@@ -174,14 +188,14 @@
 		
 		<center><h1>Credits</h1></center>
 		<ul>
-			<li>The Anonymizer program was developed under the aegis of the MIRC Committee of the Radiological Society of North America (RSNA).</li>
+			<li>The Anonymizer program was developed under the aegis of the Radiological Society of North America (RSNA).</li>
 			<li>The CTP servlet container (CTP) was developed by the RSNA.</li>
 			<li>The DICOM library (dcm4che) was developed by the incomparable Gunter Zeilinger.</li>
 			<li>The CTP multipart library is a highly modified version of the COS library
 			developed by Jason Hunter.</li>
 			<li>The CTP database is based on the Apache JDBM module developed by Cees de Groot,
 			Alex Boisvert, and associated contributors.
-			<li>The Apachi POI library was developed by the Apache Softward Foundation.
+			<li>The Apache POI library was developed by the Apache Software Foundation.
 		</ul>
 		<h3>Licenses</h3>
 		<ul>

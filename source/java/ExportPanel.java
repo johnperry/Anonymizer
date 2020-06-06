@@ -284,7 +284,7 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 
 	private void startExport(LinkedList<File> cases) {
 		try {
-			String url = "dicom://["+scpAET.getText().trim()+":"+scuAET.getText().trim()+"]@"+
+			String url = "dicom://"+scpAET.getText().trim()+":"+scuAET.getText().trim()+"@"+
 							scpIP.getText().trim() + ":" + scpPort.getText().trim();
 			System.out.println(url);
 			for (File caseDir : cases) {

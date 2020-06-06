@@ -483,9 +483,9 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	}
 
 	public void actionPerformed(ActionEvent event) {
-		String qrURL = "dicom://"+scpAET.getText()+":"
-						+scuAET.getText()+"@"+scpIP.getText()
-							+":"+scpPort.getText();
+		String qrURL = "dicom://"+scpAET.getText().trim()+":"
+						+scuAET.getText().trim()+"@"+scpIP.getText().trim()
+							+":"+scpPort.getText().trim();
 		Object source = event.getSource();
 		if (source.equals(clear)) {
 			queryPanel.clear();

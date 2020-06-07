@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.*;
 import javax.swing.border.*;
+import org.dcm4che.util.DcmURL;
 import org.apache.log4j.*;
 import org.dcm4che.dict.Tags;
 import org.rsna.ctp.objects.DicomObject;
@@ -481,11 +482,19 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			}
 		}
 	}
+	
+	private DcmURL getQRURL() {
+		return new DcmURL(
+			"dicom",
+			scpAET.getText().trim(),
+			scuAET.getText().trim(),
+			scpIP.getText().trim(),
+			StringUtil.getInt(scpPort.getText().trim(), 104)
+		);
+	}
 
 	public void actionPerformed(ActionEvent event) {
-		String qrURL = "dicom://"+scpAET.getText().trim()+":"
-						+scuAET.getText().trim()+"@"+scpIP.getText().trim()
-							+":"+scpPort.getText().trim();
+		DcmURL qrURL = getQRURL();
 		Object source = event.getSource();
 		if (source.equals(clear)) {
 			queryPanel.clear();
@@ -536,10 +545,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	}
 	
 	class QueryThread extends Thread {
-		String qrURL;
+		DcmURL qrURL;
 		Hashtable<String,String> params;
 		DicomQRSCU dicomQRSCU;
-		public QueryThread(String qrURL, Hashtable<String,String> params) {
+		public QueryThread(DcmURL qrURL, Hashtable<String,String> params) {
 			this.qrURL = qrURL;
 			this.params = params;
 		}
@@ -573,11 +582,11 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	}
 			
 	class RetrieveThread extends Thread {
-		String qrURL;
+		DcmURL qrURL;
 		LinkedList<Dataset> datasets;
 		String destination;
 		DicomQRSCU dicomQRSCU;
-		public RetrieveThread(String qrURL, LinkedList<Dataset> datasets, String destination) {
+		public RetrieveThread(DcmURL qrURL, LinkedList<Dataset> datasets, String destination) {
 			this.qrURL = qrURL;
 			this.datasets = datasets;
 			this.destination = destination;
@@ -606,12 +615,12 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	}
 	
 	class AccessionThread extends Thread {
-		String qrURL;
+		DcmURL qrURL;
 		String accNums;
 		String destination;
 		DicomQRSCU dicomQRSCU;
 		boolean useCGet;
-		public AccessionThread(String qrURL, String accNums, String destination) {
+		public AccessionThread(DcmURL qrURL, String accNums, String destination) {
 			this.qrURL = qrURL;
 			this.accNums = accNums;
 			this.destination = destination;

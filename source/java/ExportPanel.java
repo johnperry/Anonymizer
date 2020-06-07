@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.*;
 import javax.swing.border.*;
+import org.dcm4che.util.DcmURL;
 import org.apache.log4j.*;
 import org.rsna.ctp.pipeline.Status;
 import org.rsna.ctp.stdstages.dicom.DicomStorageSCU;
@@ -284,9 +285,13 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 
 	private void startExport(LinkedList<File> cases) {
 		try {
-			String url = "dicom://"+scpAET.getText().trim()+":"+scuAET.getText().trim()+"@"+
-							scpIP.getText().trim() + ":" + scpPort.getText().trim();
-			System.out.println(url);
+			DcmURL url = new DcmURL(
+				"dicom",
+				scpAET.getText().trim(),
+				scuAET.getText().trim(),
+				scpIP.getText().trim(),
+				StringUtil.getInt(scpPort.getText().trim(), 104)
+			);
 			for (File caseDir : cases) {
 				exportExecutor.execute(new ExportThread(caseDir, url, enableExport.isSelected()));
 			}
@@ -298,12 +303,12 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 	
 	class ExportThread extends Thread {
 		File dir;
-		String url;
+		DcmURL url;
 		boolean enableExport;
 		File expFile;
 		DicomStorageSCU scu;
 		
-		public ExportThread(File dir, String url, boolean enableExport) {
+		public ExportThread(File dir, DcmURL url, boolean enableExport) {
 			super();
 			this.dir = dir;
 			this.url = url;

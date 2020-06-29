@@ -117,6 +117,10 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		new AnonymizerThread().start();
 	}
 	
+	public void shutdown() {
+		stopSCP();
+	}
+	
 	public String getAET() {
 		return aet.getText().trim();
 	}

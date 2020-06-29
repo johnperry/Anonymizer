@@ -245,6 +245,7 @@ public class Anonymizer extends JFrame {
 			Configuration config = Configuration.getInstance();
 			config.getIntegerTable().close();
 			Index.getInstance().close();
+			SCPPanel.getInstance().shutdown();
 			Point p = getLocation();
 			config.put("x", Integer.toString(p.x));
 			config.put("y", Integer.toString(p.y));

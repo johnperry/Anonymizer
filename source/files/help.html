@@ -156,6 +156,16 @@
 		in the window are immediately active, but they are not saved until the Save button is clicked. The Refresh button
 		discards any unsaved changes and reloads the filter text from the last saved version.
 		
+		<p>The Filter tab has three checkboxes in its footer:
+		<ul>
+		<li><b>Remove Structured Report Files</b> is selected by default. If selected, the filter does not accept SR objects. Since SR objects
+		generally contain PHI in hard-to-find places, this is the safe option.
+		<li><b>Remove Secondary Capture Files</b> is selected by default. If selected, the filter does not accept secondary capture objects. 
+		Since these objects often contain PHI burned into the pixels, this is the safe option.
+		<li><b>Accept Reformatted Images</b> is selected by default. If selected, the filter accepts secondary capture objects if
+		they are reformatted images, even if Remove Secondary Capture Files is selected. Since reformatted image files generally 
+		do not contain PHI burned into the pixels, this is generally safe.
+		</ul>
 		<p><b>The Script Tab</b>
 		
 		<p>The DICOM deidentification process is driven by a script file called "dicom-anonymizer.script" located in the directory

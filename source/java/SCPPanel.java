@@ -227,12 +227,13 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		String filterScript = fp.getText().trim();
 		boolean filterSRs = fp.getFilterSRs();
 		boolean filterSCs = fp.getFilterSCs();
+		boolean acceptRFs = fp.getAcceptRFs();
 		boolean filterResult = true;
 		cp.print(Color.black, file.getName());
 		DicomObject dob;
 		if ( ((dob=getDicomObject(file)) != null)
 				&& ( dob.isImage() )
-				&& ( !filterSCs || !dob.isSecondaryCapture() )
+				&& ( !filterSCs || !dob.isSecondaryCapture() || (acceptRFs && dob.isReformatted()) )
 				&& ( !filterSRs || !dob.isSR() )
 				&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript)) ) ) {
 			File temp;

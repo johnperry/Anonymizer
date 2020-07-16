@@ -307,7 +307,7 @@
  <e en="T" t="00120060" n="CoordinatingCenterName">@empty()</e>
  <e en="T" t="00120062" n="PatientIdentityRemoved">YES</e>
  <e en="T" t="00120063" n="DeIdentificationMethod">@always()@append(){RSNA Covid-19 Dataset Default}</e>
- <e en="T" t="00120064" n="DeIdentificationMethodCodeSeq">113100/113107/113108/113109</e>
+ <e en="T" t="00120064" n="DeIdentificationMethodCodeSeq">113100/113107/113108</e>
  <e en="T" t="00120071" n="ClinicalTrialSeriesID">@remove()</e>
  <e en="T" t="00120072" n="ClinicalTrialSeriesDescription">@remove()</e>
  <e en="T" t="00120081" n="ClinicalTrialProtocolEthicsCommitteeName">@empty()</e>

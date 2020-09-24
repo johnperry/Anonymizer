@@ -315,8 +315,8 @@
  <e en="F" t="00120083" n="ConsentForClinicalTrialUseSeq"></e>
  <e en="F" t="00120084" n="DistributionType"></e>
  <e en="F" t="00120085" n="ConsentForDistributionFlag"></e>
- <e en="F" t="00120086" n="EthicsCommitteeApprovalEffectivenessStartDate"></e>
- <e en="F" t="00120087" n="EthicsCommitteeApprovalEffectivenessEndDate"></e>
+ <e en="T" t="00120086" n="EthicsCommitteeApprovalEffectivenessStartDate">@remove()</e>
+ <e en="T" t="00120087" n="EthicsCommitteeApprovalEffectivenessEndDate">@remove()</e>
  <e en="T" t="00140023" n="CADFileFormat">@remove()</e>
  <e en="T" t="00140024" n="ComponentReferenceSystem">@remove()</e>
  <e en="T" t="00140025" n="ComponentManufacturingProcedure">@remove()</e>
@@ -679,8 +679,8 @@
  <e en="T" t="0018100B" n="ManufacturerDeviceClassUID">@remove()</e>
  <e en="T" t="00181010" n="SecondaryCaptureDeviceID">@remove()</e>
  <e en="F" t="00181011" n="HardcopyCreationDeviceID"></e>
- <e en="F" t="00181012" n="DateOfSecondaryCapture"></e>
- <e en="F" t="00181014" n="TimeOfSecondaryCapture"></e>
+ <e en="T" t="00181012" n="DateOfSecondaryCapture">@remove()</e>
+ <e en="T" t="00181014" n="TimeOfSecondaryCapture">@remove()</e>
  <e en="F" t="00181016" n="SecondaryCaptureDeviceManufacturer"></e>
  <e en="F" t="00181017" n="HardcopyDeviceManufacturer"></e>
  <e en="F" t="00181018" n="SecondaryCaptureDeviceManufacturerModelName"></e>
@@ -723,8 +723,8 @@
  <e en="F" t="00181075" n="RadionuclideHalfLife"></e>
  <e en="F" t="00181076" n="RadionuclidePositronFraction"></e>
  <e en="F" t="00181077" n="RadiopharmaceuticalSpecificActivity"></e>
- <e en="F" t="00181078" n="RadiopharmaceuticalStartDateTime"></e>
- <e en="F" t="00181079" n="RadiopharmaceuticalStopDateTime"></e>
+ <e en="T" t="00181078" n="RadiopharmaceuticalStartDateTime">@hashdate(this,PatientID)</e>
+ <e en="T" t="00181079" n="RadiopharmaceuticalStopDateTime">@hashdate(this,PatientID)</e>
  <e en="F" t="00181080" n="BeatRejectionFlag"></e>
  <e en="F" t="00181081" n="LowRRValue"></e>
  <e en="F" t="00181082" n="HighRRValue"></e>
@@ -785,9 +785,9 @@
  <e en="F" t="001811A3" n="CompressionPressure"></e>
  <e en="F" t="001811A4" n="PaddleDescription"></e>
  <e en="F" t="001811A5" n="CompressionContactArea"></e>
- <e en="F" t="00181200" n="DateOfLastCalibration"></e>
- <e en="F" t="00181201" n="TimeOfLastCalibration"></e>
- <e en="F" t="00181202" n="DateTimeOfLastCalibration"></e>
+ <e en="T" t="00181200" n="DateOfLastCalibration">@remove()</e>
+ <e en="T" t="00181201" n="TimeOfLastCalibration">@remove()</e>
+ <e en="T" t="00181202" n="DateTimeOfLastCalibration">@remove()</e>
  <e en="F" t="00181210" n="ConvolutionKernel"></e>
  <e en="T" t="00181240" n="UpperLowerPixelValuesRetired">@remove()</e>
  <e en="F" t="00181242" n="ActualFrameDuration"></e>
@@ -960,8 +960,8 @@
  <e en="F" t="00187006" n="DetectorDescription"></e>
  <e en="F" t="00187008" n="DetectorMode"></e>
  <e en="T" t="0018700A" n="DetectorID">@remove()</e>
- <e en="F" t="0018700C" n="DateOfLastDetectorCalibration"></e>
- <e en="F" t="0018700E" n="TimeOfLastDetectorCalibration"></e>
+ <e en="T" t="0018700C" n="DateOfLastDetectorCalibration">@remove()</e>
+ <e en="T" t="0018700E" n="TimeOfLastDetectorCalibration">@remove()</e>
  <e en="F" t="00187010" n="ExposuresOnDetectorSinceLastCalibration"></e>
  <e en="F" t="00187011" n="ExposuresOnDetectorSinceManufactured"></e>
  <e en="F" t="00187012" n="DetectorTimeSinceLastExposure"></e>
@@ -1055,7 +1055,7 @@
  <e en="F" t="00189069" n="ParallelReductionFactorInPlane"></e>
  <e en="F" t="00189070" n="CardiacRRIntervalSpecified"></e>
  <e en="F" t="00189073" n="AcquisitionDuration"></e>
- <e en="F" t="00189074" n="FrameAcquisitionDatetime"></e>
+ <e en="T" t="00189074" n="FrameAcquisitionDatetime">@remove()</e>
  <e en="F" t="00189075" n="DiffusionDirectionality"></e>
  <e en="F" t="00189076" n="DiffusionGradientDirectionSeq"></e>
  <e en="F" t="00189077" n="ParallelAcquisition"></e>
@@ -1094,7 +1094,7 @@
  <e en="F" t="00189126" n="VolumeLocalizationSeq"></e>
  <e en="F" t="00189127" n="SpectroscopyAcquisitionDataColumns"></e>
  <e en="F" t="00189147" n="DiffusionAnisotropyType"></e>
- <e en="F" t="00189151" n="FrameReferenceDatetime"></e>
+ <e en="T" t="00189151" n="FrameReferenceDatetime">@remove()</e>
  <e en="F" t="00189152" n="MRMetaboliteMapSeq"></e>
  <e en="F" t="00189155" n="ParallelReductionFactorOutOfPlane"></e>
  <e en="F" t="00189159" n="SpectroscopyAcquisitionOutOfPlanePhaseSteps"></e>
@@ -1346,7 +1346,7 @@
  <e en="F" t="00189622" n="FunctionalSettlingPhaseFramesPresent"></e>
  <e en="F" t="00189623" n="FunctionalSyncPulse"></e>
  <e en="F" t="00189624" n="SettlingPhaseFrame"></e>
- <e en="F" t="00189701" n="DecayCorrectionDateTime"></e>
+ <e en="T" t="00189701" n="DecayCorrectionDateTime">@remove()</e>
  <e en="F" t="00189715" n="StartDensityThreshold"></e>
  <e en="F" t="00189716" n="StartRelativeDensityDifferenceThreshold"></e>
  <e en="F" t="00189717" n="StartCardiacTriggerCountThreshold"></e>
@@ -1391,7 +1391,7 @@
  <e en="F" t="00189772" n="PatientPhysiologicalStateCodeSeq"></e>
  <e en="F" t="00189801" n="DepthOfFocus"></e>
  <e en="F" t="00189803" n="ExcludedIntervalsSeq"></e>
- <e en="F" t="00189804" n="ExclusionStartDatetime"></e>
+ <e en="T" t="00189804" n="ExclusionStartDatetime">@remove()</e>
  <e en="F" t="00189805" n="ExclusionDuration"></e>
  <e en="F" t="00189806" n="USImageDescriptionSeq"></e>
  <e en="F" t="00189807" n="ImageDataTypeSeq"></e>
@@ -1428,7 +1428,7 @@
  <e en="F" t="00189916" n="InstructionText"></e>
  <e en="F" t="00189917" n="InstructionDescription"></e>
  <e en="F" t="00189918" n="InstructionPerformedFlag"></e>
- <e en="F" t="00189919" n="InstructionPerformedDateTime"></e>
+ <e en="T" t="00189919" n="InstructionPerformedDateTime">@remove()</e>
  <e en="F" t="0018991A" n="InstructionPerformanceComment"></e>
  <e en="F" t="0018991B" n="PatientPositioningInstructionSeq"></e>
  <e en="F" t="0018991C" n="PositioningMethodCodeSeq"></e>
@@ -1463,7 +1463,7 @@
  <e en="F" t="00189946" n="AutoKVPLowerBound"></e>
  <e en="F" t="00189947" n="ProtocolDefinedPatientPosition"></e>
  <e en="F" t="0018A001" n="ContributingEquipmentSeq"></e>
- <e en="F" t="0018A002" n="ContributionDateTime"></e>
+ <e en="T" t="0018A002" n="ContributionDateTime">@remove()</e>
  <e en="T" t="0018A003" n="ContributionDescription">@remove()</e>
  <e en="T" t="0020000D" n="StudyInstanceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>
  <e en="T" t="0020000E" n="SeriesInstanceUID">@param(@UIDROOT).@param(@SITEID).@integer(this,"uid",1)</e>

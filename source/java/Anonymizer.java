@@ -32,7 +32,7 @@ import org.w3c.dom.Node;
  */
 public class Anonymizer extends JFrame {
 	
-    private String					windowTitle = "RSNA Anonymizer - version 4";
+    private String					windowTitle = "RSNA Anonymizer - version 5";
     private MainPanel				mainPanel;
     private JPanel					splitPanel;
     private WelcomePanel			welcomePanel;
@@ -82,14 +82,23 @@ public class Anonymizer extends JFrame {
 
 		Configuration config = Configuration.getInstance();
 		
-		//Initialize the SITEID
+		//Initialize the SITEID and export protocol
 		String propsSITEID = config.getProps().getProperty("SITEID");
 		if (propsSITEID == null) {
 			long t = System.currentTimeMillis()/60L;
 			propsSITEID = Long.toString(t);
 			propsSITEID = propsSITEID.substring(propsSITEID.length() - 6);
 			config.getProps().setProperty("SITEID", propsSITEID);
+			//Force protocol on new installations
+			config.getProps().setProperty("exportProtocol", "http");
 			config.store();
+		}
+		else {
+			//On restart, if no protocol, set it to dicom
+			if (config.getProps().getProperty("exportProtocol", "").equals("")) {
+				config.getProps().setProperty("exportProtocol", "dicom");
+				config.store();
+			}
 		}
 		File daScriptFile = new File(config.dicomScriptFile);
 		DAScript daScript = DAScript.getInstance(daScriptFile);

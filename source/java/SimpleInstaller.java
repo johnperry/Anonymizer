@@ -123,6 +123,8 @@ public class SimpleInstaller extends JFrame {
 					programName+" could not be fully installed.",
 					"Installation Failed",
 					JOptionPane.INFORMATION_MESSAGE);
+		
+		startProgram();
 		exit();
 	}
 
@@ -284,6 +286,29 @@ public class SimpleInstaller extends JFrame {
 
 	private void exitForm(java.awt.event.WindowEvent evt) {
 		System.exit(0);
+	}
+	
+	private boolean startProgram() {
+		File dir = new File(directory, "Anonymizer");
+		File jarFile = new File(dir, "Anonymizer.jar");
+		String jarPath = jarFile.getAbsolutePath();
+		try {
+			Runtime rt = Runtime.getRuntime();
+			ArrayList<String> command = new ArrayList<String>();
+			command.add("java");
+			command.add("-jar");
+			command.add(jarPath);
+			String[] cmdarray = command.toArray( new String[command.size()] );
+			Process proc = rt.exec(cmdarray, null, dir);
+			return true;
+		}
+		catch (Exception ex) {
+			JOptionPane.showMessageDialog(this,
+					"Unable to start the Anonymizer program:\n"+jarPath+"\n\n"+ex.getMessage(),
+					"Start Failed",
+					JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
 	}
 
 	private void centerFrame() {

@@ -76,7 +76,11 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		clear.addActionListener(this);
 		start = new JButton("Start SCP");
 		start.addActionListener(this);
-		JLabel ip = new IPLabel(IPUtil.getIPAddress()+": ");
+		//Allow the configuration to specify the MAC address of the adapter to use.
+		JLabel ip;
+		String mac = config.getProps().getProperty("mac");
+		if (mac != null) ip = new JLabel(IPUtil.getIPAddressForMAC(mac)+": ");
+		else ip = new IPLabel(IPUtil.getIPAddress()+": ");
 		String portString = config.getProps().getProperty("storagescpPort","104");
 		port = new PanelField(portString);
 		port.addKeyListener(this);

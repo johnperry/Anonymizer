@@ -116,10 +116,18 @@
 		
 		<p><b>The Export Tab</b>
 
-		<p>The Export tab lists the patients in the storage directory tree. It provides a DICOM Storage SCU that
-		can export to any DICOM Storage SCP, including the one chosen by the RSNA to store the research dataset.
-		To configure the Export service to send, you must register with the destination SCFP and set the fields in 
-		the header. With that done, check the boxes of the patients to be exported and click the <b>Export</b> button 
+		<p>The Export tab lists the patients in the storage directory tree. It provides two means of export: 
+		HTTP and DICOM. Switching between the two protocols is accomplished by clicking the <b>Switch to...</b>
+		button in the lower left corner of the window. The selected export protocol must be configured in the 
+		header of the pane. 
+		
+		<p>For HTTP, enter the IP address (or domain name) of the destination and the port. Do not include the
+		name of the protocol. Do not include any path information.
+		
+		<p>For DICOM, you must register with the administrator of the destination SCP and set the fields in 
+		the header. 
+		
+		<p>Once configured, check the boxes of the patients to be exported and click the <b>Export</b> button 
 		in the footer. As patients are transmitted, the date is entered in the ExportDate column and the checkbox
 		is cleared. The <b>Select All</b> button in the footer checks the boxes of all patients that have not been exported.
 		

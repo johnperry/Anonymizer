@@ -69,6 +69,14 @@ public class Configuration {
 		catch (Exception ex) { }
 	}
 	
+	public String getExportProtocol() {
+		return props.getProperty("exportProtocol", "https");
+	}
+
+	public void setExportProtocol(String protocol) {
+		props.setProperty("exportProtocol", protocol);
+	}
+
 	public IntegerTable getIntegerTable() {
 		return integerTable;
 	}
@@ -101,5 +109,5 @@ public class Configuration {
 	public void store() {
 		props.store();
 	}
-
+	
 }

@@ -21,32 +21,32 @@ import org.dcm4che.util.DcmURL;
 import org.apache.log4j.*;
 import org.rsna.ctp.pipeline.Status;
 import org.rsna.ctp.stdstages.dicom.DicomStorageSCU;
+import org.rsna.server.HttpResponse;
 import org.rsna.ui.ColorPane;
 import org.rsna.ui.RowLayout;
+import org.rsna.util.DigestUtil;
 import org.rsna.util.FileUtil;
 import org.rsna.util.HttpUtil;
 import org.rsna.util.IPUtil;
 import org.rsna.util.StringUtil;
 
-
-public class ExportPanel extends BasePanel implements ActionListener, KeyListener {
+public class ExportPanel extends BasePanel implements ActionListener {
 
 	static final Logger logger = Logger.getLogger(ExportPanel.class);
 
+	static final int oneSecond = 1000;
+	final int connectionTimeout = 20 * oneSecond;
+	final int readTimeout = 120 * oneSecond;
+
 	Configuration config;
 	JScrollPane jsp;
-	JButton export;
-	JButton refresh;
-	JButton clear;
-	JButton select;
-	JCheckBox enableExport;
 	JPanel centerPanel;
+	JPanel header;
+	Footer footer;
 	
-	PanelField scpIP;
-	PanelField scpPort;
-	PanelField scpAET;
-	PanelField scuAET;
-
+	DicomHeaderPanel dicomHeaderPanel;
+	HttpHeaderPanel httpHeaderPanel;
+	
 	Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
 	Font titleFont = new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 18 );
 	Font columnHeadingFont = new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 14 );
@@ -65,49 +65,13 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 		super();
 		config = Configuration.getInstance();
 	
-		//UI Components
-		export = new JButton("Export");
-		export.addActionListener(this);
-		refresh = new JButton("Refresh");
-		refresh.addActionListener(this);
-		clear = new JButton("Clear All");
-		clear.addActionListener(this);
-		select = new JButton("Select All");
-		select.addActionListener(this);
-		
-		enableExport = new JCheckBox("Enable export");
-		enableExport.setBackground(config.background);
-		enableExport.addActionListener(this);
-		enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
-		
-		String scpIPString = config.getProps().getProperty("exportSCPIP","");
-		String scpPortString = config.getProps().getProperty("exportSCPPort","104");
-		String scpAETString = config.getProps().getProperty("exportCalledAET","");
-		String scuAETString = config.getProps().getProperty("exportCallingAET","ANONEXPORT");
-		scpIP = new PanelField(scpIPString, 150);
-		scpIP.addKeyListener(this);
-		scpPort = new PanelField(scpPortString);
-		scpPort.addKeyListener(this);
-		scpAET = new PanelField(scpAETString, 80);
-		scpAET.addKeyListener(this);
-		scuAET = new PanelField(scuAETString, 80);
-		scuAET.addKeyListener(this);
-
 		//Header
-		Box header = Box.createHorizontalBox();
-		header.setBackground(config.background);
-		header.add(new JLabel(" DICOM Storage SCP:  "));
-		header.add(scpIP);
-		header.add(new JLabel(" : "));
-		header.add(scpPort);
-		header.add(new JLabel("   Called AET:  "));
-		header.add(scpAET);
-		header.add(Box.createHorizontalStrut(10));
-		header.add(new JLabel("Calling AET: "));
-		header.add(scuAET);
-		header.add(Box.createHorizontalGlue());
-		header.add(enableExport);
-		header.add(Box.createHorizontalStrut(10));
+		dicomHeaderPanel = new DicomHeaderPanel();
+		httpHeaderPanel = new HttpHeaderPanel();
+		if (config.getProps().getProperty("exportProtocol","").equals("dicom"))
+			header = dicomHeaderPanel;
+		else
+			header = httpHeaderPanel;
 		add(header, BorderLayout.NORTH);
 
 		//Main panel
@@ -141,16 +105,148 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 		listCases();
 		
 		//Footer
-		Box footer = Box.createHorizontalBox();
-		footer.setBackground(config.background);
-		footer.add(clear);
-		footer.add(Box.createHorizontalStrut(10));
-		footer.add(select);
-		footer.add(Box.createHorizontalStrut(10));
-		footer.add(refresh);
-		footer.add(Box.createHorizontalGlue());
-		footer.add(export);
+		footer = new Footer(this);
 		add(footer, BorderLayout.SOUTH);
+	}
+	
+	class Footer extends JPanel {
+		JButton switchProtocols;
+		JButton export;
+		JButton refresh;
+		JButton clear;
+		JButton select;
+		public Footer(ExportPanel parent) {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			setBackground(config.background);
+			String protocol = config.getProps().getProperty("exportProtocol");
+			if (protocol.equals("dicom")) switchProtocols = new JButton("Switch to HTTP");
+			else switchProtocols = new JButton("Switch to DICOM");
+			export = new JButton("Export");
+			refresh = new JButton("Refresh");
+			clear = new JButton("Clear All");
+			select = new JButton("Select All");
+			add(switchProtocols);
+			add(Box.createHorizontalStrut(10));
+			add(clear);
+			add(Box.createHorizontalStrut(10));
+			add(select);
+			add(Box.createHorizontalStrut(10));
+			add(refresh);
+			add(Box.createHorizontalGlue());
+			add(export);
+			switchProtocols.addActionListener(parent);
+			export.addActionListener(parent);
+			refresh.addActionListener(parent);
+			clear.addActionListener(parent);
+			select.addActionListener(parent);
+		}
+	}
+	
+	class DicomHeaderPanel extends JPanel implements ActionListener, KeyListener {
+		PanelField scpIP;
+		PanelField scpPort;
+		PanelField scpAET;
+		PanelField scuAET;
+		JCheckBox enableExport;
+		
+		public DicomHeaderPanel() {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			setBackground(config.background);
+
+			String scpIPString = config.getProps().getProperty("exportSCPIP","");
+			String scpPortString = config.getProps().getProperty("exportSCPPort","104");
+			String scpAETString = config.getProps().getProperty("exportCalledAET","");
+			String scuAETString = config.getProps().getProperty("exportCallingAET","ANONEXPORT");
+			enableExport = new JCheckBox("Enable export");
+			enableExport.setBackground(config.background);
+			enableExport.addActionListener(this);
+			enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
+			scpIP = new PanelField(scpIPString, 150);
+			scpIP.addKeyListener(this);
+			scpPort = new PanelField(scpPortString);
+			scpPort.addKeyListener(this);
+			scpAET = new PanelField(scpAETString, 80);
+			scpAET.addKeyListener(this);
+			scuAET = new PanelField(scuAETString, 80);
+			scuAET.addKeyListener(this);
+
+			add(new JLabel(" DICOM Storage SCP:  "));
+			add(scpIP);
+			add(new JLabel(" : "));
+			add(scpPort);
+			add(new JLabel("   Called AET:  "));
+			add(scpAET);
+			add(Box.createHorizontalStrut(10));
+			add(new JLabel("Calling AET: "));
+			add(scuAET);
+			add(Box.createHorizontalGlue());
+			add(enableExport);
+			add(Box.createHorizontalStrut(10));
+		}
+		
+		public DcmURL getURL() throws Exception {
+			return new DcmURL(
+				"dicom",
+				scpAET.getText().trim(),
+				scuAET.getText().trim(),
+				scpIP.getText().trim(),
+				StringUtil.getInt(scpPort.getText().trim(), 104)
+			);
+		}
+		
+		public void keyTyped(KeyEvent event) { }
+		public void keyPressed(KeyEvent event) { }
+		public void keyReleased(KeyEvent event) {
+			config.getProps().setProperty("exportSCPIP", scpIP.getText().trim());
+			config.getProps().setProperty("exportSCPPort", scpPort.getText().trim());
+			config.getProps().setProperty("exportCalledAET", scpAET.getText().trim());
+			config.getProps().setProperty("exportCallingAET", scuAET.getText().trim());
+		}
+		public void actionPerformed(ActionEvent event) {
+			boolean enb = enableExport.isSelected();
+			config.getProps().setProperty("enableExport", (enb?"yes":"no"));
+		}
+	}
+	
+	class HttpHeaderPanel extends JPanel implements ActionListener, KeyListener {
+		PanelField httpURLField;
+		JCheckBox enableExport;
+		
+		public HttpHeaderPanel() {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			setBackground(config.background);
+
+			String httpURLString = config.getProps().getProperty("exportHttpURL","127.0.0.1:9555");
+			enableExport = new JCheckBox("Enable export");
+			enableExport.setBackground(config.background);
+			enableExport.addActionListener(this);
+			enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
+			httpURLField = new PanelField(httpURLString, 300);
+			httpURLField.addKeyListener(this);
+
+			add(new JLabel(" HTTP Storage URL:  "));
+			add(httpURLField);
+			add(Box.createHorizontalGlue());
+			add(enableExport);
+			add(Box.createHorizontalStrut(10));
+		}
+		
+		public String getURL() throws Exception {
+			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
+		}
+		
+		public void keyTyped(KeyEvent event) { }
+		public void keyPressed(KeyEvent event) { }
+		public void keyReleased(KeyEvent event) {
+			config.getProps().setProperty("exportHttpURL", httpURLField.getText().trim());
+		}
+		public void actionPerformed(ActionEvent event) {
+			boolean enb = enableExport.isSelected();
+			config.getProps().setProperty("enableExport", (enb?"yes":"no"));
+		}
 	}
 	
 	private void listCases() {
@@ -185,7 +281,7 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 	
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
-		if (source.equals(export)) {
+		if (source.equals(footer.export)) {
 			LinkedList<File> cases = new LinkedList<File>();
 			Component[] comps = centerPanel.getComponents();
 			for (Component c : comps) {
@@ -196,7 +292,7 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 			}
 			startExport(cases);
 		}
-		else if (source.equals(clear)) {
+		else if (source.equals(footer.clear)) {
 			Component[] comps = centerPanel.getComponents();
 			for (Component c : comps) {
 				if (c instanceof CaseCheckBox) {
@@ -204,7 +300,7 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 				}
 			}
 		}
-		else if (source.equals(select)) {
+		else if (source.equals(footer.select)) {
 			Component[] comps = centerPanel.getComponents();
 			for (Component c : comps) {
 				if (c instanceof CaseCheckBox) {
@@ -214,24 +310,27 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 				}
 			}
 		}
-		else if (source.equals(refresh)) {
+		else if (source.equals(footer.refresh)) {
 			listCases();
 			centerPanel.revalidate();
 			centerPanel.repaint();
 		}
-		else if (source.equals(enableExport)) {
-			boolean enb = enableExport.isSelected();
-			config.getProps().setProperty("enableExport", (enb?"yes":"no"));
+		else if (source.equals(footer.switchProtocols)) {
+			if (header instanceof DicomHeaderPanel) {
+				remove(dicomHeaderPanel);
+				header = httpHeaderPanel;
+				footer.switchProtocols.setText("Switch to DICOM");
+				config.getProps().setProperty("exportProtocol","http");
+			}
+			else {
+				remove(httpHeaderPanel);
+				header = dicomHeaderPanel;
+				footer.switchProtocols.setText("Switch to HTTP");
+				config.getProps().setProperty("exportProtocol","dicom");
+			}
+			add(header, BorderLayout.NORTH);
+			repaint();
 		}
-	}
-	
-	public void keyTyped(KeyEvent event) { }
-	public void keyPressed(KeyEvent event) { }
-	public void keyReleased(KeyEvent event) {
-		config.getProps().setProperty("exportSCPIP", scpIP.getText().trim());
-		config.getProps().setProperty("exportSCPPort", scpPort.getText().trim());
-		config.getProps().setProperty("exportCalledAET", scpAET.getText().trim());
-		config.getProps().setProperty("exportCallingAET", scuAET.getText().trim());
 	}
 	
 	class PanelField extends JTextField {
@@ -285,15 +384,21 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 
 	private void startExport(LinkedList<File> cases) {
 		try {
-			DcmURL url = new DcmURL(
-				"dicom",
-				scpAET.getText().trim(),
-				scuAET.getText().trim(),
-				scpIP.getText().trim(),
-				StringUtil.getInt(scpPort.getText().trim(), 104)
-			);
-			for (File caseDir : cases) {
-				exportExecutor.execute(new ExportThread(caseDir, url, enableExport.isSelected()));
+			if (header instanceof DicomHeaderPanel) {
+				DcmURL url = dicomHeaderPanel.getURL();
+				for (File caseDir : cases) {
+					exportExecutor.execute(
+						new DicomExportThread(caseDir, url, dicomHeaderPanel.enableExport.isSelected())
+					);
+				}
+			}
+			else {
+				String url = httpHeaderPanel.getURL();
+				for (File caseDir : cases) {
+					exportExecutor.execute(
+						new HttpExportThread(caseDir, url, httpHeaderPanel.enableExport.isSelected())
+					);
+				}
 			}
 		}
 		catch (Exception ex) {
@@ -301,14 +406,14 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 		}
 	}
 	
-	class ExportThread extends Thread {
+	class DicomExportThread extends Thread {
 		File dir;
 		DcmURL url;
 		boolean enableExport;
 		File expFile;
 		DicomStorageSCU scu;
 		
-		public ExportThread(File dir, DcmURL url, boolean enableExport) {
+		public DicomExportThread(File dir, DcmURL url, boolean enableExport) {
 			super();
 			this.dir = dir;
 			this.url = url;
@@ -352,38 +457,122 @@ public class ExportPanel extends BasePanel implements ActionListener, KeyListene
 			try { if (scu.send(file).equals(Status.OK)) return true; }
 			catch (Exception e) {
 				if (logger.isDebugEnabled()) logger.debug("Export: transmission failed: " + e.getMessage(), e);
-				else logger.warn("Export: transmission failed: " + e.getMessage());
+				else logger.warn("Export: DICOM transmission failed: " + e.getMessage());
 			}
 			return false;
 		}
+	}
 	
-		//TODO: figure out how to update the centerPanel without
-		//destroying any work the user has done while the
-		//background threads have been running.
-		private void updateTable(File dir) {
-			final File caseDir = dir;
-			final JPanel panel = centerPanel;
-			Runnable r = new Runnable() {
-				public void run() {
-					Component[] comps = centerPanel.getComponents();
-					for (Component c : comps) {
-						if (c instanceof CaseCheckBox) {
-							CaseCheckBox cb = (CaseCheckBox)c;
-							if (cb.file.equals(caseDir)) {
-								File expFile = new File(caseDir, hiddenExportFilename);
-								if (expFile.exists()) {
-									String exportDate = StringUtil.getDate(expFile.lastModified(), ".");
-									cb.label.setText(exportDate);
-									cb.setSelected(false);
-									return;
-								}
+	class HttpExportThread extends Thread {
+		File dir;
+		String url;
+		boolean enableExport;
+		File expFile;
+		
+		public HttpExportThread(File dir, String url, boolean enableExport) {
+			super();
+			this.dir = dir;
+			this.url = url;
+			this.enableExport = enableExport;
+			this.expFile = new File(dir, hiddenExportFilename);
+		}
+		
+		public void run() {
+			if (exportFiles(dir)) {
+				FileUtil.setText(expFile, "");
+				updateTable(dir);
+			}
+		}
+		
+		private boolean exportFiles(File dir) {
+			return exportFiles(dir, true);
+		}
+		
+		private boolean exportFiles(File dir, boolean ok) {
+			boolean result;
+			File[] files = dir.listFiles();
+			for (File file : files) {
+				if (file.isFile()) {
+					//Do not export the expFile or zero-length files
+					long fileLength = file.length();
+					if (!file.equals(expFile) && (fileLength != 0)) {
+						result = exportFile(file);
+						ok = ok && result;
+					}
+				}
+				else if (file.isDirectory()) {
+					result = exportFiles(file, ok);
+					ok = ok && result;
+				}
+			}
+			return ok;
+		}
+		
+		private boolean exportFile(File file) {
+			HttpURLConnection conn = null;
+			OutputStream svros = null;
+			try {
+				String hash = DigestUtil.digest("MD5", file, 16).toLowerCase();
+				URL u = new URL(url + "?digest="+hash);
+				logger.debug(u.toString());
+				boolean result = true;
+
+				conn = HttpUtil.getConnection(url);
+				conn.setReadTimeout(connectionTimeout);
+				conn.setConnectTimeout(readTimeout);
+				//if (fileLength > maxUnchunked) conn.setChunkedStreamingMode(0);
+				conn.connect();
+				svros = conn.getOutputStream();
+				FileUtil.streamFile(file, svros);
+				int responseCode = conn.getResponseCode();
+				logger.debug("Transmission response code = "+responseCode);
+
+				if (responseCode == HttpResponse.unprocessable) {
+					logger.warn("Unprocessable response from server for: " + file);
+					result = false;
+				}
+				else if (responseCode != HttpResponse.ok) {
+					logger.warn("Failure response from server ("+responseCode+") for: " + file);
+					result = false;
+				}
+				conn.disconnect();
+				return result;
+				
+			}
+			catch (Exception e) {
+				if (logger.isDebugEnabled()) logger.debug("Export: transmission failed: " + e.getMessage(), e);
+				else logger.warn("Export: HTTP transmission failed: " + e.getMessage());
+			}
+			return false;
+		}
+	}
+	
+	//TODO: figure out how to update the centerPanel without
+	//destroying any work the user has done while the
+	//background threads have been running.
+	private void updateTable(File dir) {
+		final File caseDir = dir;
+		final JPanel panel = centerPanel;
+		Runnable r = new Runnable() {
+			public void run() {
+				Component[] comps = centerPanel.getComponents();
+				for (Component c : comps) {
+					if (c instanceof CaseCheckBox) {
+						CaseCheckBox cb = (CaseCheckBox)c;
+						if (cb.file.equals(caseDir)) {
+							File expFile = new File(caseDir, hiddenExportFilename);
+							if (expFile.exists()) {
+								String exportDate = StringUtil.getDate(expFile.lastModified(), ".");
+								cb.label.setText(exportDate);
+								cb.setSelected(false);
+								return;
 							}
 						}
 					}
 				}
-			};
-			SwingUtilities.invokeLater(r);
-		}
+			}
+		};
+		SwingUtilities.invokeLater(r);
 	}
 	
 }

@@ -33,7 +33,8 @@ import java.net.URI;
 public class WelcomePanel extends BasePanel {
 
 	static final Logger logger = Logger.getLogger(WelcomePanel.class);
-	
+	static final String urlString = "https://www.rsna.org/covid-19/covid-19-ricord";
+
 	Configuration config;
 	Color bg = Color.white;
 	Color rsna = new Color(0, 93, 169);
@@ -161,7 +162,7 @@ public class WelcomePanel extends BasePanel {
 				while ((k1 >= 0) && !Character.isWhitespace(messageText.charAt(k1))) k1--;
 				while ((k2 < messageText.length()) && !Character.isWhitespace(messageText.charAt(k2))) k2++;
 				if (messageText.substring(k1+1, k2).equals("here.")) {
-					Desktop.getDesktop().browse(new URI("http://www.rsna.org/covid-19"));
+					Desktop.getDesktop().browse(new URI(urlString));
 				}
 			}
 			catch (Exception ex) { ex.printStackTrace(); }

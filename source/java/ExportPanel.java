@@ -10,8 +10,11 @@ package org.rsna.anonymizer;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -512,7 +515,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			HttpURLConnection conn = null;
 			OutputStream svros = null;
 			try {
-				String hash = DigestUtil.digest("MD5", file, 16).toLowerCase();
+				String hash = getDigest(file).toLowerCase();
 				URL u = new URL(url + "?digest="+hash);
 				logger.debug(u.toString());
 				boolean result = true;
@@ -544,6 +547,29 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				else logger.warn("Export: HTTP transmission failed: " + e.getMessage());
 			}
 			return false;
+		}
+		
+		private String getDigest(File file) {
+			String result = "";
+			BufferedInputStream bis = null;
+			DigestInputStream dis = null;
+			try {
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				md.reset();
+				bis = new BufferedInputStream( new FileInputStream( file ) );
+				dis = new DigestInputStream( bis, md );
+				while (dis.read() != -1) ; //empty loop
+				BigInteger bi = new BigInteger(1, md.digest());
+				result = bi.toString(16);
+			}
+			catch (Exception ex) { result = ""; }
+			finally {
+				try { dis.close(); }
+				catch (Exception ignore) { }
+				try { bis.close(); }
+				catch (Exception ignore) { }
+			}
+			return result.toString();
 		}
 	}
 	

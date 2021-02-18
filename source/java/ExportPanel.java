@@ -238,7 +238,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 		
 		public String getURL() throws Exception {
-			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
+			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file?import_event_id=1";
 		}
 		
 		public void keyTyped(KeyEvent event) { }
@@ -511,24 +511,29 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return ok;
 		}
 		
+		//Example URL for export to POSDA:
+		// http://f20de65151a2.ngrok.io/papi/v1/import/file?import_event_id=1&digest=ac6aec03c70f9c3063e5bb6cc190d34e
 		private boolean exportFile(File file) {
 			HttpURLConnection conn = null;
 			OutputStream svros = null;
 			try {
 				String hash = getDigest(file).toLowerCase();
-				URL u = new URL(url + "?digest="+hash);
-				logger.debug(u.toString());
+				URL u = new URL(url + "&digest="+hash);
+				//logger.debug(u.toString());
 				boolean result = true;
 
-				conn = HttpUtil.getConnection(url);
+				conn = HttpUtil.getConnection(u);
 				conn.setReadTimeout(connectionTimeout);
 				conn.setConnectTimeout(readTimeout);
 				//if (fileLength > maxUnchunked) conn.setChunkedStreamingMode(0);
+				conn.setRequestMethod("PUT");
+				//logger.debug("Before connection:\n"+conn.toString());
 				conn.connect();
+				//logger.debug("After connection:\n"+conn.toString());
 				svros = conn.getOutputStream();
 				FileUtil.streamFile(file, svros);
 				int responseCode = conn.getResponseCode();
-				logger.debug("Transmission response code = "+responseCode);
+				//logger.debug("Transmission response code = "+responseCode);
 
 				if (responseCode == HttpResponse.unprocessable) {
 					logger.warn("Unprocessable response from server for: " + file);

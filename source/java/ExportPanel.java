@@ -238,7 +238,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 		
 		public String getURL() throws Exception {
-			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file?import_event_id=1";
+			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
 		}
 		
 		public void keyTyped(KeyEvent event) { }
@@ -512,13 +512,13 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 		
 		//Example URL for export to POSDA:
-		// http://f20de65151a2.ngrok.io/papi/v1/import/file?import_event_id=1&digest=ac6aec03c70f9c3063e5bb6cc190d34e
+		// http://f20de65151a2.ngrok.io/papi/v1/import/file?digest=ac6aec03c70f9c3063e5bb6cc190d34e
 		private boolean exportFile(File file) {
 			HttpURLConnection conn = null;
 			OutputStream svros = null;
 			try {
 				String hash = getDigest(file).toLowerCase();
-				URL u = new URL(url + "&digest="+hash);
+				URL u = new URL(url + "?digest="+hash);
 				//logger.debug(u.toString());
 				boolean result = true;
 
@@ -534,14 +534,19 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				FileUtil.streamFile(file, svros);
 				int responseCode = conn.getResponseCode();
 				//logger.debug("Transmission response code = "+responseCode);
-
-				if (responseCode == HttpResponse.unprocessable) {
-					logger.warn("Unprocessable response from server for: " + file);
-					result = false;
+				
+				if (logger.isDebugEnabled()) {
+					logger.info("Server response "+responseCode+" for: " + file);
 				}
-				else if (responseCode != HttpResponse.ok) {
-					logger.warn("Failure response from server ("+responseCode+") for: " + file);
-					result = false;
+				else {
+					if (responseCode == HttpResponse.unprocessable) {
+						logger.warn("Unprocessable response from server for: " + file);
+						result = false;
+					}
+					else if (responseCode != HttpResponse.ok) {
+						logger.warn("Failure response from server ("+responseCode+") for: " + file);
+						result = false;
+					}
 				}
 				conn.disconnect();
 				return result;

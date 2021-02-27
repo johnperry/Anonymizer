@@ -1,5 +1,7 @@
 <script>
  <p t="SITEID">SITE1</p>
+ <p t="PROJECTNAME">MIDRC-RICORD</p>
+ <p t="TRIALNAME">MIDRC-RICORD</p>
  <p t="UIDROOT">1.2.826.0.1.3680043.10.474</p>
  <e en="T" t="00080001" n="LengthToEndRetired">@remove()</e>
  <e en="F" t="00080005" n="SpecificCharacterSet"></e>
@@ -317,6 +319,11 @@
  <e en="F" t="00120085" n="ConsentForDistributionFlag"></e>
  <e en="T" t="00120086" n="EthicsCommitteeApprovalEffectivenessStartDate">@remove()</e>
  <e en="T" t="00120087" n="EthicsCommitteeApprovalEffectivenessEndDate">@remove()</e>
+ <e en="T" t="00130010" n="BlockOwner">CTP</e>
+ <e en="T" t="00131010" n="ProjectName">@param(@PROJECTNAME)</e>
+ <e en="T" t="00131011" n="TrialName">@param(@TRIALNAME)</e>
+ <e en="T" t="00131012" n="SiteName">@param(@SITEID)</e>
+ <e en="T" t="00131013" n="SiteID">@param(@SITEID)</e>
  <e en="T" t="00140023" n="CADFileFormat">@remove()</e>
  <e en="T" t="00140024" n="ComponentReferenceSystem">@remove()</e>
  <e en="T" t="00140025" n="ComponentManufacturingProcedure">@remove()</e>

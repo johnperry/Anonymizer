@@ -241,6 +241,11 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
 		}
 		
+		public String getEventIDRequestURL() throws Exception {
+			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/event?source="
+				+ Configuration.getInstance().getProps().getProperty("SITEID");
+		}
+		
 		public void keyTyped(KeyEvent event) { }
 		public void keyPressed(KeyEvent event) { }
 		public void keyReleased(KeyEvent event) {
@@ -397,9 +402,10 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			}
 			else {
 				String url = httpHeaderPanel.getURL();
+				String idRequestURL = httpHeaderPanel.getEventIDRequestURL();
 				for (File caseDir : cases) {
 					exportExecutor.execute(
-						new HttpExportThread(caseDir, url, httpHeaderPanel.enableExport.isSelected())
+						new HttpExportThread(caseDir, url, idRequestURL, httpHeaderPanel.enableExport.isSelected())
 					);
 				}
 			}
@@ -469,18 +475,22 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	class HttpExportThread extends Thread {
 		File dir;
 		String url;
+		String idRequestURL;
 		boolean enableExport;
 		File expFile;
+		String eventID = "0";
 		
-		public HttpExportThread(File dir, String url, boolean enableExport) {
+		public HttpExportThread(File dir, String url, String idRequestURL, boolean enableExport) {
 			super();
 			this.dir = dir;
 			this.url = url;
+			this.idRequestURL = idRequestURL;
 			this.enableExport = enableExport;
 			this.expFile = new File(dir, hiddenExportFilename);
 		}
 		
 		public void run() {
+			eventID = getImportEventID();
 			if (exportFiles(dir)) {
 				FileUtil.setText(expFile, "");
 				updateTable(dir);
@@ -499,7 +509,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 					//Do not export the expFile or zero-length files
 					long fileLength = file.length();
 					if (!file.equals(expFile) && (fileLength != 0)) {
-						result = exportFile(file);
+						result = exportFile(file, eventID);
 						ok = ok && result;
 					}
 				}
@@ -511,40 +521,64 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return ok;
 		}
 		
+		//curl -X PUT http://localhost/papi/v1/import/event?source=some+useful+message
+		//{"status":"success","import_event_id":15}
+		private String getImportEventID() {
+			HttpURLConnection conn = null;
+			try {
+				URL u = new URL(idRequestURL);
+				conn = HttpUtil.getConnection(u);
+				conn.setReadTimeout(connectionTimeout);
+				conn.setConnectTimeout(readTimeout);
+				conn.setRequestMethod("GET");
+				conn.connect();
+				String text = FileUtil.getTextOrException( conn.getInputStream(), FileUtil.utf8, false );
+				conn.disconnect();
+				text = text.replaceAll("[^0-9]", "");
+				logger.debug("getImportID got "+text);
+				return text;
+			}
+			catch (Exception unable) { return "0"; }
+		}
+		
 		//Example URL for export to POSDA:
-		// http://f20de65151a2.ngrok.io/papi/v1/import/file?digest=ac6aec03c70f9c3063e5bb6cc190d34e
-		private boolean exportFile(File file) {
+		// http://f20de65151a2.ngrok.io/papi/v1/import/file?import_event_id=...&digest=ac6aec03c70f9c3063e5bb6cc190d34e
+		private boolean exportFile(File file, String eventID) {
 			HttpURLConnection conn = null;
 			OutputStream svros = null;
 			try {
 				String hash = getDigest(file).toLowerCase();
-				URL u = new URL(url + "?digest="+hash);
+				URL u = new URL(url + "?import_event_id="+eventID+"&digest="+hash);
 				//logger.debug(u.toString());
 				boolean result = true;
 
 				conn = HttpUtil.getConnection(u);
 				conn.setReadTimeout(connectionTimeout);
 				conn.setConnectTimeout(readTimeout);
-				//if (fileLength > maxUnchunked) conn.setChunkedStreamingMode(0);
 				conn.setRequestMethod("PUT");
-				//logger.debug("Before connection:\n"+conn.toString());
 				conn.connect();
-				//logger.debug("After connection:\n"+conn.toString());
 				svros = conn.getOutputStream();
 				FileUtil.streamFile(file, svros);
 				int responseCode = conn.getResponseCode();
-				//logger.debug("Transmission response code = "+responseCode);
 				
+				//Get the response text
+				String responseText = "";
+				try { responseText = FileUtil.getTextOrException( conn.getInputStream(), FileUtil.utf8, false ); }
+				catch (Exception ex) { logger.warn("Unable to read response: "+ex.getMessage()); }
+				conn.disconnect();
 				if (logger.isDebugEnabled()) {
 					logger.info("Server response "+responseCode+" for: " + file);
+					logger.warn("Response text: "+responseText);
 				}
 				else {
 					if (responseCode == HttpResponse.unprocessable) {
 						logger.warn("Unprocessable response from server for: " + file);
+						logger.warn("Response text: "+responseText);
 						result = false;
 					}
 					else if (responseCode != HttpResponse.ok) {
 						logger.warn("Failure response from server ("+responseCode+") for: " + file);
+						logger.warn("Response text: "+responseText);
 						result = false;
 					}
 				}
@@ -569,8 +603,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				bis = new BufferedInputStream( new FileInputStream( file ) );
 				dis = new DigestInputStream( bis, md );
 				while (dis.read() != -1) ; //empty loop
-				BigInteger bi = new BigInteger(1, md.digest());
-				result = bi.toString(16);
+				result = bytesToHex(md.digest());
 			}
 			catch (Exception ex) { result = ""; }
 			finally {
@@ -581,8 +614,16 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			}
 			return result.toString();
 		}
-	}
 	
+		private String bytesToHex(byte[] bytes) {
+			StringBuilder sb = new StringBuilder();
+			for (byte b : bytes) {
+				sb.append(String.format("%02x", b));
+			}
+			return sb.toString();
+		}
+	}
+
 	//TODO: figure out how to update the centerPanel without
 	//destroying any work the user has done while the
 	//background threads have been running.

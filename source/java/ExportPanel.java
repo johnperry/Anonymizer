@@ -532,13 +532,20 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				conn.setConnectTimeout(readTimeout);
 				conn.setRequestMethod("GET");
 				conn.connect();
+				int responseCode = conn.getResponseCode();
+				logger.debug("getImportEventID responseCode: " + responseCode);
+				logger.debug("...url: " + u.toString());
 				String text = FileUtil.getTextOrException( conn.getInputStream(), FileUtil.utf8, false );
 				conn.disconnect();
+				logger.debug("...got import_event_id: "+text);
 				text = text.replaceAll("[^0-9]", "");
-				logger.debug("getImportID got "+text);
+				logger.debug("...returning "+text);
 				return text;
 			}
-			catch (Exception unable) { return "0"; }
+			catch (Exception unable) { 
+				logger.debug("Unable to get import_event_id; returning 0");
+				return "0"; 
+			}
 		}
 		
 		//Example URL for export to POSDA:

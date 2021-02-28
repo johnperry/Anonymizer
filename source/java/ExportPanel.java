@@ -530,7 +530,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				conn = HttpUtil.getConnection(u);
 				conn.setReadTimeout(connectionTimeout);
 				conn.setConnectTimeout(readTimeout);
-				conn.setRequestMethod("GET");
+				conn.setRequestMethod("PUT");
 				conn.connect();
 				int responseCode = conn.getResponseCode();
 				logger.debug("getImportEventID responseCode: " + responseCode);

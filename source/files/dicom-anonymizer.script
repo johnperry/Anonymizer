@@ -319,11 +319,11 @@
  <e en="F" t="00120085" n="ConsentForDistributionFlag"></e>
  <e en="T" t="00120086" n="EthicsCommitteeApprovalEffectivenessStartDate">@remove()</e>
  <e en="T" t="00120087" n="EthicsCommitteeApprovalEffectivenessEndDate">@remove()</e>
- <e en="T" t="00130010" n="BlockOwner">CTP</e>
- <e en="T" t="00131010" n="ProjectName">@param(@PROJECTNAME)</e>
- <e en="T" t="00131011" n="TrialName">@param(@TRIALNAME)</e>
- <e en="T" t="00131012" n="SiteName">@param(@SITEID)</e>
- <e en="T" t="00131013" n="SiteID">@param(@SITEID)</e>
+ <e en="T" t="00130010" n="BlockOwner">@always()CTP</e>
+ <e en="T" t="00131010" n="ProjectName">@always()@param(@PROJECTNAME)</e>
+ <e en="T" t="00131011" n="TrialName">@always()@param(@TRIALNAME)</e>
+ <e en="T" t="00131012" n="SiteName">@always()@param(@SITEID)</e>
+ <e en="T" t="00131013" n="SiteID">@always()@param(@SITEID)</e>
  <e en="T" t="00140023" n="CADFileFormat">@remove()</e>
  <e en="T" t="00140024" n="ComponentReferenceSystem">@remove()</e>
  <e en="T" t="00140025" n="ComponentManufacturingProcedure">@remove()</e>

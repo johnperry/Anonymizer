@@ -48,7 +48,8 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 	JScrollPane jsp;
 	JButton delete;
 	JButton refresh;
-	JCheckBox logMemory;
+	JCheckBox logMemoryCB;
+	boolean logmemory = false;
 	File log = new File("logs/anonymizer.log");
 
 	static LogPanel logPanel = null;
@@ -80,15 +81,16 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 		refresh = new JButton("Refresh");
 		refresh.addActionListener(this);
 		
-		logMemory = new JCheckBox("Log memory");
+		logMemoryCB = new JCheckBox("Log memory usage");
 		Configuration config = Configuration.getInstance();
 		ApplicationProperties props = config.getProps();
-		logMemory.setSelected(props.getProperty("logmemory","").equals("yes"));
-		logMemory.addChangeListener(this);
-		logMemory.setBackground(bgColor);
+		logmemory = props.getProperty("logmemory","").equals("yes");
+		logMemoryCB.setSelected(logmemory);
+		logMemoryCB.addChangeListener(this);
+		logMemoryCB.setBackground(bgColor);
 
 		Box footer = Box.createHorizontalBox();
-		footer.add(logMemory);
+		footer.add(logMemoryCB);
 		footer.add(Box.createHorizontalGlue());
 		footer.add(delete);
 		footer.add(Box.createHorizontalStrut(3));
@@ -105,7 +107,7 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 	}
 	
 	public void logMemory() {
-		if (logMemory.isSelected()) {
+		if (logmemory) {
 			logger.info(memoryLogEntry());
 		}
 	}
@@ -123,10 +125,11 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 	}
 	
 	public void stateChanged(ChangeEvent event) {
-		if (event.getSource().equals(logMemory)) {
+		if (event.getSource().equals(logMemoryCB)) {
 			Configuration config = Configuration.getInstance();
 			ApplicationProperties props = config.getProps();
-			props.setProperty("logmemory", logMemory.isSelected()?"yes":"no");
+			logmemory = logMemoryCB.isSelected();
+			props.setProperty("logmemory", logmemory?"yes":"no");
 		}
 	}
 

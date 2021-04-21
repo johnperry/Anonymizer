@@ -10,17 +10,45 @@ package org.rsna.anonymizer;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import javax.swing.event.*;
 import javax.swing.*;
+import org.apache.log4j.Logger;
 import org.rsna.ui.ColorPane;
 import org.rsna.util.FileUtil;
+import org.rsna.ui.ApplicationProperties;
 
-public class LogPanel extends BasePanel implements ActionListener {
+public class LogPanel extends BasePanel implements ActionListener, ChangeListener {
+
+	static final Logger logger = Logger.getLogger(LogPanel.class);
 
 	public static ColorPane out;
+
+	private static final Runtime runtime = Runtime.getRuntime();
+	public static long usedMemory() {
+		return runtime.totalMemory() - runtime.freeMemory();
+	}
+	public static long maxMemory() {
+		return runtime.maxMemory();
+	}
+	public static long totalMemory() {
+		return runtime.totalMemory();
+	}
+	private static String memoryLogEntry() {
+		String margin = "                                     ";
+		StringBuffer sb = new StringBuffer();
+		sb.append("Memory:\n");
+		sb.append( String.format("%46s%,15d", "IN USE: ", usedMemory()) );
+		sb.append("\n");
+		sb.append( String.format("%46s%,15d", "TOTAL:  ", totalMemory()) );
+		sb.append("\n");
+		sb.append( String.format("%46s%,15d", "MAX:    ", maxMemory()) );
+		return sb.toString();
+}
 
 	JScrollPane jsp;
 	JButton delete;
 	JButton refresh;
+	JCheckBox logMemory;
 	File log = new File("logs/anonymizer.log");
 
 	static LogPanel logPanel = null;
@@ -51,8 +79,16 @@ public class LogPanel extends BasePanel implements ActionListener {
 
 		refresh = new JButton("Refresh");
 		refresh.addActionListener(this);
+		
+		logMemory = new JCheckBox("Log memory");
+		Configuration config = Configuration.getInstance();
+		ApplicationProperties props = config.getProps();
+		logMemory.setSelected(props.getProperty("logmemory","").equals("yes"));
+		logMemory.addChangeListener(this);
+		logMemory.setBackground(bgColor);
 
 		Box footer = Box.createHorizontalBox();
+		footer.add(logMemory);
 		footer.add(Box.createHorizontalGlue());
 		footer.add(delete);
 		footer.add(Box.createHorizontalStrut(3));
@@ -67,6 +103,12 @@ public class LogPanel extends BasePanel implements ActionListener {
 			catch (Exception ignore) { }
 		}
 	}
+	
+	public void logMemory() {
+		if (logMemory.isSelected()) {
+			logger.info(memoryLogEntry());
+		}
+	}
 
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(refresh)) {
@@ -77,6 +119,14 @@ public class LogPanel extends BasePanel implements ActionListener {
 			File[] files = logs.listFiles();
 			for (File file : files) FileUtil.deleteAll(file);
 			reload();
+		}
+	}
+	
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource().equals(logMemory)) {
+			Configuration config = Configuration.getInstance();
+			ApplicationProperties props = config.getProps();
+			props.setProperty("logmemory", logMemory.isSelected()?"yes":"no");
 		}
 	}
 

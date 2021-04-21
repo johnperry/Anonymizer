@@ -35,6 +35,8 @@ public class Configuration {
 
 	static Configuration configuration = null;
     private ApplicationProperties props;
+    
+	private static final Runtime runtime = Runtime.getRuntime();
 
 	/**
 	 * Get the singleton instance of the Configuration.
@@ -50,7 +52,12 @@ public class Configuration {
 		String thisJava = System.getProperty("java.version");
 		String thisJavaBits = System.getProperty("sun.arch.data.model") + " bits";
 
-		logger.info("\nJava "+thisJava+"  ["+thisJavaBits+"]\nAvailable Codecs:\n"+org.rsna.util.ImageIOTools.listAvailableCodecs());
+		StringBuffer sb = new StringBuffer();
+		sb.append("\nJava "+thisJava+"  ["+thisJavaBits+"]");
+		sb.append("\nTotal Memory: "+String.format("%,15d bytes",runtime.totalMemory()));
+		sb.append("\nMax Memory:   "+String.format("%,15d bytes",runtime.maxMemory()));
+		sb.append("\nAvailable Codecs:\n"+org.rsna.util.ImageIOTools.listAvailableCodecs());
+		logger.info(sb.toString());
 		props = new ApplicationProperties(new File(propsFile));
 		File home = new File(System.getProperty("user.dir"));
 		databaseDir = new File(home, "data");

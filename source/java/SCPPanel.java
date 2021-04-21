@@ -321,6 +321,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 				Index index = Index.getInstance();
 				index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
 				index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
+				LogPanel.getInstance().logMemory();
 				return true;
 			}
 		}

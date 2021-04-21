@@ -239,6 +239,7 @@ public class RightPanel extends JPanel
 				ex.printStackTrace(new PrintWriter(sw));
 				resultsPane.print(Color.red,"\n"+sw.toString()+"\n");
 			}
+			LogPanel.getInstance().logMemory();
 		}
 		else {
 			try {

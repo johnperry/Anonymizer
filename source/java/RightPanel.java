@@ -187,7 +187,7 @@ public class RightPanel extends JPanel
 						resultsPane.print(Color.red,"Failed\n");
 					}
 					else {
-						resultsPane.print(Color.black,"OK\n");
+//**					resultsPane.print(Color.black,"OK\n");
 						// Get the spoke name
 						Properties daprops = dicomScript.toProperties();
 						String spokeName = daprops.getProperty("param.SITEID");
@@ -289,7 +289,7 @@ public class RightPanel extends JPanel
 		}
 		public void newItem(String s) {
 			count++;
-			text.print(Color.black, String.format("%5d: %s\n", count, s));
+//**		text.print(Color.black, String.format("%5d: %s\n", count, s));
 		}
 		public void print(Color c, String s) {
 			text.print(c, margin + s);

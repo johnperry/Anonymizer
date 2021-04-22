@@ -206,9 +206,12 @@ public class Anonymizer extends JFrame {
 			tabbedPane.setSelectedIndex(0);
 		}
 		public void stateChanged(ChangeEvent event) {
-			Component comp = tabbedPane.getSelectedComponent();
-			if (comp.equals(scuPanel)) scuPanel.setFocus();
-			else if (comp.equals(adminPanel)) adminPanel.stateChanged(event);
+			try {
+				Component comp = tabbedPane.getSelectedComponent();
+				if (comp.equals(scuPanel)) scuPanel.setFocus();
+				else if (comp.equals(adminPanel)) adminPanel.stateChanged(event);
+			}
+			catch (Exception ignore) { }
 		}
 	}
 
@@ -238,10 +241,13 @@ public class Anonymizer extends JFrame {
 			tabbedPane.setSelectedIndex(4);
 		}
 		public void stateChanged(ChangeEvent event) {
-			Component comp = tabbedPane.getSelectedComponent();
-			if (comp.equals(indexPanel)) indexPanel.setFocus();
-			else if (comp.equals(filterPanel)) filterPanel.setFocus();
-			else if (comp.equals(logPanel)) logPanel.reload();
+			try {
+				Component comp = tabbedPane.getSelectedComponent();
+				if (comp.equals(indexPanel)) indexPanel.setFocus();
+				else if (comp.equals(filterPanel)) filterPanel.setFocus();
+				else if (comp.equals(logPanel)) logPanel.reload();
+			}
+			catch (Exception ignore) { }
 		}
 	}
 

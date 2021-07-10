@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.util.FileUtil;
 import org.rsna.ui.RowLayout;
 
@@ -186,9 +187,10 @@ public class IndexPanel extends JPanel implements ActionListener {
 			"ANON-PatientID",
 			"PHI-PatientName",
 			"PHI-PatientID",
+			"DateOffset",
 			"ANON-StudyDate",
-			"ANON-Accession",
 			"PHI-StudyDate",
+			"ANON-Accession",
 			"PHI-Accession"
 		};
 		JFileChooser chooser = null;
@@ -254,17 +256,25 @@ public class IndexPanel extends JPanel implements ActionListener {
 					addCell(row, 2, entries[i].name, style);
 					addCell(row, 3, entries[i].id, style);
 					
+					//Compute the date offset
+					String incString = AnonymizerFunctions.hash(entries[i].id, -1);
+					int n = incString.length();
+					if (n > 4) incString = incString.substring( n-4, n);
+					long inc = Long.parseLong(incString);
+					inc = inc % (10 * 365);
+					addCell(row, 4, Long.toString(inc), style);
+					
 					//Now list the studies for the patient
 					Study[] studies = index.listStudiesFor(entries[i].id);
 					for (Study study : studies) {
 						row = sheet.createRow(rowNumber++); 
-						addCell(row, 4, study.anonDate, style);
-						addCell(row, 5, study.anonAccession, style);
+						addCell(row, 5, study.anonDate, style);
 						addCell(row, 6, study.phiDate, style);
-						addCell(row, 7, study.phiAccession, style);
+						addCell(row, 7, study.anonAccession, style);
+						addCell(row, 8, study.phiAccession, style);
 					}
 				}
-				for (int i=0; i<8; i++) sheet.autoSizeColumn(i);
+				for (int i=0; i<9; i++) sheet.autoSizeColumn(i);
 				
 				if (chooser.showSaveDialog(this) == chooser.APPROVE_OPTION) {
 					File outputFile = chooser.getSelectedFile();

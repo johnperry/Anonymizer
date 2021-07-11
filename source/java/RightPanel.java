@@ -338,7 +338,7 @@ public class RightPanel extends JPanel
 	//Class to display the status during the processing of files.
 	class StatusPanel extends JPanel {
 		public JLabel currentFile;
-		public JLabel currentHeap;
+		public JLabel currentStats;
 		public StatusPanel() {
 			super();
 			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -348,13 +348,13 @@ public class RightPanel extends JPanel
 			setBorder(BorderFactory.createCompoundBorder(outer, inner));
 			
 			currentFile = new JLabel(" ");
-			currentHeap = new JLabel(" ");
+			currentStats = new JLabel(" ");
 
 			Box rowB = new Box(BoxLayout.X_AXIS);
 			rowB.add(Box.createHorizontalStrut(17));
 			rowB.add(currentFile);
 			rowB.add(Box.createHorizontalGlue());
-			rowB.add(currentHeap);
+			rowB.add(currentStats);
 			rowB.add(Box.createHorizontalStrut(17));
 			this.add(rowB);
 		}
@@ -365,10 +365,10 @@ public class RightPanel extends JPanel
 			final long finalH = LogPanel.usedMemory()/(1024*1024);
 			Runnable r = new Runnable() {
 				public void run() {
-					String s = String.format("%d: %s  [%4d ms]", finalN, finalName, finalT);
-					String h = String.format("Heap: %d MB", finalH);
+					String s = String.format("%d: %s ", finalN, finalName);
+					String h = String.format("%4d ms  Heap: %d MB", finalT, finalH);
 					currentFile.setText(s);
-					currentHeap.setText(h);
+					currentStats.setText(h);
 				}
 			};
 			SwingUtilities.invokeLater(r);
@@ -379,7 +379,7 @@ public class RightPanel extends JPanel
 				public void run() {
 					String h = String.format("Heap: %d MB", finalH);
 					currentFile.setText(" ");
-					currentHeap.setText(h);
+					currentStats.setText(h);
 				}
 			};
 			SwingUtilities.invokeLater(r);

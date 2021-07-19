@@ -288,6 +288,7 @@ public class RightPanel extends JPanel
 		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File dir = chooser.getSelectedFile();
 			config.setStorageDir(dir);
+			headerPanel.setStorageDir(dir);
 		}
 	}
 	
@@ -321,6 +322,7 @@ public class RightPanel extends JPanel
 			super();
 			this.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 			JLabel panelLabel = new JLabel(" Results",SwingConstants.LEFT);
+			dirLabel = new JLabel();
 			setStorageDir(Configuration.getInstance().getStorageDir());
 			this.setBackground(background);
 			Font labelFont = new Font("Dialog", Font.BOLD, 18);
@@ -331,7 +333,7 @@ public class RightPanel extends JPanel
 			this.add(Box.createHorizontalStrut(17));
 		}
 		public void setStorageDir(File dir) {
-			dirLabel = new JLabel(dir.getAbsolutePath());
+			dirLabel.setText(dir.getAbsolutePath());
 		}
 	}
 

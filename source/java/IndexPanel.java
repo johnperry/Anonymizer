@@ -247,31 +247,32 @@ public class IndexPanel extends JPanel implements ActionListener {
 				font.setBold(false);
 				style.setFont(font);
 				short rowNumber = 1;
+				
 				for (int i=0; i<entries.length; i+=2) {
 					
-					//Put in the patient
-					row = sheet.createRow(rowNumber++); // was (short)(i/2+1)
-					addCell(row, 0, entries[i+1].name, style);
-					addCell(row, 1, entries[i+1].id, style);
-					addCell(row, 2, entries[i].name, style);
-					addCell(row, 3, entries[i].id, style);
-					
-					//Compute the date offset
+					//Compute the date offset for this patient
 					String incString = AnonymizerFunctions.hash(entries[i].id, -1);
 					int n = incString.length();
 					if (n > 4) incString = incString.substring( n-4, n);
 					long inc = Long.parseLong(incString);
 					inc = inc % (10 * 365);
-					addCell(row, 4, Long.toString(inc), style);
 					
-					//Now list the studies for the patient
+					//Get the studies for this patient
 					Study[] studies = index.listStudiesFor(entries[i].id);
-					for (Study study : studies) {
-						row = sheet.createRow(rowNumber++); 
-						addCell(row, 5, study.anonDate, style);
-						addCell(row, 6, study.phiDate, style);
-						addCell(row, 7, study.anonAccession, style);
-						addCell(row, 8, study.phiAccession, style);
+					
+					for (int j=0; j<studies.length; j++) {
+						//Put in the patient columns
+						row = sheet.createRow(rowNumber++); // was (short)(i/2+1)
+						addCell(row, 0, entries[i+1].name, style);
+						addCell(row, 1, entries[i+1].id, style);
+						addCell(row, 2, entries[i].name, style);
+						addCell(row, 3, entries[i].id, style);
+						addCell(row, 4, Long.toString(inc), style);
+						//Put in the study columns
+						addCell(row, 5, studies[j].anonDate, style);
+						addCell(row, 6, studies[j].phiDate, style);
+						addCell(row, 7, studies[j].anonAccession, style);
+						addCell(row, 8, studies[j].phiAccession, style);
 					}
 				}
 				for (int i=0; i<9; i++) sheet.autoSizeColumn(i);

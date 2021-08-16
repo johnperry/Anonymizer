@@ -30,6 +30,7 @@ public class Configuration {
     IntegerTable integerTable = null;
     File storageDir = null;
     File databaseDir = null;
+    File tempDir = null;
 
 	public static final Color background = Color.getHSBColor(0.58f, 0.17f, 0.95f);
 
@@ -62,6 +63,8 @@ public class Configuration {
 		File home = new File(System.getProperty("user.dir"));
 		databaseDir = new File(home, "data");
 		databaseDir.mkdirs();
+		tempDir = new File(home, "TEMP");
+		tempDir.mkdirs();
 		try { 
 			integerTable = new IntegerTable(databaseDir);
 			storageDir = home;
@@ -88,6 +91,10 @@ public class Configuration {
 		return integerTable;
 	}
 	
+	public File getTempDir() {
+		return tempDir;
+	}
+
 	public File getStorageDir() {
 		return storageDir;
 	}

@@ -15,6 +15,7 @@ import javax.swing.*;
 import org.apache.log4j.*;
 import org.dcm4che.dict.Tags;
 import org.rsna.ctp.objects.DicomObject;
+import org.rsna.ctp.objects.FileObject;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerStatus;
 import org.rsna.ctp.stdstages.anonymizer.IntegerTable;
@@ -245,11 +246,14 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 				&& ( !filterSRs || !dob.isSR() )
 				&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript)) ) ) {
 			File temp;
+			File tempDir;
 			File storageDir;
-			try { 
-				storageDir = Configuration.getInstance().getStorageDir();
+			try {
+				Configuration config = Configuration.getInstance();
+				storageDir = config.getStorageDir();
 				storageDir.mkdirs();
-				temp = File.createTempFile("TEMP-", ".dcm", storageDir);
+				tempDir = config.getTempDir();
+				temp = File.createTempFile("TEMP-", ".dcm", tempDir);
 			}
 			catch (Exception ex) {
 				cp.println(Color.red, "    Unable to copy file.");
@@ -312,7 +316,8 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 
 				//Move the file to the correct directory.
 				if (dest.exists()) dest.delete();
-				if (!temp.renameTo(dest)) {
+				FileObject fob = new FileObject(temp);
+				if (!fob.moveTo(dest)) {
 					temp.delete();
 					return false;
 				}

@@ -316,18 +316,19 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 
 				//Move the file to the correct directory.
 				if (dest.exists()) dest.delete();
-				FileObject fob = new FileObject(temp);
-				if (!fob.moveTo(dest)) {
+				if (FileUtil.copy(temp, dest)) {
+					//Get rid of the temp file and update the index
 					temp.delete();
+					Index index = Index.getInstance();
+					index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
+					index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
+					LogPanel.getInstance().logMemory();
+					return true;
+				}
+				else {
+					logger.warn("Unable to copy\n     "+temp+"\n to: "+dest);
 					return false;
 				}
-
-				//Update the index
-				Index index = Index.getInstance();
-				index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
-				index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
-				LogPanel.getInstance().logMemory();
-				return true;
 			}
 		}
 		else {

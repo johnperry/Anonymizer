@@ -84,7 +84,7 @@ public class RightPanel extends JPanel
 		p.setLayout(new BorderLayout());
 		resultsPane = new ResultsScrollPane();
 		p.add(resultsPane,BorderLayout.CENTER);
-		statusPanel = new StatusPanel();
+		statusPanel = new StatusPanel(background);
 		p.add(statusPanel,BorderLayout.SOUTH);
 		this.add(p, BorderLayout.CENTER);		
 		
@@ -211,8 +211,8 @@ public class RightPanel extends JPanel
 							String spokeName = daprops.getProperty("param.SITEID");
 
 							//Figure out where to put the temp file.
-							//It is already in the root of the storageDir.
-							//It needs to go in the appropriate series subdirectory
+							//It is in the tempDir directory; it needs to go
+							//in the appropriate series subdirectory of storageDir.
 							dob = getDicomObject(temp);
 							String modality = dob.getModality();
 							String anonPtName = dob.getPatientName();
@@ -298,29 +298,6 @@ public class RightPanel extends JPanel
 			headerPanel.setStorageDir(dir);
 		}
 	}
-	
-	//Class to display the results of the processing
-	class ResultsScrollPane extends JScrollPane {
-		public ColorPane text;
-		String margin = "       ";
-		public ResultsScrollPane() {
-			super();
-			text = new ColorPane();
-			setViewportView(text);
-		}
-		public void clear() {
-			text.setText("");
-		}
-		public void newItem(int count, String s) {
-			text.print(Color.black, String.format("%5d: %s\n", count, s));
-		}
-		public void print(Color c, String s) {
-			text.print(c, margin + s);
-		}
-		public void println(Color c, String s) {
-			text.print(c, margin + s + "\n");
-		}
-	}
 
 	//Class to display the heading in the proper place
 	class HeaderPanel extends JPanel {
@@ -341,57 +318,6 @@ public class RightPanel extends JPanel
 		}
 		public void setStorageDir(File dir) {
 			dirLabel.setText(dir.getAbsolutePath());
-		}
-	}
-
-	//Class to display the status during the processing of files.
-	class StatusPanel extends JPanel {
-		public JLabel currentFile;
-		public JLabel currentStats;
-		public StatusPanel() {
-			super();
-			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-			this.setBackground(background);
-			Border inner = BorderFactory.createEmptyBorder(4, 0, 4, 0);
-			Border outer = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-			setBorder(BorderFactory.createCompoundBorder(outer, inner));
-			
-			currentFile = new JLabel(" ");
-			currentStats = new JLabel(" ");
-
-			Box rowB = new Box(BoxLayout.X_AXIS);
-			rowB.add(Box.createHorizontalStrut(17));
-			rowB.add(currentFile);
-			rowB.add(Box.createHorizontalGlue());
-			rowB.add(currentStats);
-			rowB.add(Box.createHorizontalStrut(17));
-			this.add(rowB);
-		}
-		public void setStatus(int n, String name, long t) {
-			final int finalN = n;
-			final String finalName = name; 
-			final long finalT = t;
-			final long finalH = LogPanel.usedMemory()/(1024*1024);
-			Runnable r = new Runnable() {
-				public void run() {
-					String s = String.format("%d: %s ", finalN, finalName);
-					String h = String.format("%4d ms  Heap: %d MB", finalT, finalH);
-					currentFile.setText(s);
-					currentStats.setText(h);
-				}
-			};
-			SwingUtilities.invokeLater(r);
-		}
-		public void clear() {
-			final long finalH = LogPanel.usedMemory()/(1024*1024);
-			Runnable r = new Runnable() {
-				public void run() {
-					String h = String.format("Heap: %d MB", finalH);
-					currentFile.setText(" ");
-					currentStats.setText(h);
-				}
-			};
-			SwingUtilities.invokeLater(r);
 		}
 	}
 	
@@ -425,5 +351,4 @@ public class RightPanel extends JPanel
 			this.add(rowB);
 		}
 	}
-
 }

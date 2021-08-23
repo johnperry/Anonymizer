@@ -32,7 +32,6 @@ import org.rsna.util.IPUtil;
 public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 
 	static final Logger logger = Logger.getLogger(SCPPanel.class);
-	public static ColorPane cp;
 
 	Configuration config;
 	File scpDirectory;
@@ -50,6 +49,10 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
 	IntegerTable integerTable = null;
 	SimpleDicomStorageSCP scp = null;
+	
+	ResultsScrollPane resultsPane;
+	StatusPanel statusPanel;
+	int count = 0; //count of processed files
 
 	static SCPPanel scpPanel = null;
 
@@ -66,8 +69,6 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		integerTable = config.getIntegerTable();
 	
 		//UI Components
-		cp = new ColorPane();
-		cp.setScrollableTracksViewportWidth(false);
 		autoStart = new JCheckBox("Autostart");
 		boolean auto = config.getProps().getProperty("autostart", "").equals("true");
 		autoStart.setSelected(auto);
@@ -77,11 +78,13 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		clear.addActionListener(this);
 		start = new JButton("Start SCP");
 		start.addActionListener(this);
+		
 		//Allow the configuration to specify the MAC address of the adapter to use.
 		JLabel ip;
 		String mac = config.getProps().getProperty("mac");
 		if (mac != null) ip = new JLabel(IPUtil.getIPAddressForMAC(mac)+": ");
 		else ip = new IPLabel(IPUtil.getIPAddress()+": ");
+		
 		String portString = config.getProps().getProperty("storagescpPort","104");
 		port = new PanelField(portString);
 		port.addKeyListener(this);
@@ -102,14 +105,14 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		add(header, BorderLayout.NORTH);
 
 		//Main panel
-		BasePanel bp = new BasePanel();
-		bp.add(cp, BorderLayout.CENTER);
-		jsp = new JScrollPane();
-		jsp.getVerticalScrollBar().setUnitIncrement(10);
-		jsp.setViewportView(bp);
-		jsp.getViewport().setBackground(Color.white);
-		add(jsp, BorderLayout.CENTER);
-		
+		JPanel p = new JPanel();
+		p.setLayout(new BorderLayout());
+		resultsPane = new ResultsScrollPane("");
+		p.add(resultsPane,BorderLayout.CENTER);
+		statusPanel = new StatusPanel(bgColor);
+		p.add(statusPanel,BorderLayout.SOUTH);
+		this.add(p, BorderLayout.CENTER);		
+
 		//Footer
 		Box footer = Box.createHorizontalBox();
 		footer.setBackground(Configuration.getInstance().background);
@@ -126,6 +129,17 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		stopSCP();
 	}
 	
+	public synchronized int setCount(int c) {
+		count = c;
+		return count;
+	}
+	public synchronized int getCount() {
+		return count;
+	}
+	public synchronized int incrementCount() {
+		return ++count;
+	}
+	
 	public String getAET() {
 		return aet.getText().trim();
 	}
@@ -133,7 +147,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
 		if (source.equals(clear)) {
-			cp.clear();
+			resultsPane.clear();
 		}
 		else if (source.equals(start)) {
 			if (scpRunning) stopSCP();
@@ -181,7 +195,10 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 			scp.setCalledAET(aetString);
 			scp.start();
 			String adrs = IPUtil.getIPAddress() + ":" + scpPort + " [AET:"+getAET()+"]";
-			cp.println("DICOM Storage SCP open on "+adrs);
+			resultsPane.clear();
+			statusPanel.clear();
+			setCount(0);
+			resultsPane.println("DICOM Storage SCP open on "+adrs);
 			logger.info("DICOM Storage SCP open on "+adrs);
 			start.setText("Stop SCP");
 			scpRunning = true;
@@ -197,7 +214,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	
 	private void stopSCP() {
 		if (scp != null) scp.stop();
-		cp.println("DICOM Storage SCP stopped");
+		resultsPane.println("DICOM Storage SCP stopped");
 		logger.info("DICOM Storage SCP stopped");
 		start.setText("Start SCP");
 		scpRunning = false;
@@ -238,7 +255,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		boolean filterSCs = fp.getFilterSCs();
 		boolean acceptRFs = fp.getAcceptRFs();
 		boolean filterResult = true;
-		cp.print(Color.black, file.getName());
+		long startTime = System.currentTimeMillis();
 		DicomObject dob;
 		if ( ((dob=getDicomObject(file)) != null)
 				&& ( dob.isImage() )
@@ -256,7 +273,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 				temp = File.createTempFile("TEMP-", ".dcm", tempDir);
 			}
 			catch (Exception ex) {
-				cp.println(Color.red, "    Unable to copy file.");
+				resultsPane.println(Color.red, "Unable to copy file"+file.getName());
 				return false;
 			}
 			String origPtName = dob.getPatientName();
@@ -276,17 +293,15 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 
 			//Report the results
 			if (!result.equals("")) {
-				cp.println(Color.red,"    Failed");
+				resultsPane.println(Color.red,"Anonymization failed: "+temp.getName());
 				return true;
 			}
 			else {
-				cp.println(Color.black,"    OK");
 				// Get the spoke name
 				Properties daprops = dicomScript.toProperties();
 				String spokeName = daprops.getProperty("param.SITEID");
 
 				//Figure out where to put the temp file.
-				//It is already in the root of the storageDir.
 				//It needs to go in the appropriate series subdirectory
 				dob = getDicomObject(temp);
 				String modality = dob.getModality();
@@ -323,6 +338,8 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 					index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
 					index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
 					LogPanel.getInstance().logMemory();
+					long endTime = System.currentTimeMillis();
+					statusPanel.setStatus(incrementCount(), dest.getAbsolutePath(), endTime-startTime);
 					return true;
 				}
 				else {
@@ -332,12 +349,12 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 			}
 		}
 		else {
-			if (dob == null) cp.println(Color.red,"    File rejected (not a DICOM file)");
-			else if (!dob.isImage()) cp.println(Color.red,"    File rejected (not an image)");
-			else if (filterSRs && dob.isSR()) cp.println(Color.red,"    File rejected (Structured Report)");
-			else if (filterSCs && dob.isSecondaryCapture()) cp.println(Color.red,"    File rejected (Secondary Capture)");
-			else if (!filterResult) cp.println(Color.red,"    File rejected (filter)");
-			else cp.println(Color.red,"    File rejected (unknown reason)");
+			if (dob == null) resultsPane.println(Color.red,"    File rejected (not a DICOM file)");
+			else if (!dob.isImage()) resultsPane.println(Color.red,"    File rejected (not an image)");
+			else if (filterSRs && dob.isSR()) resultsPane.println(Color.red,"    File rejected (Structured Report)");
+			else if (filterSCs && dob.isSecondaryCapture()) resultsPane.println(Color.red,"    File rejected (Secondary Capture)");
+			else if (!filterResult) resultsPane.println(Color.red,"    File rejected (filter)");
+			else resultsPane.println(Color.red,"    File rejected (unknown reason)");
 			return false;
 		}
 	}

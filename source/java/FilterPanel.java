@@ -25,6 +25,7 @@ public class FilterPanel extends BasePanel implements ActionListener {
 	JCheckBox filterSRs; //structured reports
 	JCheckBox filterSCs; //secondary capture
 	JCheckBox acceptRFs; //reformatted images
+	JCheckBox saveRejected; //save rejected files
 	Configuration config;
 
 	static FilterPanel filterPanel = null;
@@ -66,6 +67,11 @@ public class FilterPanel extends BasePanel implements ActionListener {
 		acceptRFs.setSelected(!sel.equals("no"));
 		acceptRFs.setBackground(config.background);
 		acceptRFs.addActionListener(this);
+		saveRejected = new JCheckBox("Save Rejected Files");
+		sel = config.getProps().getProperty("saveRejectedFiles", "no");
+		saveRejected.setSelected(!sel.equals("no"));
+		saveRejected.setBackground(config.background);
+		saveRejected.addActionListener(this);
 		
 		reset = new JButton("Reset");
 		reset.addActionListener(this);
@@ -74,10 +80,12 @@ public class FilterPanel extends BasePanel implements ActionListener {
 
 		Box footer = Box.createHorizontalBox();
 		footer.add(filterSRs);
-		footer.add(Box.createHorizontalStrut(20));
+		footer.add(Box.createHorizontalStrut(15));
 		footer.add(filterSCs);
-		footer.add(Box.createHorizontalStrut(20));
+		footer.add(Box.createHorizontalStrut(15));
 		footer.add(acceptRFs);
+		footer.add(Box.createHorizontalStrut(15));
+		footer.add(saveRejected);
 		footer.add(Box.createHorizontalGlue());
 		footer.add(reset);
 		footer.add(Box.createHorizontalStrut(3));
@@ -115,6 +123,10 @@ public class FilterPanel extends BasePanel implements ActionListener {
 		return acceptRFs.isSelected();
 	}
 
+	public boolean getSaveRejected() {
+		return saveRejected.isSelected();
+	}
+
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
 		if (source.equals(reset)) reload();
@@ -129,6 +141,9 @@ public class FilterPanel extends BasePanel implements ActionListener {
 		}
 		else if (source.equals(acceptRFs)) {
 			config.getProps().setProperty("acceptRFs", (acceptRFs.isSelected() ? "yes" : "no"));
+		}
+		else if (source.equals(saveRejected)) {
+			config.getProps().setProperty("saveRejectedFiles", (saveRejected.isSelected() ? "yes" : "no"));
 		}
 	}
 

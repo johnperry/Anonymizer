@@ -653,33 +653,33 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							long time = System.currentTimeMillis();
 							if (list.size() > 0) {
 								for (Object obj : list) {
-										Dimse dimse = (Dimse)obj;
-										try {
-											Dataset ds = dimse.getDataset();
-											int result;
-											int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
-											if ( (result = dicomQRSCU.doMove(ds, destination)) == 0) {;
-												studyCount++;
-											}
-											else {
-												String resultString = String.format("%04x", result);
-												logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
-												ampCP.print("; ");
-												ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
-												ampCP.print(Color.BLACK, "");
-												ok = false;
-											}
-											if (ok) accessionImageCount += n;
+									Dimse dimse = (Dimse)obj;
+									try {
+										Dataset ds = dimse.getDataset();
+										int result;
+										int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
+										if ( (result = dicomQRSCU.doMove(ds, destination)) == 0) {;
+											studyCount++;
+											accessionImageCount += n;
 										}
-										catch (Exception ex) { logger.warn("Transfer failed", ex); }
+										else {
+											String resultString = String.format("%04x", result);
+											logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
+											ampCP.print("; ");
+											ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
+											ampCP.print(Color.BLACK, "");
+											ok = false;
+										}
+									}
+									catch (Exception ex) { logger.warn("Transfer failed", ex); }
 								}
 								if (ok) ampCP.print("; "+accessionImageCount+" images");
 								time = System.currentTimeMillis() - time;
-								ampCP.println(String.format(" [%.3f seconds]", ((double)time)/1000.));
+								ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
 								imageCount += accessionImageCount;
 							}
-							else ampCP.println("");
-							try { Thread.sleep(2000); }
+							ampCP.println("");
+							try { Thread.sleep(500); }
 							catch (Exception ignore) { }
 							close();
 						}

@@ -645,7 +645,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 						if (dicomQRSCU.open()) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
 							params.put("AccessionNumber", an);
-							ampCP.print(an+": ");
+							ampCP.print("//"+an+": ");
 							list = dicomQRSCU.doStudyRootQuery(params);
 							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
 							int accessionImageCount = 0;

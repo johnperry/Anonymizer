@@ -652,14 +652,13 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 						if (dicomQRSCU.open()) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
 							params.put("AccessionNumber", an);
-							ampCP.print("//"+an+": ");
+							ampCP.print(String.format("//(%,d/%,d) %s: ", imageCount, scpPanel.getReceivedFileCount(), an));
 							list = dicomQRSCU.doStudyRootQuery(params);
 							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
 							int accessionImageCount = 0;
 							boolean ok = true;
 							long time = System.currentTimeMillis();
 							if (list.size() > 0) {
-								waitForSCPToCatchUp();
 								for (Object obj : list) {
 									Dimse dimse = (Dimse)obj;
 									try {
@@ -685,6 +684,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								time = System.currentTimeMillis() - time;
 								ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
 								imageCount += accessionImageCount;
+								waitForSCPToCatchUp();
 							}
 							ampCP.println("");
 							try { Thread.sleep(100); }
@@ -717,72 +717,6 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		
 		private void doCGet() {
 			ampCP.println("C-GET not implemented");
-			if (true) return;
-			List list = null;
-			try {
-				dicomQRSCU = new DicomQRSCU(qrURL);
-				String[] lines = accNums.split("\n");
-				ampCP.setText("");
-				int studyCount = 0;
-				int imageCount = 0;
-				for (String line : lines) {
-					String an = filter(line);
-					if (!an.equals("")) {
-						if (dicomQRSCU.open("C-GET open for AccessionNumber: "+an)) {
-							Hashtable<String,String> params = new Hashtable<String,String>();
-							params.put("AccessionNumber", an);
-							ampCP.print(an+": ");
-							list = dicomQRSCU.doStudyRootQuery(params);
-							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
-							int accessionImageCount = 0;
-							boolean ok = true;
-							long time = System.currentTimeMillis();
-							if (list.size() > 0) {
-								for (Object obj : list) {
-										Dimse dimse = (Dimse)obj;
-										try {
-											Dataset ds = dimse.getDataset();
-											int result;
-											int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
-											logger.debug("NumberOfStudyRelatedInstances = "+n);
-											if ( (result = dicomQRSCU.doGet(ds)) == 0) {;
-												studyCount++;
-											}
-											else {
-												String resultString = String.format("%04x", result);
-												logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
-												ampCP.print("; ");
-												ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
-												ampCP.print(Color.BLACK, "");
-												ok = false;
-											}
-											if (ok) accessionImageCount += n;
-										}
-										catch (Exception ex) { logger.warn("Transfer failed", ex); }
-								}
-								if (ok) ampCP.print("; "+accessionImageCount+" images");
-								time = System.currentTimeMillis() - time;
-								ampCP.println(String.format(" [%.3f seconds]", ((double)time)/1000.));
-								imageCount += accessionImageCount;
-							}
-							else ampCP.println("");
-							try { Thread.sleep(1000); }
-							catch (Exception ignore) { }
-							//close("C-GET close for AccessionNumber: \""+an+"\"");
-						}
-						else {
-							ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
-							logger.warn("Unable to connect to Q/R SCP at "+qrURL);
-						}
-					}
-				}
-				ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
-								+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
-			}
-			catch (Exception unable) {
-				logger.warn("Retrieve Failed: +qrURL", unable);
-			}
-			finally { /*close("C-GET close in finally clause");*/ }
 		}
 		private String filter(String s) {
 			int k = s.indexOf("//");

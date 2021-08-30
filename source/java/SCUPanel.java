@@ -619,7 +619,12 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		String accNums;
 		String destination;
 		DicomQRSCU dicomQRSCU;
+		SCPPanel scpPanel;
 		boolean useCGet;
+		int startingSCPImageCount;
+		int imageCount;
+		int studyCount;
+		
 		public AccessionThread(DcmURL qrURL, String accNums, String destination) {
 			this.qrURL = qrURL;
 			this.accNums = accNums;
@@ -627,6 +632,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			useCGet = getmove.isCGet();
 		}
 		public void run() {
+			scpPanel = SCPPanel.getInstance();
+			startingSCPImageCount = scpPanel.getReceivedFileCount();
+			studyCount = 0;
+			imageCount = 0;
 			if (!useCGet) doCMove();
 			else doCGet();
 		}
@@ -637,8 +646,6 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				dicomQRSCU = new DicomQRSCU(qrURL);
 				String[] lines = accNums.split("\n");
 				ampCP.setText("");
-				int studyCount = 0;
-				int imageCount = 0;
 				for (String line : lines) {
 					String an = filter(line);
 					if (!an.equals("")) {
@@ -652,6 +659,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							boolean ok = true;
 							long time = System.currentTimeMillis();
 							if (list.size() > 0) {
+								waitForSCPToCatchUp();
 								for (Object obj : list) {
 									Dimse dimse = (Dimse)obj;
 									try {
@@ -679,7 +687,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								imageCount += accessionImageCount;
 							}
 							ampCP.println("");
-							try { Thread.sleep(500); }
+							try { Thread.sleep(100); }
 							catch (Exception ignore) { }
 							close();
 						}
@@ -696,6 +704,15 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				logger.warn("Retrieve Failed: +qrURL", unable);
 			}
 			finally { close(); }
+		}
+		
+		private synchronized void waitForSCPToCatchUp() {
+			//System.out.println("requests = "+imageCount+"; scp: "+(scpPanel.getReceivedFileCount() - startingSCPImageCount));
+			while (imageCount - (scpPanel.getReceivedFileCount() - startingSCPImageCount) > 10) {
+				//System.out.println("requests = "+imageCount+"; scp: "+(scpPanel.getReceivedFileCount() - startingSCPImageCount));
+				try { Thread.sleep(1000); }
+				catch (Exception ex) { }
+			}
 		}
 		
 		private void doCGet() {

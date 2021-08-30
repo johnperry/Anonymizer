@@ -25,11 +25,13 @@ import org.rsna.ctp.stdstages.anonymizer.dicom.DICOMAnonymizer;
 import org.rsna.ctp.stdstages.anonymizer.dicom.DICOMCorrector;
 import org.rsna.ctp.stdstages.dicom.SimpleDicomStorageSCP;
 import org.rsna.ui.ColorPane;
+import org.rsna.ui.FileEvent;
+import org.rsna.ui.FileListener;
 import org.rsna.util.FileUtil;
 import org.rsna.util.IPUtil;
 
 
-public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
+public class SCPPanel extends BasePanel implements ActionListener, KeyListener, FileListener {
 
 	static final Logger logger = Logger.getLogger(SCPPanel.class);
 
@@ -53,6 +55,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 	ResultsScrollPane resultsPane;
 	StatusPanel statusPanel;
 	int count = 0; //count of processed files
+	int received = 0; //count of files received from the SCP
 
 	static SCPPanel scpPanel = null;
 
@@ -193,6 +196,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 			int scpPort = Integer.parseInt(port.getText().trim());
 			scp = new SimpleDicomStorageSCP(scpDirectory, scpPort);
 			scp.setCalledAET(aetString);
+			scp.addFileListener(this);
 			scp.start();
 			String adrs = IPUtil.getIPAddress() + ":" + scpPort + " [AET:"+getAET()+"]";
 			resultsPane.clear();
@@ -218,6 +222,16 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener {
 		logger.info("DICOM Storage SCP stopped");
 		start.setText("Start SCP");
 		scpRunning = false;
+	}
+	
+	public synchronized void fileEventOccurred(FileEvent event) {
+		if (event.isSTORE()) {
+			received++;
+		}
+	}
+	
+	public synchronized int getReceivedFileCount() {
+		return received;
 	}
 	
 	class AnonymizerThread extends Thread {

@@ -66,8 +66,10 @@ public class Configuration {
 		databaseDir.mkdirs();
 		tempDir = new File(home, "TEMP");
 		tempDir.mkdirs();
+		for (File f : tempDir.listFiles()) FileUtil.deleteAll(f);
 		quarantineDir = new File(home, "QUARANTINE");
 		quarantineDir.mkdirs();
+		for (File f : quarantineDir.listFiles()) FileUtil.deleteAll(f);
 		try { 
 			integerTable = new IntegerTable(databaseDir);
 			storageDir = home;

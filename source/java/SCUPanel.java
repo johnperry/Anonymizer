@@ -653,7 +653,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							Hashtable<String,String> params = new Hashtable<String,String>();
 							params.put("AccessionNumber", an);
 							ampCP.print(String.format("//%s (%,d/%,d) %s: ", 
-										StringUtil.getTime(":"),imageCount, scpPanel.getReceivedFileCount(), an));
+													StringUtil.getTime(":"),
+													imageCount, 
+													(scpPanel.getReceivedFileCount()-startingSCPImageCount),
+													an));
 							list = dicomQRSCU.doStudyRootQuery(params);
 							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
 							int accessionImageCount = 0;
@@ -672,7 +675,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 										}
 										else {
 											String resultString = String.format("%04x", result);
-											logger.warn("Retrieve Failed ["+resultString+"]: "+qrURL);
+											logger.warn("C-Move request failed ["+resultString+"]: "+qrURL);
 											ampCP.print("; ");
 											ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
 											ampCP.print(Color.BLACK, "");

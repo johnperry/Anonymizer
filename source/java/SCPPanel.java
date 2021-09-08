@@ -110,7 +110,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		//Main panel
 		JPanel p = new JPanel();
 		p.setLayout(new BorderLayout());
-		resultsPane = new ResultsScrollPane("");
+		resultsPane = new ResultsScrollPane();
 		p.add(resultsPane,BorderLayout.CENTER);
 		statusPanel = new StatusPanel(bgColor);
 		p.add(statusPanel,BorderLayout.SOUTH);

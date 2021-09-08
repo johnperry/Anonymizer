@@ -10,6 +10,7 @@ package org.rsna.anonymizer;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import org.rsna.util.StringUtil;
 
 /**
  * A JPanel to display the status during the processing of files.
@@ -29,7 +30,7 @@ public class StatusPanel extends JPanel {
 		currentStats = new JLabel(" ");
 
 		Box rowB = new Box(BoxLayout.X_AXIS);
-		rowB.add(Box.createHorizontalStrut(17));
+		rowB.add(Box.createHorizontalStrut(4));
 		rowB.add(currentFile);
 		rowB.add(Box.createHorizontalGlue());
 		rowB.add(currentStats);
@@ -41,9 +42,11 @@ public class StatusPanel extends JPanel {
 		final String finalName = name; 
 		final long finalT = t;
 		final long finalH = LogPanel.usedMemory()/(1024*1024);
+		String x = StringUtil.getTime(":");
+		final String finalTime = x.substring(0, x.indexOf("."));
 		Runnable r = new Runnable() {
 			public void run() {
-				String s = String.format("%d: %s ", finalN, finalName);
+				String s = String.format("%s - %d: %s ", finalTime, finalN, finalName);
 				String h = String.format("%4d ms  Heap: %d MB", finalT, finalH);
 				currentFile.setText(s);
 				currentStats.setText(h);

@@ -515,10 +515,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					chooser.setSelectedFile(new File("."));
 				}
-				if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-					File file = chooser.getSelectedFile();
-					ampCP.setText(FileUtil.getText(file));
-				}
+			}
+			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile();
+				ampCP.setText(FileUtil.getText(file));
 			}
 		}
 		else if (source.equals(query) || (source instanceof PanelField)) {
@@ -633,7 +633,6 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		}
 		public void run() {
 			scpPanel = SCPPanel.getInstance();
-			startingSCPImageCount = scpPanel.getReceivedFileCount();
 			studyCount = 0;
 			imageCount = 0;
 			if (!useCGet) doCMove();
@@ -652,11 +651,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 						if (dicomQRSCU.open()) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
 							params.put("AccessionNumber", an);
-							ampCP.print(String.format("//%s (%,d/%,d) %s: ", 
-													StringUtil.getTime(":"),
-													imageCount, 
-													(scpPanel.getReceivedFileCount()-startingSCPImageCount),
-													an));
+							ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
 							list = dicomQRSCU.doStudyRootQuery(params);
 							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
 							int accessionImageCount = 0;

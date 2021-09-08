@@ -17,7 +17,7 @@ import org.rsna.ui.ColorPane;
 import org.rsna.util.FileUtil;
 import org.rsna.ui.ApplicationProperties;
 
-public class LogPanel extends BasePanel implements ActionListener, ChangeListener {
+public class LogPanel extends BasePanel implements ActionListener {
 
 	static final Logger logger = Logger.getLogger(LogPanel.class);
 
@@ -48,8 +48,6 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 	JScrollPane jsp;
 	JButton delete;
 	JButton refresh;
-	JCheckBox logMemoryCB;
-	boolean logmemory = false;
 	File log = new File("logs/anonymizer.log");
 
 	static LogPanel logPanel = null;
@@ -81,16 +79,7 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 		refresh = new JButton("Refresh");
 		refresh.addActionListener(this);
 		
-		logMemoryCB = new JCheckBox("Log memory usage");
-		Configuration config = Configuration.getInstance();
-		ApplicationProperties props = config.getProps();
-		logmemory = props.getProperty("logmemory","").equals("yes");
-		logMemoryCB.setSelected(logmemory);
-		logMemoryCB.addChangeListener(this);
-		logMemoryCB.setBackground(bgColor);
-
 		Box footer = Box.createHorizontalBox();
-		footer.add(logMemoryCB);
 		footer.add(Box.createHorizontalGlue());
 		footer.add(delete);
 		footer.add(Box.createHorizontalStrut(3));
@@ -106,12 +95,6 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 		}
 	}
 	
-	public void logMemory() {
-		if (logmemory) {
-			logger.info(memoryLogEntry());
-		}
-	}
-
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(refresh)) {
 			reload();
@@ -123,14 +106,4 @@ public class LogPanel extends BasePanel implements ActionListener, ChangeListene
 			reload();
 		}
 	}
-	
-	public void stateChanged(ChangeEvent event) {
-		if (event.getSource().equals(logMemoryCB)) {
-			Configuration config = Configuration.getInstance();
-			ApplicationProperties props = config.getProps();
-			logmemory = logMemoryCB.isSelected();
-			props.setProperty("logmemory", logmemory?"yes":"no");
-		}
-	}
-
 }

@@ -191,6 +191,7 @@ public class DicomQRSCU {
         return status;
     }
 
+    //UNTESTED - under construction
     public int doGet(Dataset findRspDs) throws Exception {
         String suid = findRspDs.getString(Tags.StudyInstanceUID);
         String patName = findRspDs.getString(Tags.PatientName);

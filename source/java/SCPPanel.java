@@ -16,6 +16,7 @@ import org.apache.log4j.*;
 import org.dcm4che.dict.Tags;
 import org.rsna.ctp.objects.DicomObject;
 import org.rsna.ctp.objects.FileObject;
+import org.rsna.ctp.pipeline.QueueManager;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerStatus;
 import org.rsna.ctp.stdstages.anonymizer.IntegerTable;
@@ -37,6 +38,9 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 
 	Configuration config;
 	File scpDirectory;
+	File queueDirectory;
+	File activeDirectory;
+	QueueManager queueManager;
 	boolean scpRunning = false;
 	JScrollPane jsp;
 	JButton clear;
@@ -69,6 +73,12 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		config = Configuration.getInstance();
 		scpDirectory = new File("SCP");
 		scpDirectory.mkdirs();
+		queueDirectory = new File(scpDirectory, "QUEUE");
+		queueDirectory.mkdirs();
+		activeDirectory = new File(scpDirectory, "ACTIVE");
+		activeDirectory.mkdirs();
+		queueManager = new QueueManager(queueDirectory, 3, 200);
+		
 		integerTable = config.getIntegerTable();
 	
 		//UI Components
@@ -227,6 +237,9 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 	public synchronized void fileEventOccurred(FileEvent event) {
 		if (event.isSTORE()) {
 			received++;
+			File file = event.getFile();
+			queueManager.enqueue(file);
+			file.delete();
 		}
 	}
 	
@@ -235,28 +248,18 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 	}
 	
 	class AnonymizerThread extends Thread {
-		PartialFilter filter;
-		long minage = 1000;
 		public AnonymizerThread() {
 			super();
-			filter = new PartialFilter();
 		}
 		public void run() {
+			File file;
 			while (true) {
-				File[] files = scpDirectory.listFiles(filter);
-				for (File file : files) {
-					if ((System.currentTimeMillis() - file.lastModified()) > minage) {
-						anonymize(file);
-						file.delete();
-					}
+				while ( (file=queueManager.dequeue(activeDirectory)) != null ) {
+					anonymize(file);
+					file.delete();
 				}
 				try { sleep(2000); }
 				catch (Exception ignore) { }
-			}
-		}
-		class PartialFilter implements FileFilter {
-			public boolean accept(File file) {
-				return !file.getName().endsWith("partial");
 			}
 		}
 	}

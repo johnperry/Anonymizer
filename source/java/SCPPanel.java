@@ -45,6 +45,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 	JScrollPane jsp;
 	JButton clear;
 	JButton start;
+	JLabel queueSize;
 	JCheckBox autoStart;
 	PanelField port;
 	PanelField aet;
@@ -89,6 +90,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		autoStart.addActionListener(this);
 		clear = new JButton("Clear");
 		clear.addActionListener(this);
+		queueSize = new JLabel("Queue: ");
 		start = new JButton("Start SCP");
 		start.addActionListener(this);
 		
@@ -114,6 +116,8 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		header.add(new JLabel("   AET:  "));
 		header.add(aet);
 		header.add(Box.createHorizontalGlue());
+		header.add(queueSize);
+		header.add(Box.createHorizontalStrut(10));
 		header.add(start);
 		add(header, BorderLayout.NORTH);
 
@@ -136,6 +140,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		
 		if (auto) startSCP();
 		new AnonymizerThread().start();
+		new QueueMonitorThread().start();
 	}
 	
 	public void shutdown() {
@@ -247,6 +252,28 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		return received;
 	}
 	
+	class QueueMonitorThread extends Thread {
+		public QueueMonitorThread() {
+			super();
+		}
+		public void run() {
+			try {
+				while (true) {
+					final int size = queueManager.size();
+					Runnable r = new Runnable() {
+						public void run() {
+							String s = String.format("Queue: %d", size);
+							queueSize.setText(s);
+						}
+					};
+					SwingUtilities.invokeLater(r);
+					Thread.sleep(1000);
+				}
+			}
+			catch (Exception quit) { }
+		}
+	}
+	
 	class AnonymizerThread extends Thread {
 		public AnonymizerThread() {
 			super();
@@ -280,20 +307,11 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 				&& ( !filterSCs || !dob.isSecondaryCapture() || (acceptRFs && dob.isReformatted()) )
 				&& ( !filterSRs || !dob.isSR() )
 				&& ( filterResult=((filterScript.length() == 0) || dob.matches(filterScript)) ) ) {
-			File temp;
-			File tempDir;
-			File storageDir;
-			try {
-				Configuration config = Configuration.getInstance();
-				storageDir = config.getStorageDir();
-				storageDir.mkdirs();
-				tempDir = config.getTempDir();
-				temp = File.createTempFile("TEMP-", ".dcm", tempDir);
-			}
-			catch (Exception ex) {
-				resultsPane.println(Color.red, "Unable to copy file"+file.getName());
-				return false;
-			}
+					
+			Configuration config = Configuration.getInstance();
+			File storageDir = config.getStorageDir();
+			storageDir.mkdirs();
+
 			String origPtName = dob.getPatientName();
 			String origPtID = dob.getPatientID();
 			String origStudyDate = dob.getStudyDate();
@@ -302,16 +320,15 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 			String result = "";
 			DAScript dicomScript = DAScript.getInstance( new File(config.dicomScriptFile) );
 			LookupTable lookupTable = LookupTable.getInstance(new File(config.lookupTableFile) );
-			dob.copyTo(temp);
 			result =
 				DICOMAnonymizer.anonymize(
-					temp, temp,
+					file, file,
 					dicomScript.toProperties(), lookupTable.getProperties(), integerTable,
 					forceIVRLE, renameToSOPIUID).isOK() ? "" : "failed";;
 
 			//Report the results
 			if (!result.equals("")) {
-				resultsPane.println(Color.red,"Anonymization failed: "+temp.getName());
+				resultsPane.println(Color.red,"Anonymization failed: "+file.getName());
 				return true;
 			}
 			else {
@@ -321,7 +338,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 
 				//Figure out where to put the temp file.
 				//It needs to go in the appropriate series subdirectory
-				dob = getDicomObject(temp);
+				dob = getDicomObject(file);
 				String modality = dob.getModality();
 				String anonPtName = dob.getPatientName();
 				String anonPtID = dob.getPatientID();
@@ -349,9 +366,9 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 
 				//Move the file to the correct directory.
 				if (dest.exists()) dest.delete();
-				if (FileUtil.copy(temp, dest)) {
+				if (FileUtil.copy(file, dest)) {
 					//Get rid of the temp file and update the index
-					temp.delete();
+					file.delete();
 					Index index = Index.getInstance();
 					index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
 					index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
@@ -360,7 +377,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 					return true;
 				}
 				else {
-					logger.warn("Unable to copy\n     "+temp+"\n to: "+dest);
+					logger.warn("Unable to copy\n     "+file+"\n to: "+dest);
 					return false;
 				}
 			}

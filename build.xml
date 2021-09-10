@@ -13,6 +13,7 @@
 	<property name="resources" value="${source}/resources"/>
 	<property name="installer" value="org/rsna/installer"/>
 	<property name="anonymizer" value="org/rsna/anonymizer"/>
+	<property name="dicom" value="org/rsna/ctp/stdstages/dicom"/>
 
 	<property name="ctp" value="/Development/CTP"/>
 
@@ -117,7 +118,7 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 "/>
 			</manifest>
 			<fileset dir="${build}"
-				includes="${anonymizer}/** icons/** RSNAlogo.PNG"
+				includes="${anonymizer}/** ${dicom}/** icons/** RSNAlogo.PNG"
 				excludes="${installer}/Installer**"/>
 		</jar>
 

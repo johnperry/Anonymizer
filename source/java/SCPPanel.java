@@ -25,6 +25,7 @@ import org.rsna.ctp.stdstages.anonymizer.dicom.DAScript;
 import org.rsna.ctp.stdstages.anonymizer.dicom.DICOMAnonymizer;
 import org.rsna.ctp.stdstages.anonymizer.dicom.DICOMCorrector;
 import org.rsna.ctp.stdstages.dicom.SimpleDicomStorageSCP;
+import org.rsna.ctp.stdstages.dicom.AnonStorageSCP;
 import org.rsna.ui.ColorPane;
 import org.rsna.ui.FileEvent;
 import org.rsna.ui.FileListener;
@@ -209,7 +210,8 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 	private void startSCP() {
 		try {
 			int scpPort = Integer.parseInt(port.getText().trim());
-			scp = new SimpleDicomStorageSCP(scpDirectory, scpPort);
+			//scp = new SimpleDicomStorageSCP(scpDirectory, scpPort);
+			scp = new AnonStorageSCP(scpDirectory, scpPort);
 			scp.setCalledAET(aetString);
 			scp.addFileListener(this);
 			scp.start();

@@ -32,7 +32,7 @@ import org.w3c.dom.Node;
  */
 public class Anonymizer extends JFrame {
 	
-    private String					windowTitle = "RSNA Anonymizer - version 9";
+    private String					windowTitle = "RSNA Anonymizer - version 10";
     private MainPanel				mainPanel;
     private JPanel					splitPanel;
     private WelcomePanel			welcomePanel;

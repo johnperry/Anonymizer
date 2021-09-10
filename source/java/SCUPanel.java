@@ -700,7 +700,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
 			}
 			catch (Exception unable) {
-				logger.warn("Retrieve Failed: +qrURL", unable);
+				logger.warn("Retrieve Failed: "+qrURL, unable);
 			}
 			finally { close(); }
 		}

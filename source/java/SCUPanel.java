@@ -647,6 +647,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				for (String line : lines) {
 					String an = filter(line);
 					if (!an.equals("")) {
+						waitForSCPToCatchUp();
 						dicomQRSCU = new DicomQRSCU(qrURL);
 						if (dicomQRSCU.open()) {
 							Hashtable<String,String> params = new Hashtable<String,String>();
@@ -683,7 +684,6 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 								time = System.currentTimeMillis() - time;
 								ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
 								imageCount += accessionImageCount;
-								//waitForSCPToCatchUp();
 							}
 							ampCP.println("");
 							try { Thread.sleep(100); }
@@ -705,16 +705,15 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			finally { close(); }
 		}
 		
-/*
 		private synchronized void waitForSCPToCatchUp() {
-			//System.out.println("requests = "+imageCount+"; scp: "+(scpPanel.getReceivedFileCount() - startingSCPImageCount));
-			while (imageCount - (scpPanel.getReceivedFileCount() - startingSCPImageCount) > 10) {
-				//System.out.println("requests = "+imageCount+"; scp: "+(scpPanel.getReceivedFileCount() - startingSCPImageCount));
-				try { Thread.sleep(1000); }
+			long startTime = System.currentTimeMillis();
+			while (scpPanel.getQueueSize() > 100) {
+				try { Thread.sleep(10000); }
 				catch (Exception ex) { }
+				if ((System.currentTimeMillis() - startTime) > 600000) break;
 			}
 		}
-*/		
+
 		private void doCGet() {
 			ampCP.println("C-GET not implemented");
 		}

@@ -254,6 +254,10 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 		return received;
 	}
 	
+	public synchronized int getQueueSize() {
+		return queueManager.size();
+	}
+	
 	class QueueMonitorThread extends Thread {
 		public QueueMonitorThread() {
 			super();

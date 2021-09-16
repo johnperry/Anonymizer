@@ -624,6 +624,9 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		int startingSCPImageCount;
 		int imageCount;
 		int studyCount;
+		int maxTries = 4;
+		long retrySleep = 3000;
+		long successSleep = 100;
 		
 		public AccessionThread(DcmURL qrURL, String accNums, String destination) {
 			this.qrURL = qrURL;
@@ -641,27 +644,28 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		
 		private void doCMove() {
 			List list = null;
-			try {
-				String[] lines = accNums.split("\n");
-				ampCP.setText("");
-				for (String line : lines) {
-					String an = filter(line);
-					if (!an.equals("")) {
-						waitForSCPToCatchUp();
-						dicomQRSCU = new DicomQRSCU(qrURL);
-						if (dicomQRSCU.open()) {
-							Hashtable<String,String> params = new Hashtable<String,String>();
-							params.put("AccessionNumber", an);
-							ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
-							list = dicomQRSCU.doStudyRootQuery(params);
-							ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
-							int accessionImageCount = 0;
-							boolean ok = true;
-							long time = System.currentTimeMillis();
-							if (list.size() > 0) {
-								for (Object obj : list) {
-									Dimse dimse = (Dimse)obj;
-									try {
+			String[] lines = accNums.split("\n");
+			ampCP.setText("");
+			for (String line : lines) {
+				String an = filter(line);
+				if (!an.equals("")) {
+					waitForSCPToCatchUp();
+					int tryCount = 0;
+					while (tryCount < maxTries) {
+						try {
+							dicomQRSCU = new DicomQRSCU(qrURL);
+							if (dicomQRSCU.open()) {
+								Hashtable<String,String> params = new Hashtable<String,String>();
+								params.put("AccessionNumber", an);
+								ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
+								list = dicomQRSCU.doStudyRootQuery(params);
+								ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
+								int accessionImageCount = 0;
+								boolean ok = true;
+								long time = System.currentTimeMillis();
+								if (list.size() > 0) {
+									for (Object obj : list) {
+										Dimse dimse = (Dimse)obj;
 										Dataset ds = dimse.getDataset();
 										int result;
 										int n = StringUtil.getInt(ds.getString(Tags.NumberOfStudyRelatedInstances));
@@ -678,31 +682,35 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 											ok = false;
 										}
 									}
-									catch (Exception ex) { logger.warn("Transfer failed", ex); }
+									if (ok) ampCP.print("; "+accessionImageCount+" images");
+									time = System.currentTimeMillis() - time;
+									ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
+									imageCount += accessionImageCount;
 								}
-								if (ok) ampCP.print("; "+accessionImageCount+" images");
-								time = System.currentTimeMillis() - time;
-								ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
-								imageCount += accessionImageCount;
+								ampCP.println("");
+								close();
+								try { Thread.sleep(successSleep); }
+								catch (Exception ignore) { }
+								break;
 							}
-							ampCP.println("");
-							try { Thread.sleep(100); }
-							catch (Exception ignore) { }
-							close();
+							else {
+								ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
+								logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+								throw new Exception("Connection failure");
+							}
 						}
-						else {
-							ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
-							logger.warn("Unable to connect to Q/R SCP at "+qrURL);
+						catch (Exception unable) {
+							close();
+							tryCount++;
+							logger.warn("Attempt "+tryCount+": retrieve failed for "+an+" ["+qrURL+"]", unable);
+							try { Thread.sleep(retrySleep); }
+							catch (Exception ignore) { }
 						}
 					}
 				}
-				ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
-								+ " and "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " imported");
 			}
-			catch (Exception unable) {
-				logger.warn("Retrieve Failed: "+qrURL, unable);
-			}
-			finally { close(); }
+			ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
+							+ " with "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " requested");
 		}
 		
 		private synchronized void waitForSCPToCatchUp() {

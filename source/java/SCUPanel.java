@@ -69,6 +69,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	boolean forceIVRLE = false;
 	boolean renameToSOPIUID = false;
 	QueryPanel queryPanel;
+	AccessionQueryResultsPanel aqrrPanel;
 	DicomQRSCU dicomQRSCU = null;
 	JFileChooser chooser = null;
 	CGetCMovePanel getmove = null;
@@ -188,6 +189,8 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		ampScrollPane.setViewportView(ampCP);
 		ampScrollPane.getViewport().setBackground(Color.white);
 		accessionModePanel.add(ampScrollPane, BorderLayout.CENTER);
+		aqrrPanel = new AccessionQueryResultsPanel();
+		accessionModePanel.add(aqrrPanel, BorderLayout.SOUTH);		
 		//add(accessionModePanel, BorderLayout.CENTER);
 		
 		//Footer
@@ -482,6 +485,88 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			}
 		}
 	}
+
+	class AccessionQueryResultsPanel extends JPanel {
+		JLabel currentAccNumber = new JLabel("");
+		JLabel currentNMatches = new JLabel("");
+		JLabel currentNImages = new JLabel("");
+		JLabel currentTime = new JLabel("");
+		JLabel previousAccNumber = new JLabel("");
+		JLabel previousNMatches = new JLabel("");
+		JLabel previousNImages = new JLabel("");
+		JLabel previousTime = new JLabel("");
+		public AccessionQueryResultsPanel() {
+			super();
+			setBackground(Configuration.getInstance().background);
+			JPanel jp = new JPanel();
+			jp.setLayout(new RowLayout());
+			jp.setBackground(Configuration.getInstance().background);
+			jp.add(Box.createHorizontalStrut(5));
+			jp.add(new JLabel("Current Query"));
+			jp.add(new JLabel("Previous Query"));
+			jp.add(RowLayout.crlf());
+			jp.add(new JLabel("Accession number:"));
+			jp.add(currentAccNumber);
+			jp.add(previousAccNumber);
+			jp.add(RowLayout.crlf());
+			jp.add(new JLabel("Matches:"));
+			jp.add(currentNMatches);
+			jp.add(previousNMatches);
+			jp.add(RowLayout.crlf());
+			jp.add(new JLabel("Images:"));
+			jp.add(currentNImages);
+			jp.add(previousNImages);
+			jp.add(RowLayout.crlf());
+			jp.add(new JLabel("Time:"));
+			jp.add(currentTime);
+			jp.add(previousTime);
+			jp.add(RowLayout.crlf());
+			add(jp);
+		}
+		public void setAccessionNumber(String s) {
+			final String fs = s;
+			Runnable r = new Runnable() {
+				public void run() {
+					previousAccNumber.setText(currentAccNumber.getText());
+					previousNMatches.setText(currentNMatches.getText());
+					previousNImages.setText(currentNImages.getText());
+					previousTime.setText(currentTime.getText());
+					currentAccNumber.setText(fs);
+					currentNMatches.setText("");
+					currentNImages.setText("");
+					currentTime.setText("");
+				}
+			};
+			SwingUtilities.invokeLater(r);
+		}
+		public void setMatches(int n) {
+			final int fn = n;
+			Runnable r = new Runnable() {
+				public void run() {
+					currentNMatches.setText(Integer.toString(fn));
+				}
+			};
+			SwingUtilities.invokeLater(r);
+		}
+		public void setImages(int n) {
+			final int fn = n;
+			Runnable r = new Runnable() {
+				public void run() {
+					currentNImages.setText(Integer.toString(fn));
+				}
+			};
+			SwingUtilities.invokeLater(r);
+		}
+		public void setTime(long t) {
+			final long ft = t;
+			Runnable r = new Runnable() {
+				public void run() {
+					currentTime.setText(String.format("%.3f", ((double)ft)/1000.));
+				}
+			};
+			SwingUtilities.invokeLater(r);
+		}
+	}
 	
 	private DcmURL getQRURL() {
 		return new DcmURL(
@@ -649,6 +734,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			for (String line : lines) {
 				String an = filter(line);
 				if (!an.equals("")) {
+					aqrrPanel.setAccessionNumber(an);
 					waitForSCPToCatchUp();
 					int tryCount = 0;
 					while (tryCount < maxTries) {
@@ -657,9 +743,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							if (dicomQRSCU.open()) {
 								Hashtable<String,String> params = new Hashtable<String,String>();
 								params.put("AccessionNumber", an);
-								ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
+								//ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
 								list = dicomQRSCU.doStudyRootQuery(params);
-								ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
+								//ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
+								aqrrPanel.setMatches(list.size());
 								int accessionImageCount = 0;
 								boolean ok = true;
 								long time = System.currentTimeMillis();
@@ -675,19 +762,21 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 										}
 										else {
 											String resultString = String.format("%04x", result);
-											logger.warn("C-Move request failed ["+resultString+"]: "+qrURL);
-											ampCP.print("; ");
-											ampCP.print(Color.RED, "[xfr failed - "+resultString+"]");
-											ampCP.print(Color.BLACK, "");
+											logger.warn("C-Move request failed ["+resultString+"]: "+an);
+											ampCP.println("C-Move request failed ["+resultString+"]: "+an);
 											ok = false;
 										}
 									}
-									if (ok) ampCP.print("; "+accessionImageCount+" images");
-									time = System.currentTimeMillis() - time;
-									ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
-									imageCount += accessionImageCount;
+									if (ok) {
+										//ampCP.print("; "+accessionImageCount+" images");
+										aqrrPanel.setImages(accessionImageCount);
+										time = System.currentTimeMillis() - time;
+										//ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
+										aqrrPanel.setTime(time);
+										imageCount += accessionImageCount;
+									}
 								}
-								ampCP.println("");
+								//ampCP.println("");
 								close();
 								try { Thread.sleep(successSleep); }
 								catch (Exception ignore) { }

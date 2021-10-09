@@ -46,6 +46,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	JPanel centerPanel;
 	JPanel header;
 	Footer footer;
+	StatusPanel statusPanel;
 	
 	DicomHeaderPanel dicomHeaderPanel;
 	HttpHeaderPanel httpHeaderPanel;
@@ -102,6 +103,9 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		centerPanel.setLayout(new RowLayout(20, 5));
 		cp.add(centerPanel);
 		jsp.setViewportView(cp);
+		//Put a StatusPanel in the south part of the main Panel
+		statusPanel = new StatusPanel(config.background);
+		mainPanel.add(statusPanel, BorderLayout.SOUTH);
 		//Now put the main panel in the center of the parent layout
 		add(mainPanel, BorderLayout.CENTER);
 		
@@ -421,6 +425,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		boolean enableExport;
 		File expFile;
 		DicomStorageSCU scu;
+		int count;
 		
 		public DicomExportThread(File dir, DcmURL url, boolean enableExport) {
 			super();
@@ -429,6 +434,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			this.enableExport = enableExport;
 			this.expFile = new File(dir, hiddenExportFilename);
 			this.scu = new DicomStorageSCU(url, 5000, false, 0, 0, 0, 0);
+			this.count = 0;
 		}
 		
 		public void run() {
@@ -450,7 +456,13 @@ public class ExportPanel extends BasePanel implements ActionListener {
 					//Do not export the expFile or zero-length files
 					long fileLength = file.length();
 					if (!file.equals(expFile) && (fileLength != 0)) {
+						long t = System.currentTimeMillis();
 						result = exportFile(file);
+						if (result) {
+							t = System.currentTimeMillis() - t;
+							count++;
+							statusPanel.setStatus(count, file.getAbsolutePath(), t);
+						}
 						ok = ok && result;
 					}
 				}
@@ -479,6 +491,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		boolean enableExport;
 		File expFile;
 		String eventID = "0";
+		int count;
 		
 		public HttpExportThread(File dir, String url, String idRequestURL, boolean enableExport) {
 			super();
@@ -487,6 +500,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			this.idRequestURL = idRequestURL;
 			this.enableExport = enableExport;
 			this.expFile = new File(dir, hiddenExportFilename);
+			this.count = 0;
 		}
 		
 		public void run() {
@@ -509,7 +523,13 @@ public class ExportPanel extends BasePanel implements ActionListener {
 					//Do not export the expFile or zero-length files
 					long fileLength = file.length();
 					if (!file.equals(expFile) && (fileLength != 0)) {
+						long t = System.currentTimeMillis();
 						result = exportFile(file, eventID);
+						if (result) {
+							t = System.currentTimeMillis() - t;
+							count++;
+							statusPanel.setStatus(count, file.getAbsolutePath(), t);
+						}
 						ok = ok && result;
 					}
 				}

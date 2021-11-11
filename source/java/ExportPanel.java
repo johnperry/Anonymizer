@@ -284,6 +284,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				CaseLabel cl = new CaseLabel(exportDate);
 				CaseCheckBox cb = new CaseCheckBox(caseDir, cl);
 				centerPanel.add(cb);
+				cb.addActionListener(this);
 				centerPanel.add(new CaseLabel(caseDir.getName()));
 				centerPanel.add(cl);
 				centerPanel.add(RowLayout.crlf());
@@ -291,9 +292,40 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 	}
 	
+	CaseCheckBox lastCB = null;
+	
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
-		if (source.equals(footer.export)) {
+		if (source instanceof CaseCheckBox) {
+			CaseCheckBox currentCB = (CaseCheckBox)source;
+			int mods = event.getModifiers();
+			boolean ctrl = (mods & event.CTRL_MASK) != 0;
+			boolean shift = (mods & event.SHIFT_MASK) != 0;
+			if ((lastCB != null) && shift) {
+				//select a range
+				boolean inRange = false;
+				Component[] comps = centerPanel.getComponents();
+				for (Component c : comps) {
+					if (c instanceof CaseCheckBox) {
+						CaseCheckBox ccb = (CaseCheckBox)c;
+						if (inRange) {
+							ccb.setSelected(!ctrl);
+							if (ccb.equals(currentCB) || ccb.equals(lastCB)) {
+								inRange = false;
+								break;
+							}
+						}
+						else {
+							if (ccb.equals(currentCB) || ccb.equals(lastCB)) {
+								inRange = true;
+							}
+						}
+					}
+				}
+			}
+			lastCB = currentCB;
+		}
+		else if (source.equals(footer.export)) {
 			LinkedList<File> cases = new LinkedList<File>();
 			Component[] comps = centerPanel.getComponents();
 			for (Component c : comps) {

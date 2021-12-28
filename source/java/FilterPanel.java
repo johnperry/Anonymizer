@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import javax.swing.*;
+import javax.swing.border.*;
 import org.rsna.ui.ColorPane;
 import org.rsna.util.FileUtil;
 
@@ -79,6 +80,10 @@ public class FilterPanel extends BasePanel implements ActionListener {
 		save.addActionListener(this);
 
 		Box footer = Box.createHorizontalBox();
+		footer.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+			BorderFactory.createEmptyBorder(2, 2, 2, 2)
+		));
 		footer.add(filterSRs);
 		footer.add(Box.createHorizontalStrut(15));
 		footer.add(filterSCs);

@@ -24,13 +24,16 @@ public class Index {
 	static final Logger logger = Logger.getLogger(Index.class);
 	static Index instance = null;
 
+	//Note: fwd means that the key is PHI; inv means the key is anonymized.
     RecordManager recman = null;
     public HTree fwdPatientIndex = null;
     public HTree invPatientIndex = null;
     public HTree fwdStudyIndex = null;
+    public HTree uidIndex = null;
     
 	/**
 	 * Get the singleton instance of the index.
+	 * @return the singleton Index object
 	 */
     public static Index getInstance() {
 		if (instance == null) {
@@ -43,6 +46,16 @@ public class Index {
 		File databaseDir = Configuration.getInstance().getDatabaseDir();
 		File indexFile = new File(databaseDir, "index");
 		getIndex(indexFile.getPath());
+	}
+
+	/**
+	 * Commit the index.
+	 */
+	public void commit() {
+		if (recman != null) {
+			try { recman.commit(); }
+			catch (Exception ex) { }
+		}
 	}
 
 	/**
@@ -73,6 +86,7 @@ public class Index {
 			PatientIndexEntry invEntry = new PatientIndexEntry(anonPtID, origPtName, origPtID);
 			fwdPatientIndex.put(fwdEntry.key.toLowerCase(), fwdEntry);
 			invPatientIndex.put(invEntry.key.toLowerCase(), invEntry);
+			commit();
 		}
 		catch (Exception ex) {
 			logger.warn("Unable to access the patient indexes.");
@@ -80,7 +94,7 @@ public class Index {
 	}
 	
 	/**
-	 * Add an entry to the  study index.
+	 * Add an entry to the study index.
 	 * @param origPtID the PHI patient ID
 	 * @param origStudyDate the PHI study date
 	 * @param origAccessionNumber the PHI accession number
@@ -94,10 +108,46 @@ public class Index {
 			Study study = new Study(origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
 			entry.add(study);
 			fwdStudyIndex.put(origPtID, entry);
+			commit();
 		}
 		catch (Exception ex) {
 			logger.warn("Unable to access the study index.");
 		}
+	}
+	
+	/**
+	 * Add an entry to the study UID index.
+	 * @param ptID the patient ID (anon)
+	 * @param studyDate the study date (anon)
+	 * @param accessionNumber the accession number (anon)
+	 * @param origStudyInstanceUID the PHI study instance UID
+	 * @param anonStudyInstanceUID the anonymized study instance UID
+	 */
+	public void addStudyInstanceUID(String ptID, String studyDate, String accessionNumber, String origStudyInstanceUID, String anonStudyInstanceUID) {
+		try {
+			String key = ptID + "|" + studyDate + "|" + accessionNumber;
+			UIDIndexEntry entry = new UIDIndexEntry(origStudyInstanceUID, anonStudyInstanceUID);
+			uidIndex.put(key, entry);
+			commit();
+		}
+		catch (Exception ex) {
+			logger.warn("Unable to access the UID index.");
+		}
+	}
+	
+	/**
+	 * Get an entry from the study UID index.
+	 * @param ptID the patient ID (anon)
+	 * @param studyDate the study date (anon)
+	 * @param accessionNumber the accession number (anon)
+	 * @return the UIDIndex entry
+	 */
+	public UIDIndexEntry getUIDIndexEntry(String ptID, String studyDate, String accessionNumber) {
+		try {
+			String key = ptID + "|" + studyDate + "|" + accessionNumber;
+			return (UIDIndexEntry)uidIndex.get(key);
+		}
+		catch (Exception ex) { return null; }
 	}
 	
 	/**
@@ -123,7 +173,7 @@ public class Index {
 	}
 	
 	/**
-	 * Get an entry from the forward index (mapping a PHI PtName to its anonymized PatientIndexEntry.
+	 * Get an entry from the forward study index.
 	 * @param key the PHI PatientID
 	 * @return the study index entry for the PHI PatientID
 	 */
@@ -131,7 +181,7 @@ public class Index {
 		try { return (StudyIndexEntry)fwdStudyIndex.get(key.toLowerCase()); }
 		catch (Exception ex) { return null; }
 	}
-	
+
 	/**
 	 * List the entries in the index, in alphabetical order by anonymized PatientName.
 	 * The array consists of pairs of IndexEntries, inv[0], fwd[0], inv[1], fwd[1], etc.
@@ -163,7 +213,7 @@ public class Index {
 	/**
 	 * List the studies for a patient, in chronological order by original study date
 	 * (which is the same as the order of anonymized study dates).
-	 * @param key the PHI PatientID
+	 * @param origPatientID the PHI PatientID
 	 * @return the array of studies for the patient.
 	 */
 	public Study[] listStudiesFor(String origPatientID) {
@@ -186,6 +236,7 @@ public class Index {
 			fwdPatientIndex		= JdbmUtil.getHTree(recman, "fwdPatientIndex");
 			invPatientIndex		= JdbmUtil.getHTree(recman, "invPatientIndex");
 			fwdStudyIndex		= JdbmUtil.getHTree(recman, "fwdStudyIndex");
+			uidIndex			= JdbmUtil.getHTree(recman, "uidIndex");
 		}
 		catch (Exception ex) {
 			recman = null;

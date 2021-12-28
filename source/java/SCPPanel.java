@@ -12,6 +12,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.border.*;
 import org.apache.log4j.*;
 import org.dcm4che.dict.Tags;
 import org.rsna.ctp.objects.DicomObject;
@@ -133,6 +134,10 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 
 		//Footer
 		Box footer = Box.createHorizontalBox();
+		footer.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+			BorderFactory.createEmptyBorder(2, 2, 2, 2)
+		));
 		footer.setBackground(Configuration.getInstance().background);
 		footer.add(autoStart);
 		footer.add(Box.createHorizontalGlue());
@@ -320,6 +325,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 
 			String origPtName = dob.getPatientName();
 			String origPtID = dob.getPatientID();
+			String origStudyInstanceUID = dob.getStudyInstanceUID();
 			String origStudyDate = dob.getStudyDate();
 			String origAccessionNumber = dob.getAccessionNumber();
 
@@ -350,7 +356,6 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 				String anonPtID = dob.getPatientID();
 				String anonSOPInstanceUID = dob.getSOPInstanceUID();
 				String anonStudyInstanceUID = dob.getStudyInstanceUID();
-				String anonSeriesInstanceUID = dob.getSeriesInstanceUID();
 				String anonStudyDate = dob.getStudyDate();
 				String anonStudyTime = dob.getStudyTime().trim();
 				int k = anonStudyTime.indexOf(".");
@@ -378,6 +383,8 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 					Index index = Index.getInstance();
 					index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
 					index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
+					index.addStudyInstanceUID(anonPtID, anonStudyDate, anonAccessionNumber, origStudyInstanceUID, anonStudyInstanceUID);
+
 					long endTime = System.currentTimeMillis();
 					statusPanel.setStatus(incrementCount(), dest.getAbsolutePath(), endTime-startTime);
 					return true;

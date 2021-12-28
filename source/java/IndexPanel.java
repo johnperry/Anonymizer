@@ -13,10 +13,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import org.rsna.ctp.objects.DicomObject;
+import org.rsna.ctp.objects.FileObject;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.util.FileUtil;
 import org.rsna.ui.RowLayout;
 
+import org.apache.log4j.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,6 +33,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
  * A JPanel that provides a user interface for searching the Index.
  */
 public class IndexPanel extends JPanel implements ActionListener {
+
+	static final Logger logger = Logger.getLogger(IndexPanel.class);
 
 	private SearchPanel searchPanel;
 	private ListPanel listPanel;
@@ -53,6 +58,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 		footerPanel.search.addActionListener(this);
 		footerPanel.list.addActionListener(this);
 		footerPanel.save.addActionListener(this);
+		footerPanel.rebuild.addActionListener(this);
 		searchPanel.searchField.addActionListener(this);
 		this.add(searchPanel, BorderLayout.CENTER);
 		this.add(footerPanel, BorderLayout.SOUTH);
@@ -91,6 +97,9 @@ public class IndexPanel extends JPanel implements ActionListener {
 		}
 		else if (source.equals(footerPanel.save)) {
 			listPanel.save();
+		}
+		else if (source.equals(footerPanel.rebuild)) {
+			rebuildUIDIndex();
 		}
 	}
 	
@@ -171,7 +180,43 @@ public class IndexPanel extends JPanel implements ActionListener {
 			}				
 		}
 	}
-
+	
+	public void rebuildUIDIndex() {
+		Index index = Index.getInstance();
+		Configuration config = Configuration.getInstance();
+		File storageDir = config.getStorageDir();
+		for (File ptDir : storageDir.listFiles()) {
+			if (ptDir.isDirectory()) {
+				for (File studyDir : ptDir.listFiles()) {
+					boolean found = false;
+					if (studyDir.isDirectory() && studyDir.getName().startsWith("Study")) {
+						for (File seriesDir : studyDir.listFiles()) {
+							for (File seriesFile : seriesDir.listFiles()) {
+								FileObject fob = FileObject.getInstance(seriesFile);
+								if (fob instanceof DicomObject) {
+									DicomObject dob = (DicomObject)fob;
+									//update the UID index
+									String ptID = dob.getPatientID();
+									String stDate = dob.getStudyDate();
+									String accNum = dob.getAccessionNumber();
+									String uid = dob.getStudyInstanceUID();
+									UIDIndexEntry e = index.getUIDIndexEntry(ptID, stDate, accNum);
+									if (e == null) {
+										index.addStudyInstanceUID(ptID, stDate, accNum, "", uid);
+									}
+									found = true;
+									break;
+								}
+							} //end of series
+							if (found) break;
+						}
+					}
+				} //end of studies
+			}
+		}//end of patients
+		index.commit();
+	}
+	
 	class ListPanel extends JPanel {
 		JScrollPane jsp;
 		java.awt.Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
@@ -191,7 +236,9 @@ public class IndexPanel extends JPanel implements ActionListener {
 			"ANON-StudyDate",
 			"PHI-StudyDate",
 			"ANON-Accession",
-			"PHI-Accession"
+			"PHI-Accession",
+			"ANON-StudyInstanceUID",
+			"PHI-StudyInstanceUID"
 		};
 		JFileChooser chooser = null;
 		int margin = 15;
@@ -273,9 +320,19 @@ public class IndexPanel extends JPanel implements ActionListener {
 						addCell(row, 6, studies[j].phiDate, style);
 						addCell(row, 7, studies[j].anonAccession, style);
 						addCell(row, 8, studies[j].phiAccession, style);
+						//Put in the StudyInstanceUIDs
+						UIDIndexEntry uidEntry = index.getUIDIndexEntry( entries[i+1].id,  studies[j].anonDate,  studies[j].anonAccession);
+						if (uidEntry != null) {
+							if (uidEntry.anonStudyInstanceUID != null) {
+								addCell(row, 9, uidEntry.anonStudyInstanceUID, style);
+							}
+							if (uidEntry.origStudyInstanceUID != null) {
+								addCell(row, 10, uidEntry.origStudyInstanceUID, style);
+							}								
+						}
 					}
 				}
-				for (int i=0; i<9; i++) sheet.autoSizeColumn(i);
+				for (int i=0; i<spreadsheetColumnNames.length; i++) sheet.autoSizeColumn(i);
 				
 				if (chooser.showSaveDialog(this) == chooser.APPROVE_OPTION) {
 					File outputFile = chooser.getSelectedFile();
@@ -311,10 +368,14 @@ public class IndexPanel extends JPanel implements ActionListener {
 		public JButton search;
 		public JButton list;
 		public JButton save;
+		public JButton rebuild;
 		public FooterPanel() {
 			super();
-			setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-			setLayout(new FlowLayout());
+			setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+				BorderFactory.createEmptyBorder(2, 2, 2, 2)
+			));
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setBackground(background);
 			search = new JButton("Search");
 			add(search);
@@ -325,6 +386,9 @@ public class IndexPanel extends JPanel implements ActionListener {
 			save = new JButton(" Save ");
 			save.setEnabled(false);
 			add(save);
+			add(Box.createHorizontalGlue());
+			rebuild = new JButton(" Rebuild UID Table");
+			add(rebuild);
 		}
 	}
 	

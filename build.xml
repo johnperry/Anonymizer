@@ -147,7 +147,9 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 		<mkdir dir="${documentation}"/>
 		<javadoc destdir="${documentation}" sourcepath="${java}" classpathref="classpath"
 			doctitle="${title}" windowtitle="${title}" bottom="${copyright}">
-			<package name="*"/>
+			<fileset dir="${java}">
+				<include name="**" />
+			</fileset>
 		</javadoc>
 	</target>
 
@@ -157,6 +159,6 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 		</copy>
 	</target>
 
-	<target name="all" depends="clean, build, release"/>
+	<target name="all" depends="clean, build, javadocs, release"/>
 
 </project>

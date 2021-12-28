@@ -23,6 +23,7 @@ import javax.swing.border.*;
 import org.dcm4che.util.DcmURL;
 import org.apache.log4j.*;
 import org.rsna.ctp.pipeline.Status;
+import org.rsna.ctp.objects.FileObject;
 import org.rsna.ctp.stdstages.dicom.DicomStorageSCU;
 import org.rsna.server.HttpResponse;
 import org.rsna.ui.ColorPane;
@@ -50,6 +51,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	
 	DicomHeaderPanel dicomHeaderPanel;
 	HttpHeaderPanel httpHeaderPanel;
+	String contentType = "application/x-mirc";
 	
 	Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
 	Font titleFont = new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 18 );
@@ -124,6 +126,10 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		JButton select;
 		public Footer(ExportPanel parent) {
 			super();
+			setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+				BorderFactory.createEmptyBorder(2, 2, 2, 2)
+			));
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setBackground(config.background);
 			String protocol = config.getProps().getProperty("exportProtocol");
@@ -245,10 +251,12 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
 		}
 		
+/* commented out because it isn't used in HTTP export, but it might be if we convert to POSDA
 		public String getEventIDRequestURL() throws Exception {
 			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/event?source="
 				+ Configuration.getInstance().getProps().getProperty("SITEID");
 		}
+*/
 		
 		public void keyTyped(KeyEvent event) { }
 		public void keyPressed(KeyEvent event) { }
@@ -438,10 +446,9 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			}
 			else {
 				String url = httpHeaderPanel.getURL();
-				String idRequestURL = httpHeaderPanel.getEventIDRequestURL();
 				for (File caseDir : cases) {
 					exportExecutor.execute(
-						new HttpExportThread(caseDir, url, idRequestURL, httpHeaderPanel.enableExport.isSelected())
+						new HttpExportThread(caseDir, url, httpHeaderPanel.enableExport.isSelected())
 					);
 				}
 			}
@@ -517,6 +524,101 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	}
 	
 	class HttpExportThread extends Thread {
+		File dir;
+		String url;
+		String idRequestURL;
+		boolean enableExport;
+		File expFile;
+		int count;
+		
+		public HttpExportThread(File dir, String url, boolean enableExport) {
+			super();
+			this.dir = dir;
+			this.url = url;
+			this.enableExport = enableExport;
+			this.expFile = new File(dir, hiddenExportFilename);
+			this.count = 0;
+		}
+		
+		public void run() {
+			if (exportFiles(dir)) {
+				FileUtil.setText(expFile, "");
+				updateTable(dir);
+			}
+		}
+		
+		private boolean exportFiles(File dir) {
+			return exportFiles(dir, true);
+		}
+		
+		private boolean exportFiles(File dir, boolean ok) {
+			boolean result;
+			File[] files = dir.listFiles();
+			for (File file : files) {
+				if (file.isFile()) {
+					//Do not export the expFile or zero-length files
+					long fileLength = file.length();
+					if (!file.equals(expFile) && (fileLength != 0)) {
+						long t = System.currentTimeMillis();
+						result = exportFile(file);
+						if (result) {
+							t = System.currentTimeMillis() - t;
+							count++;
+							statusPanel.setStatus(count, file.getAbsolutePath(), t);
+						}
+						ok = ok && result;
+					}
+				}
+				else if (file.isDirectory()) {
+					result = exportFiles(file, ok);
+					ok = ok && result;
+				}
+			}
+			return ok;
+		}
+		
+		private boolean exportFile(File file) {
+			HttpURLConnection conn = null;
+			OutputStream svros = null;
+			try {
+				URL u = new URL(url);
+
+				conn = HttpUtil.getConnection(u);
+				conn.setReadTimeout(connectionTimeout);
+				conn.setConnectTimeout(readTimeout);
+				conn.setRequestMethod("POST");
+
+				conn.setRequestProperty("Content-Type", contentType);
+				conn.setRequestProperty("Digest", new FileObject(file).getDigest());
+
+				conn.connect();
+				svros = conn.getOutputStream();
+				FileUtil.streamFile(file, svros);
+				int responseCode = conn.getResponseCode();
+				
+				//Get the response text
+				String responseText = "";
+				try { responseText = FileUtil.getTextOrException( conn.getInputStream(), FileUtil.utf8, false ); }
+				catch (Exception ex) { logger.warn("Unable to read response: "+ex.getMessage()); }
+				conn.disconnect();
+				if (logger.isDebugEnabled()) {
+					logger.info("Server response "+responseCode+" for: " + file);
+					logger.warn("Response text: "+responseText);
+				}
+				conn.disconnect();
+				return (responseCode == HttpResponse.ok) && responseText.equals("OK");
+				
+			}
+			catch (Exception e) {
+				if (logger.isDebugEnabled()) logger.debug("Export: transmission failed: " + e.getMessage(), e);
+				else logger.warn("Export: HTTP transmission failed: " + e.getMessage());
+			}
+			return false;
+		}
+	}
+
+/*
+	class PosdaExportThread extends Thread {
 		File dir;
 		String url;
 		String idRequestURL;
@@ -685,6 +787,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return sb.toString();
 		}
 	}
+*/
 
 	//TODO: figure out how to update the centerPanel without
 	//destroying any work the user has done while the

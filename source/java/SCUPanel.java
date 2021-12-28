@@ -195,6 +195,10 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		
 		//Footer
 		Box footer = Box.createHorizontalBox();
+		footer.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+			BorderFactory.createEmptyBorder(2, 2, 2, 2)
+		));
 		footer.add(switchModes);
 		footer.add(Box.createHorizontalStrut(10));
 		footer.setBackground(config.background);

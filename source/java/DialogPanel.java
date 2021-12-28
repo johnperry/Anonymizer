@@ -59,7 +59,7 @@ public class DialogPanel extends JPanel {
 			else if (align.equals("right")) h.setAlignmentX(1.0f);
 			else h.setAlignmentX(0.5f);
 
-			add(h, new Integer(2));
+			add(h, Integer.valueOf(2));
 			add(RowLayout.crlf());
 			add(Box.createVerticalStrut(5));
 			add(RowLayout.crlf());
@@ -83,7 +83,7 @@ public class DialogPanel extends JPanel {
 				else if (align.equals("right")) t.setAlignmentX(1.0f);
 				else t.setAlignmentX(0.0f);
 
-				add(t, new Integer(2));
+				add(t, Integer.valueOf(2));
 				add(RowLayout.crlf());
 			}
 		}

@@ -187,6 +187,7 @@ public class RightPanel extends JPanel
 						}
 						String origPtName = dob.getPatientName();
 						String origPtID = dob.getPatientID();
+						String origStudyInstanceUID = dob.getStudyInstanceUID();
 						String origStudyDate = dob.getStudyDate();
 						String origAccessionNumber = dob.getAccessionNumber();
 
@@ -219,7 +220,6 @@ public class RightPanel extends JPanel
 							String anonPtID = dob.getPatientID();
 							String anonSOPInstanceUID = dob.getSOPInstanceUID();
 							String anonStudyInstanceUID = dob.getStudyInstanceUID();
-							String anonSeriesInstanceUID = dob.getSeriesInstanceUID();
 							String anonStudyDate = dob.getStudyDate();
 							String anonSeriesNumber = dob.getSeriesNumber();
 							String anonInstanceNumber = dob.getInstanceNumber();
@@ -244,6 +244,7 @@ public class RightPanel extends JPanel
 							Index index = Index.getInstance();
 							index.addPatient(origPtName, origPtID, anonPtName, anonPtID);
 							index.addStudy(origPtID, origStudyDate, origAccessionNumber, anonStudyDate, anonAccessionNumber);
+							index.addStudyInstanceUID(anonPtID, anonStudyDate, anonAccessionNumber, origStudyInstanceUID, anonStudyInstanceUID);
 
 							long endTime = System.currentTimeMillis();
 							statusPanel.setStatus(fileCount, file.getAbsolutePath(), endTime-startTime);

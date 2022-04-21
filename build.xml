@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="Anonymizer" basedir="." default="all">
+<project name="Anonymizer" basedir="." default="releaseonly">
 
 	<property name="build" value="${basedir}/build"/>
 	<property name="products" value="${basedir}/products"/>
@@ -160,5 +160,7 @@ libraries/imageio/twelvemonkeys-imageio-metadata-3.6-SNAPSHOT.jar
 	</target>
 
 	<target name="all" depends="clean, build, javadocs, release"/>
+	
+	<target name="releaseonly" depends="clean, build, release"/>
 
 </project>

@@ -35,7 +35,7 @@ public class Index {
 	 * Get the singleton instance of the index.
 	 * @return the singleton Index object
 	 */
-    public static Index getInstance() {
+    public static synchronized Index getInstance() {
 		if (instance == null) {
 			instance = new Index();
 		}
@@ -51,7 +51,7 @@ public class Index {
 	/**
 	 * Commit the index.
 	 */
-	public void commit() {
+	public synchronized void commit() {
 		if (recman != null) {
 			try { recman.commit(); }
 			catch (Exception ex) { }
@@ -61,7 +61,7 @@ public class Index {
 	/**
 	 * Commit and close the index.
 	 */
-	public void close() {
+	public synchronized void close() {
 		if (recman != null) {
 			try {
 				recman.commit();
@@ -80,7 +80,7 @@ public class Index {
 	 * @param anonPtName the anonymized patient name
 	 * @param anonPtID the anonymized patient ID
 	 */
-	public void addPatient(String origPtName, String origPtID, String anonPtName, String anonPtID) {
+	public synchronized void addPatient(String origPtName, String origPtID, String anonPtName, String anonPtID) {
 		try {
 			PatientIndexEntry fwdEntry = new PatientIndexEntry(origPtID, anonPtName, anonPtID);
 			PatientIndexEntry invEntry = new PatientIndexEntry(anonPtID, origPtName, origPtID);
@@ -101,7 +101,7 @@ public class Index {
 	 * @param anonStudyDate the anonymized study date
 	 * @param anonAccessionNumber the anonymized accession number
 	 */
-	public void addStudy(String origPtID, String origStudyDate, String origAccessionNumber, String anonStudyDate, String anonAccessionNumber) {
+	public synchronized void addStudy(String origPtID, String origStudyDate, String origAccessionNumber, String anonStudyDate, String anonAccessionNumber) {
 		try {
 			StudyIndexEntry entry = (StudyIndexEntry) fwdStudyIndex.get(origPtID);
 			if (entry == null) entry = new StudyIndexEntry(origPtID);
@@ -123,7 +123,7 @@ public class Index {
 	 * @param origStudyInstanceUID the PHI study instance UID
 	 * @param anonStudyInstanceUID the anonymized study instance UID
 	 */
-	public void addStudyInstanceUID(String ptID, String studyDate, String accessionNumber, String origStudyInstanceUID, String anonStudyInstanceUID) {
+	public synchronized void addStudyInstanceUID(String ptID, String studyDate, String accessionNumber, String origStudyInstanceUID, String anonStudyInstanceUID) {
 		try {
 			String key = ptID + "|" + studyDate + "|" + accessionNumber;
 			UIDIndexEntry entry = new UIDIndexEntry(origStudyInstanceUID, anonStudyInstanceUID);
@@ -142,7 +142,7 @@ public class Index {
 	 * @param accessionNumber the accession number (anon)
 	 * @return the UIDIndex entry
 	 */
-	public UIDIndexEntry getUIDIndexEntry(String ptID, String studyDate, String accessionNumber) {
+	public synchronized UIDIndexEntry getUIDIndexEntry(String ptID, String studyDate, String accessionNumber) {
 		try {
 			String key = ptID + "|" + studyDate + "|" + accessionNumber;
 			return (UIDIndexEntry)uidIndex.get(key);
@@ -156,7 +156,7 @@ public class Index {
 	 * @param key the anonymized PatientID
 	 * @return the PHI PatientIndexEntry corresponding to the anonymized PtName.
 	 */
-	public PatientIndexEntry getInvEntry(String key) {
+	public synchronized PatientIndexEntry getInvEntry(String key) {
 		try { return (PatientIndexEntry)invPatientIndex.get(key.toLowerCase()); }
 		catch (Exception ex) { return null; }
 	}
@@ -167,7 +167,7 @@ public class Index {
 	 * @param key the PHI PatientID
 	 * @return the anonymized PatientIndexEntry corresponding to the PHI PtName.
 	 */
-	public PatientIndexEntry getFwdEntry(String key) {
+	public synchronized PatientIndexEntry getFwdEntry(String key) {
 		try { return (PatientIndexEntry)fwdPatientIndex.get(key.toLowerCase()); }
 		catch (Exception ex) { return null; }
 	}
@@ -177,7 +177,7 @@ public class Index {
 	 * @param key the PHI PatientID
 	 * @return the study index entry for the PHI PatientID
 	 */
-	public StudyIndexEntry getFwdStudyEntry(String key) {
+	public synchronized StudyIndexEntry getFwdStudyEntry(String key) {
 		try { return (StudyIndexEntry)fwdStudyIndex.get(key.toLowerCase()); }
 		catch (Exception ex) { return null; }
 	}
@@ -186,7 +186,7 @@ public class Index {
 	 * List the entries in the index, in alphabetical order by anonymized PatientName.
 	 * The array consists of pairs of IndexEntries, inv[0], fwd[0], inv[1], fwd[1], etc.
 	 */
-	public PatientIndexEntry[] listPatientIndex() {
+	public synchronized PatientIndexEntry[] listPatientIndex() {
 		try {
 			FastIterator fit = invPatientIndex.keys();
 			LinkedList<PatientIndexEntry> list = new LinkedList<PatientIndexEntry>();
@@ -216,7 +216,7 @@ public class Index {
 	 * @param origPatientID the PHI PatientID
 	 * @return the array of studies for the patient.
 	 */
-	public Study[] listStudiesFor(String origPatientID) {
+	public synchronized Study[] listStudiesFor(String origPatientID) {
 		try {
 			StudyIndexEntry ie = (StudyIndexEntry)fwdStudyIndex.get(origPatientID);
 			Study[] studies = ie.studies.toArray(new Study[ie.studies.size()]);

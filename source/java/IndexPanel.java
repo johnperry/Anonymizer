@@ -17,6 +17,7 @@ import org.rsna.ctp.objects.DicomObject;
 import org.rsna.ctp.objects.FileObject;
 import org.rsna.ctp.stdstages.anonymizer.AnonymizerFunctions;
 import org.rsna.util.FileUtil;
+import org.rsna.ui.ColorPane;
 import org.rsna.ui.RowLayout;
 
 import org.apache.log4j.*;
@@ -29,6 +30,12 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;  
 
+//imports for index testing
+import org.rsna.ctp.stdstages.anonymizer.IntegerTable;
+import javax.swing.SwingUtilities;
+import jdbm.htree.HTree;
+import jdbm.helper.FastIterator;
+
 /**
  * A JPanel that provides a user interface for searching the Index.
  */
@@ -38,6 +45,8 @@ public class IndexPanel extends JPanel implements ActionListener {
 
 	private SearchPanel searchPanel;
 	private ListPanel listPanel;
+	private CheckPanel checkPanel;
+	private RebuildPanel rebuildPanel;
 	private FooterPanel footerPanel;
 	Color background;
 	JPanel currentPanel = null;
@@ -54,10 +63,13 @@ public class IndexPanel extends JPanel implements ActionListener {
 
 		searchPanel = new SearchPanel();
 		listPanel = new ListPanel();
+		checkPanel = new CheckPanel();
+		rebuildPanel = new RebuildPanel();
 		footerPanel = new FooterPanel();
 		footerPanel.search.addActionListener(this);
 		footerPanel.list.addActionListener(this);
 		footerPanel.save.addActionListener(this);
+		footerPanel.check.addActionListener(this);
 		footerPanel.rebuild.addActionListener(this);
 		searchPanel.searchField.addActionListener(this);
 		this.add(searchPanel, BorderLayout.CENTER);
@@ -77,7 +89,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 		Object source = event.getSource();
 		if (source.equals(footerPanel.search) || source.equals(searchPanel.searchField)) {
 			if (!currentPanel.equals(searchPanel)) {
-				this.remove(listPanel);
+				this.remove(currentPanel);
 				this.add(searchPanel, BorderLayout.CENTER);
 				currentPanel = searchPanel;
 				footerPanel.save.setEnabled(false);
@@ -87,7 +99,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 		}
 		else if (source.equals(footerPanel.list)) {
 			if (!currentPanel.equals(listPanel)) {
-				this.remove(searchPanel);
+				this.remove(currentPanel);
 				this.add(listPanel, BorderLayout.CENTER);
 				currentPanel = listPanel;
 				footerPanel.save.setEnabled(true);
@@ -99,7 +111,24 @@ public class IndexPanel extends JPanel implements ActionListener {
 			listPanel.save();
 		}
 		else if (source.equals(footerPanel.rebuild)) {
-			rebuildUIDIndex();
+			if (!currentPanel.equals(rebuildPanel)) {
+				this.remove(currentPanel);
+				this.add(rebuildPanel, BorderLayout.CENTER);
+				currentPanel = rebuildPanel;
+				footerPanel.save.setEnabled(false);
+				revalidate();
+			}
+			rebuildPanel.rebuildUIDIndex();
+		}
+		else if (source.equals(footerPanel.check)) {
+			if (!currentPanel.equals(checkPanel)) {
+				this.remove(currentPanel);
+				this.add(checkPanel, BorderLayout.CENTER);
+				currentPanel = checkPanel;
+				footerPanel.save.setEnabled(false);
+				revalidate();
+			}
+			checkPanel.checkIndexes();
 		}
 	}
 	
@@ -180,41 +209,246 @@ public class IndexPanel extends JPanel implements ActionListener {
 			}				
 		}
 	}
-	
-	public void rebuildUIDIndex() {
-		Index index = Index.getInstance();
-		Configuration config = Configuration.getInstance();
-		File storageDir = config.getStorageDir();
-		for (File ptDir : storageDir.listFiles()) {
-			if (ptDir.isDirectory()) {
-				for (File studyDir : ptDir.listFiles()) {
-					boolean found = false;
-					if (studyDir.isDirectory() && studyDir.getName().startsWith("Study")) {
-						for (File seriesDir : studyDir.listFiles()) {
-							for (File seriesFile : seriesDir.listFiles()) {
-								FileObject fob = FileObject.getInstance(seriesFile);
-								if (fob instanceof DicomObject) {
-									DicomObject dob = (DicomObject)fob;
-									//update the UID index
-									String ptID = dob.getPatientID();
-									String stDate = dob.getStudyDate();
-									String accNum = dob.getAccessionNumber();
-									String uid = dob.getStudyInstanceUID();
-									UIDIndexEntry e = index.getUIDIndexEntry(ptID, stDate, accNum);
-									if (e == null) {
-										index.addStudyInstanceUID(ptID, stDate, accNum, "", uid);
+
+	class RebuildPanel extends JPanel {
+		JScrollPane jsp;
+		ColorPane cp;
+		int margin = 15;
+
+		public RebuildPanel() {
+			super();
+			setBackground(background);
+			setLayout(new BorderLayout());
+			add(new HeaderPanel("UID Table Rebuild", 10, 10), BorderLayout.NORTH);
+			jsp = new JScrollPane();
+			add(jsp, BorderLayout.CENTER);
+			cp = new ColorPane();
+		}
+		public void rebuildUIDIndex() {
+			cp.clear();
+			Index index = Index.getInstance();
+			Configuration config = Configuration.getInstance();
+			File storageDir = config.getStorageDir();
+			int uidsAdded = 0;
+			for (File ptDir : storageDir.listFiles()) {
+				if (ptDir.isDirectory()) {
+					for (File studyDir : ptDir.listFiles()) {
+						boolean found = false;
+						if (studyDir.isDirectory() && studyDir.getName().startsWith("Study")) {
+							for (File seriesDir : studyDir.listFiles()) {
+								for (File seriesFile : seriesDir.listFiles()) {
+									FileObject fob = FileObject.getInstance(seriesFile);
+									if (fob instanceof DicomObject) {
+										DicomObject dob = (DicomObject)fob;
+										//update the UID index
+										String ptID = dob.getPatientID();
+										String stDate = dob.getStudyDate();
+										String accNum = dob.getAccessionNumber();
+										String uid = dob.getStudyInstanceUID();
+										UIDIndexEntry e = index.getUIDIndexEntry(ptID, stDate, accNum);
+										if (e == null) {
+											index.addStudyInstanceUID(ptID, stDate, accNum, "", uid);
+											cp.println(Color.red, ptID + ": " + uid);
+											uidsAdded++;
+										}
+										else cp.println(Color.black, ptID + ": " + uid);
+										found = true;
+										break;
 									}
-									found = true;
-									break;
-								}
-							} //end of series
-							if (found) break;
+								} //end of series
+								if (found) break;
+							}
 						}
+					} //end of studies
+				}
+			}//end of patients
+			index.commit();
+			cp.println("\n" + uidsAdded + " StudyInstanceUID" + ((uidsAdded==1)?"":"s") + " added.");
+		}
+	}
+	
+	class CheckPanel extends JPanel {
+		JScrollPane jsp;
+		ColorPane cp;
+		int margin = 15;
+		JLabel sts;
+
+		public CheckPanel() {
+			super();
+			setBackground(background);
+			setLayout(new BorderLayout());
+			add(new HeaderPanel("Check Indexes", 10, 10), BorderLayout.NORTH);
+			jsp = new JScrollPane();
+			add(jsp, BorderLayout.CENTER);
+			cp = new ColorPane();
+			jsp.setViewportView(cp);
+			jsp.setViewportView(cp);
+			Box ftr = Box.createHorizontalBox();
+			sts = new JLabel("Oink Moo Quack");
+			ftr.add(Box.createHorizontalStrut(10));
+			ftr.add(sts);
+			add(ftr, BorderLayout.SOUTH);
+		}
+		public void checkIndexes() {
+			cp.clear();
+			//First do the IntegerTable
+			Configuration config = Configuration.getInstance();
+			IntegerTable table = Configuration.getInstance().getIntegerTable();
+			synchronized(table) {
+				cp.println(Color.black, "Checking IntegerTable");
+				HTree tree = table.index;
+				try {
+					FastIterator fit = tree.keys();
+					int count = 0;
+					Object key;
+					while ( (key = fit.next()) != null ) {
+						Object value = tree.get(key);
+						count++;
+						final int ct = count;
+						final String s = (String)key;
+						final Integer i = (Integer)value;
+						Runnable r = new Runnable() {
+							public void run() {
+								sts.setText(ct + ": " + s + ": " + i);
+							}
+						};
+						SwingUtilities.invokeLater(r);
 					}
-				} //end of studies
+					cp.println(Color.black, "Finished checking IntegerTable");
+					cp.println(Color.black, count + " entries found and retrieved\n");
+				}
+				catch (Exception ex) {
+					StringWriter sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					cp.println(Color.red, sw.toString());
+				}
 			}
-		}//end of patients
-		index.commit();
+			
+			//Now do the fwdPatientIndex
+			Index index = Index.getInstance();
+			synchronized(index) {
+				cp.println(Color.black, "Checking fwdPatientIndex");
+				HTree tree = index.fwdPatientIndex;
+				try {
+					FastIterator fit = tree.keys();
+					int count = 0;
+					Object key;
+					while ( (key = fit.next()) != null ) {
+						Object value = tree.get(key);
+						count++;
+						final int ct = count;
+						final String ks = (String)key;
+						final String vs = value.toString();
+						Runnable r = new Runnable() {
+							public void run() {
+								sts.setText(ct + ": " + ks + ": " + vs);
+							}
+						};
+						SwingUtilities.invokeLater(r);
+					}
+					cp.println(Color.black, "Finished checking fwdPatientIndex");
+					cp.println(Color.black, count + " entries found and retrieved\n");
+				}
+				catch (Exception ex) {
+					StringWriter sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					cp.println(Color.red, sw.toString());
+				}
+			}
+			
+			//Now do the invPatientIndex
+			synchronized(index) {
+				cp.println(Color.black, "Checking invPatientIndex");
+				HTree tree = index.invPatientIndex;
+				try {
+					FastIterator fit = tree.keys();
+					int count = 0;
+					Object key;
+					while ( (key = fit.next()) != null ) {
+						Object value = tree.get(key);
+						count++;
+						final int ct = count;
+						final String ks = (String)key;
+						final String vs = value.toString();
+						Runnable r = new Runnable() {
+							public void run() {
+								sts.setText(ct + ": " + ks + ": " + vs);
+							}
+						};
+						SwingUtilities.invokeLater(r);
+					}
+					cp.println(Color.black, "Finished checking invPatientIndex");
+					cp.println(Color.black, count + " entries found and retrieved\n");
+				}
+				catch (Exception ex) {
+					StringWriter sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					cp.println(Color.red, sw.toString());
+				}
+			}
+			
+			//Now do the fwdStudyIndex
+			synchronized(index) {
+				cp.println(Color.black, "Checking fwdStudyIndex");
+				HTree tree = index.fwdStudyIndex;
+				try {
+					FastIterator fit = tree.keys();
+					int count = 0;
+					Object key;
+					while ( (key = fit.next()) != null ) {
+						Object value = tree.get(key);
+						count++;
+						final int ct = count;
+						final String ks = (String)key;
+						final String vs = value.toString();
+						Runnable r = new Runnable() {
+							public void run() {
+								sts.setText(ct + ": " + ks + ": " + vs);
+							}
+						};
+						SwingUtilities.invokeLater(r);
+					}
+					cp.println(Color.black, "Finished checking fwdStudyIndex");
+					cp.println(Color.black, count + " entries found and retrieved\n");
+				}
+				catch (Exception ex) {
+					StringWriter sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					cp.println(Color.red, sw.toString());
+				}
+			}
+			
+			//Now do the uidIndex
+			synchronized(index) {
+				cp.println(Color.black, "Checking uidIndex");
+				HTree tree = index.uidIndex;
+				try {
+					FastIterator fit = tree.keys();
+					int count = 0;
+					Object key;
+					while ( (key = fit.next()) != null ) {
+						Object value = tree.get(key);
+						count++;
+						final int ct = count;
+						final String ks = (String)key;
+						final UIDIndexEntry e = (UIDIndexEntry)value;
+						Runnable r = new Runnable() {
+							public void run() {
+								sts.setText(ct + ": " + ks + ": " + e.origStudyInstanceUID + " - " + e.anonStudyInstanceUID);
+							}
+						};
+						SwingUtilities.invokeLater(r);
+					}
+					cp.println(Color.black, "Finished checking uidIndex");
+					cp.println(Color.black, count + " entries found and retrieved\n");
+				}
+				catch (Exception ex) {
+					StringWriter sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					cp.println(Color.red, sw.toString());
+				}
+			}
+		}
 	}
 	
 	class ListPanel extends JPanel {
@@ -368,6 +602,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 		public JButton search;
 		public JButton list;
 		public JButton save;
+		public JButton check;
 		public JButton rebuild;
 		public FooterPanel() {
 			super();
@@ -387,6 +622,9 @@ public class IndexPanel extends JPanel implements ActionListener {
 			save.setEnabled(false);
 			add(save);
 			add(Box.createHorizontalGlue());
+			check = new JButton(" Check Indexes");
+			add(check);
+			add(Box.createHorizontalStrut(15));
 			rebuild = new JButton(" Rebuild UID Table");
 			add(rebuild);
 		}

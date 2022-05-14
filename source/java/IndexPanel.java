@@ -310,7 +310,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 					String key;
 					while ( (key = (String)fit.next()) != null ) {
 						Future<String> future = exec.submit(new GetterWithTimeout(cp, key, tree, ++count, sts));
-						try { cp.println(Color.black, future.get(1, TimeUnit.SECONDS)); }
+						try { future.get(1, TimeUnit.SECONDS); }
 						catch (TimeoutException e) { cp.println(Color.red, key); }
 					}
 					cp.println(Color.black, "Finished checking IntegerTable");
@@ -476,6 +476,7 @@ public class IndexPanel extends JPanel implements ActionListener {
 				return text;
 			}
 			catch (Exception ex) {
+				cp.println(Color.red, "Timeout for key: "+key);
 				StringWriter sw = new StringWriter();
 				ex.printStackTrace(new PrintWriter(sw));
 				cp.println(Color.red, sw.toString());

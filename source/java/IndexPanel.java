@@ -35,6 +35,12 @@ import org.rsna.ctp.stdstages.anonymizer.IntegerTable;
 import javax.swing.SwingUtilities;
 import jdbm.htree.HTree;
 import jdbm.helper.FastIterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
 
 /**
  * A JPanel that provides a user interface for searching the Index.
@@ -298,21 +304,14 @@ public class IndexPanel extends JPanel implements ActionListener {
 				cp.println(Color.black, "Checking IntegerTable");
 				HTree tree = table.index;
 				try {
+					ExecutorService exec = Executors.newSingleThreadExecutor();
 					FastIterator fit = tree.keys();
 					int count = 0;
-					Object key;
-					while ( (key = fit.next()) != null ) {
-						Object value = tree.get(key);
-						count++;
-						final int ct = count;
-						final String s = (String)key;
-						final Integer i = (Integer)value;
-						Runnable r = new Runnable() {
-							public void run() {
-								sts.setText(ct + ": " + s + ": " + i);
-							}
-						};
-						SwingUtilities.invokeLater(r);
+					String key;
+					while ( (key = (String)fit.next()) != null ) {
+						Future<String> future = exec.submit(new GetterWithTimeout(cp, key, tree, ++count, sts));
+						try { cp.println(Color.black, future.get(1, TimeUnit.SECONDS)); }
+						catch (TimeoutException e) { cp.println(Color.red, key); }
 					}
 					cp.println(Color.black, "Finished checking IntegerTable");
 					cp.println(Color.black, count + " entries found and retrieved\n");
@@ -450,6 +449,41 @@ public class IndexPanel extends JPanel implements ActionListener {
 			}
 		}
 	}
+	
+	class GetterWithTimeout implements Callable<String> {
+		ColorPane cp;
+		String key;
+		HTree tree;
+		int count;
+		JLabel sts;
+		public GetterWithTimeout(ColorPane cp, String key, HTree tree, int count, JLabel sts) {
+			this.cp = cp;
+			this.key = key;
+			this.tree = tree;
+			this.count = count;
+			this.sts = sts;
+		}
+		public String call() {
+			try {
+				Object value = tree.get(key);
+				final String text = count + ": " + key + ": " + (Integer)value;
+				Runnable r = new Runnable() {
+					public void run() {
+						sts.setText(text);
+					}
+				};
+				SwingUtilities.invokeLater(r);
+				return text;
+			}
+			catch (Exception ex) {
+				StringWriter sw = new StringWriter();
+				ex.printStackTrace(new PrintWriter(sw));
+				cp.println(Color.red, sw.toString());
+			}
+			return key;
+		}
+	}
+			
 	
 	class ListPanel extends JPanel {
 		JScrollPane jsp;

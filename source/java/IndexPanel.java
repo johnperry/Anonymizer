@@ -307,12 +307,13 @@ public class IndexPanel extends JPanel implements ActionListener {
 					ExecutorService exec = Executors.newSingleThreadExecutor();
 					FastIterator fit = tree.keys();
 					int count = 0;
-					String key;
-					while ( (key = (String)fit.next()) != null ) {
-						Future<String> future = exec.submit(new GetterWithTimeout(cp, key, tree, ++count, sts));
-						try { future.get(1, TimeUnit.SECONDS); }
-						catch (TimeoutException e) { cp.println(Color.red, key); }
-					}
+					String key = null;
+					do {
+						ReaderWithTimeout gwto = new ReaderWithTimeout(cp, fit, tree, ++count, sts);
+						Future<String> future = exec.submit(gwto);
+						try { key = future.get(1, TimeUnit.SECONDS); }
+						catch (TimeoutException e) { cp.println(Color.red, gwto.getTimeoutInfo()); }
+					} while (key != null);
 					cp.println(Color.black, "Finished checking IntegerTable");
 					cp.println(Color.black, count + " entries found and retrieved\n");
 				}
@@ -450,38 +451,49 @@ public class IndexPanel extends JPanel implements ActionListener {
 		}
 	}
 	
-	class GetterWithTimeout implements Callable<String> {
+	class ReaderWithTimeout implements Callable<String> {
 		ColorPane cp;
 		String key;
+		FastIterator fit;
 		HTree tree;
 		int count;
 		JLabel sts;
-		public GetterWithTimeout(ColorPane cp, String key, HTree tree, int count, JLabel sts) {
+		boolean gettingKey = false;
+		public ReaderWithTimeout(ColorPane cp, FastIterator fit, HTree tree, int count, JLabel sts) {
 			this.cp = cp;
-			this.key = key;
+			this.fit = fit;
 			this.tree = tree;
 			this.count = count;
 			this.sts = sts;
 		}
 		public String call() {
 			try {
-				Object value = tree.get(key);
-				final String text = count + ": " + key + ": " + (Integer)value;
-				Runnable r = new Runnable() {
-					public void run() {
-						sts.setText(text);
-					}
-				};
-				SwingUtilities.invokeLater(r);
-				return text;
+				gettingKey = true;
+				key = (String)fit.next();
+				gettingKey = false;
+				if (key != null) {
+					Object value = tree.get(key);
+					final String text = count + ": " + key + ": " + (Integer)value;
+					Runnable r = new Runnable() {
+						public void run() {
+							sts.setText(text);
+						}
+					};
+					SwingUtilities.invokeLater(r);
+					return text;
+				}
 			}
 			catch (Exception ex) {
-				cp.println(Color.red, "Timeout for key: "+key);
+				if (gettingKey) cp.println(Color.red, "Exception getting key");
+				else cp.println(Color.red, "Exception getting key: "+key);
 				StringWriter sw = new StringWriter();
 				ex.printStackTrace(new PrintWriter(sw));
 				cp.println(Color.red, sw.toString());
 			}
 			return key;
+		}
+		public String getTimeoutInfo() {
+			return "Timeout on key number "+count;
 		}
 	}
 			

@@ -45,7 +45,8 @@ public class Anonymizer extends JFrame {
     private FilterPanel				filterPanel;
     private AnonymizerPanel			anonymizerPanel;
     private ExportPanel				exportPanel;
-    private IndexPanel				indexPanel;
+    private IndexListPanel			indexListPanel;
+    private IndexSearchPanel		indexSearchPanel;
     private HtmlJPanel 				helpPanel;
     private LogPanel				logPanel;
     private AdminPanel				adminPanel;
@@ -148,7 +149,8 @@ public class Anonymizer extends JFrame {
 		editorPanel = new Editor();
 		filterPanel = FilterPanel.getInstance();
 		exportPanel = ExportPanel.getInstance();
-		indexPanel = new IndexPanel();
+		indexListPanel = new IndexListPanel();
+		indexSearchPanel = new IndexSearchPanel();
 		helpPanel = new HtmlJPanel( FileUtil.getText( new File(config.helpfile) ) );
 		adminPanel = new AdminPanel();
 		
@@ -157,7 +159,8 @@ public class Anonymizer extends JFrame {
 			editorPanel,
 			filterPanel,
 			anonymizerPanel,
-			indexPanel,
+			indexListPanel,
+			indexSearchPanel,
 			logPanel);
 		
 		mainPanel.addTabs(
@@ -229,13 +232,15 @@ public class Anonymizer extends JFrame {
 						 Editor editor,
 						 FilterPanel filter,
 						 AnonymizerPanel script,
-						 IndexPanel index,
+						 IndexListPanel list,
+						 IndexSearchPanel search,
 						 LogPanel logPanel) {
 			tabbedPane.addTab("Viewer", viewer);
 			tabbedPane.addTab("Elements", editor);
 			tabbedPane.addTab("Filter", filter);
 			tabbedPane.addTab("Script", script);
-			tabbedPane.addTab("Index", index);
+			tabbedPane.addTab("List Index", list);
+			tabbedPane.addTab("Search Index", search);
 			tabbedPane.addTab("Log", logPanel);
 			tabbedPane.addChangeListener(this);
 			tabbedPane.setSelectedIndex(4);
@@ -243,7 +248,7 @@ public class Anonymizer extends JFrame {
 		public void stateChanged(ChangeEvent event) {
 			try {
 				Component comp = tabbedPane.getSelectedComponent();
-				if (comp.equals(indexPanel)) indexPanel.setFocus();
+				if (comp.equals(indexSearchPanel)) indexSearchPanel.setFocus();
 				else if (comp.equals(filterPanel)) filterPanel.setFocus();
 				else if (comp.equals(logPanel)) logPanel.reload();
 			}

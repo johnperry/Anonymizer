@@ -794,7 +794,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			OutputStream svros = null;
 			try {
 				String hash = getDigest(file).toLowerCase();
-				URL u = new URL(url + "?import_event_id="+eventID+"&digest="+hash);
+				URL u = new URL(url + "/papi/v1/import/file?import_event_id="+eventID+"&digest="+hash);
 				logger.debug("URL: "+u.toString());
 				boolean result = true;
 

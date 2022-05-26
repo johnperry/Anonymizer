@@ -51,6 +51,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	
 	DicomHeaderPanel dicomHeaderPanel;
 	HttpHeaderPanel httpHeaderPanel;
+	PosdaHeaderPanel posdaHeaderPanel;
 	String contentType = "application/x-mirc";
 	
 	Font mono = new java.awt.Font( "Monospaced", java.awt.Font.BOLD, 12 );
@@ -74,10 +75,11 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		//Header
 		dicomHeaderPanel = new DicomHeaderPanel();
 		httpHeaderPanel = new HttpHeaderPanel();
-		if (config.getProps().getProperty("exportProtocol","").equals("dicom"))
-			header = dicomHeaderPanel;
-		else
-			header = httpHeaderPanel;
+		posdaHeaderPanel = new PosdaHeaderPanel();
+		String exportProtocol = config.getProps().getProperty("exportProtocol","");
+		if (exportProtocol.equals("dicom")) header = dicomHeaderPanel;
+		else if (exportProtocol.equals("posda")) header = posdaHeaderPanel;
+		else header = httpHeaderPanel;
 		add(header, BorderLayout.NORTH);
 
 		//Main panel
@@ -119,7 +121,9 @@ public class ExportPanel extends BasePanel implements ActionListener {
 	}
 	
 	class Footer extends JPanel {
-		JButton switchProtocols;
+		JButton switchToDICOM;
+		JButton switchToPOSDA;
+		JButton switchToHTTP;
 		JButton export;
 		JButton refresh;
 		JButton clear;
@@ -132,14 +136,22 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			));
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setBackground(config.background);
+			switchToDICOM = new JButton("Switch to DICOM");
+			switchToPOSDA = new JButton("Switch to POSDA");
+			switchToHTTP = new JButton("Switch to HTTP");
 			String protocol = config.getProps().getProperty("exportProtocol");
-			if (protocol.equals("dicom")) switchProtocols = new JButton("Switch to HTTP");
-			else switchProtocols = new JButton("Switch to DICOM");
+			if (protocol.equals("dicom")) switchToDICOM.setEnabled(false);
+			else if (protocol.equals("posda")) switchToPOSDA.setEnabled(false);
+			else if (protocol.equals("http")) switchToHTTP.setEnabled(false);
 			export = new JButton("Export");
 			refresh = new JButton("Refresh");
 			clear = new JButton("Clear All");
 			select = new JButton("Select All");
-			add(switchProtocols);
+			add(switchToDICOM);
+			add(Box.createHorizontalStrut(10));
+			add(switchToHTTP);
+			add(Box.createHorizontalStrut(10));
+			add(switchToPOSDA);
 			add(Box.createHorizontalStrut(10));
 			add(clear);
 			add(Box.createHorizontalStrut(10));
@@ -148,7 +160,9 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			add(refresh);
 			add(Box.createHorizontalGlue());
 			add(export);
-			switchProtocols.addActionListener(parent);
+			switchToDICOM.addActionListener(parent);
+			switchToHTTP.addActionListener(parent);
+			switchToPOSDA.addActionListener(parent);
 			export.addActionListener(parent);
 			refresh.addActionListener(parent);
 			clear.addActionListener(parent);
@@ -178,6 +192,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
 			scpIP = new PanelField(scpIPString, 150);
 			scpIP.addKeyListener(this);
+			scpIP.setToolTipText("IP address or domain name, with no protocol name or port");
 			scpPort = new PanelField(scpPortString);
 			scpPort.addKeyListener(this);
 			scpAET = new PanelField(scpAETString, 80);
@@ -239,6 +254,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
 			httpURLField = new PanelField(httpURLString, 300);
 			httpURLField.addKeyListener(this);
+			httpURLField.setToolTipText("[IP address or domain name]:port, with no protocol name");
 
 			add(new JLabel(" HTTP Storage URL:  "));
 			add(httpURLField);
@@ -251,17 +267,50 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
 		}
 		
-/* commented out because it isn't used in HTTP export, but it might be if we convert to POSDA
-		public String getEventIDRequestURL() throws Exception {
-			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/event?source="
-				+ Configuration.getInstance().getProps().getProperty("SITEID");
-		}
-*/
-		
 		public void keyTyped(KeyEvent event) { }
 		public void keyPressed(KeyEvent event) { }
 		public void keyReleased(KeyEvent event) {
 			config.getProps().setProperty("exportHttpURL", httpURLField.getText().trim());
+		}
+		public void actionPerformed(ActionEvent event) {
+			boolean enb = enableExport.isSelected();
+			config.getProps().setProperty("enableExport", (enb?"yes":"no"));
+		}
+	}
+	
+	class PosdaHeaderPanel extends JPanel implements ActionListener, KeyListener {
+		PanelField posdaURLField;
+		JCheckBox enableExport;
+		
+		public PosdaHeaderPanel() {
+			super();
+			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			setBackground(config.background);
+
+			String posdaURLString = config.getProps().getProperty("exportPosdaURL","");
+			enableExport = new JCheckBox("Enable export");
+			enableExport.setBackground(config.background);
+			enableExport.addActionListener(this);
+			enableExport.setSelected(config.getProps().getProperty("enableExport", "yes").equals("yes"));
+			posdaURLField = new PanelField(posdaURLString, 300);
+			posdaURLField.addKeyListener(this);
+			posdaURLField.setToolTipText("[IP address or domain name]:port, with no protocol name");
+
+			add(new JLabel(" POSDA Storage URL:  "));
+			add(posdaURLField);
+			add(Box.createHorizontalGlue());
+			add(enableExport);
+			add(Box.createHorizontalStrut(10));
+		}
+		
+		public String getURL() throws Exception {
+			return "http://" + posdaURLField.getText().trim() + "/papi/v1/import/file";
+		}
+		
+		public void keyTyped(KeyEvent event) { }
+		public void keyPressed(KeyEvent event) { }
+		public void keyReleased(KeyEvent event) {
+			config.getProps().setProperty("exportPosdaURL", posdaURLField.getText().trim());
 		}
 		public void actionPerformed(ActionEvent event) {
 			boolean enb = enableExport.isSelected();
@@ -367,20 +416,37 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			centerPanel.revalidate();
 			centerPanel.repaint();
 		}
-		else if (source.equals(footer.switchProtocols)) {
-			if (header instanceof DicomHeaderPanel) {
-				remove(dicomHeaderPanel);
-				header = httpHeaderPanel;
-				footer.switchProtocols.setText("Switch to DICOM");
-				config.getProps().setProperty("exportProtocol","http");
-			}
-			else {
-				remove(httpHeaderPanel);
-				header = dicomHeaderPanel;
-				footer.switchProtocols.setText("Switch to HTTP");
-				config.getProps().setProperty("exportProtocol","dicom");
-			}
+		else if (source.equals(footer.switchToPOSDA)) {
+			remove(header);
+			header = posdaHeaderPanel;
+			footer.switchToDICOM.setEnabled(true);
+			footer.switchToPOSDA.setEnabled(false);
+			footer.switchToHTTP.setEnabled(true);
+			config.getProps().setProperty("exportProtocol","posda");
 			add(header, BorderLayout.NORTH);
+			revalidate();
+			repaint();
+		}
+		else if (source.equals(footer.switchToDICOM)) {
+			remove(header);
+			header = dicomHeaderPanel;
+			footer.switchToDICOM.setEnabled(false);
+			footer.switchToPOSDA.setEnabled(true);
+			footer.switchToHTTP.setEnabled(true);
+			config.getProps().setProperty("exportProtocol","dicom");
+			add(header, BorderLayout.NORTH);
+			revalidate();
+			repaint();
+		}
+		else if (source.equals(footer.switchToHTTP)) {
+			remove(header);
+			header = httpHeaderPanel;
+			footer.switchToDICOM.setEnabled(true);
+			footer.switchToPOSDA.setEnabled(true);
+			footer.switchToHTTP.setEnabled(false);
+			config.getProps().setProperty("exportProtocol","http");
+			add(header, BorderLayout.NORTH);
+			revalidate();
 			repaint();
 		}
 	}
@@ -444,11 +510,19 @@ public class ExportPanel extends BasePanel implements ActionListener {
 					);
 				}
 			}
-			else {
+			else if (header instanceof HttpHeaderPanel) {
 				String url = httpHeaderPanel.getURL();
 				for (File caseDir : cases) {
 					exportExecutor.execute(
 						new HttpExportThread(caseDir, url, httpHeaderPanel.enableExport.isSelected())
+					);
+				}
+			}
+			else if (header instanceof PosdaHeaderPanel) {
+				String url = posdaHeaderPanel.getURL();
+				for (File caseDir : cases) {
+					exportExecutor.execute(
+						new PosdaExportThread(caseDir, url, httpHeaderPanel.enableExport.isSelected())
 					);
 				}
 			}
@@ -617,7 +691,6 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 	}
 
-/*
 	class PosdaExportThread extends Thread {
 		File dir;
 		String url;
@@ -627,18 +700,20 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		String eventID = "0";
 		int count;
 		
-		public HttpExportThread(File dir, String url, String idRequestURL, boolean enableExport) {
+		public PosdaExportThread(File dir, String url, boolean enableExport) {
 			super();
 			this.dir = dir;
 			this.url = url;
-			this.idRequestURL = idRequestURL;
+			this.idRequestURL = getEventIDRequestURL();
 			this.enableExport = enableExport;
 			this.expFile = new File(dir, hiddenExportFilename);
 			this.count = 0;
 		}
 		
 		public void run() {
+			logger.debug("Entering PosdaExportThread.run()");
 			eventID = getImportEventID();
+			logger.debug("Got ImportEvent "+eventID);
 			if (exportFiles(dir)) {
 				FileUtil.setText(expFile, "");
 				updateTable(dir);
@@ -675,9 +750,15 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return ok;
 		}
 		
+		private String getEventIDRequestURL() {
+			return "http://" + posdaHeaderPanel.posdaURLField.getText().trim() + "/papi/v1/import/event?source="
+				+ Configuration.getInstance().getProps().getProperty("SITEID");
+		}
+		
 		//curl -X PUT http://localhost/papi/v1/import/event?source=some+useful+message
 		//{"status":"success","import_event_id":15}
 		private String getImportEventID() {
+			logger.debug("Entering getImportEventID()");
 			HttpURLConnection conn = null;
 			try {
 				URL u = new URL(idRequestURL);
@@ -687,7 +768,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				conn.setRequestMethod("PUT");
 				conn.connect();
 				int responseCode = conn.getResponseCode();
-				logger.debug("getImportEventID responseCode: " + responseCode);
+				logger.debug("...getImportEventID responseCode: " + responseCode);
 				logger.debug("...url: " + u.toString());
 				String text = FileUtil.getTextOrException( conn.getInputStream(), FileUtil.utf8, false );
 				conn.disconnect();
@@ -700,7 +781,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 				return text;
 			}
 			catch (Exception unable) { 
-				logger.debug("Unable to get import_event_id; returning 0");
+				logger.debug("...Unable to get import_event_id; returning 0");
 				return "0"; 
 			}
 		}
@@ -708,12 +789,13 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		//Example URL for export to POSDA:
 		// http://f20de65151a2.ngrok.io/papi/v1/import/file?import_event_id=...&digest=ac6aec03c70f9c3063e5bb6cc190d34e
 		private boolean exportFile(File file, String eventID) {
+			logger.debug(eventID+": Exporting "+file);
 			HttpURLConnection conn = null;
 			OutputStream svros = null;
 			try {
 				String hash = getDigest(file).toLowerCase();
 				URL u = new URL(url + "?import_event_id="+eventID+"&digest="+hash);
-				//logger.debug(u.toString());
+				logger.debug("URL: "+u.toString());
 				boolean result = true;
 
 				conn = HttpUtil.getConnection(u);
@@ -738,15 +820,15 @@ public class ExportPanel extends BasePanel implements ActionListener {
 					if (responseCode == HttpResponse.unprocessable) {
 						logger.warn("Unprocessable response from server for: " + file);
 						logger.warn("Response text: "+responseText);
-						result = false;
 					}
 					else if (responseCode != HttpResponse.ok) {
 						logger.warn("Failure response from server ("+responseCode+") for: " + file);
 						logger.warn("Response text: "+responseText);
-						result = false;
 					}
 				}
+				result = (responseCode == HttpResponse.ok);
 				conn.disconnect();
+				logger.debug("returning "+result);
 				return result;
 				
 			}
@@ -787,7 +869,6 @@ public class ExportPanel extends BasePanel implements ActionListener {
 			return sb.toString();
 		}
 	}
-*/
 
 	//TODO: figure out how to update the centerPanel without
 	//destroying any work the user has done while the

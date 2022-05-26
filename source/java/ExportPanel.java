@@ -264,7 +264,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 		
 		public String getURL() throws Exception {
-			return "http://" + httpURLField.getText().trim() + "/papi/v1/import/file";
+			return "http://" + httpURLField.getText().trim();
 		}
 		
 		public void keyTyped(KeyEvent event) { }
@@ -304,7 +304,7 @@ public class ExportPanel extends BasePanel implements ActionListener {
 		}
 		
 		public String getURL() throws Exception {
-			return "http://" + posdaURLField.getText().trim() + "/papi/v1/import/file";
+			return "http://" + posdaURLField.getText().trim();
 		}
 		
 		public void keyTyped(KeyEvent event) { }

@@ -341,6 +341,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 			//Report the results
 			if (!result.equals("")) {
 				resultsPane.println(Color.red,"Anonymization failed: "+file.getName());
+				logger.warn("Anonymization failed: "+file.getName());
 				return true;
 			}
 			else {

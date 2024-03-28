@@ -55,7 +55,7 @@ public class IndexSearchPanel extends JPanel implements ActionListener {
 	 */
     public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
-		logger.info("ActionEvent received: "+source.getClass().getName());
+		logger.debug("ActionEvent received: "+source.getClass().getName());
 		if (source.equals(footerPanel.search) || source.equals(searchPanel.searchField)) {
 			searchPanel.search();
 		}

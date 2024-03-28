@@ -38,14 +38,16 @@ public class AnonStorageSCP extends SimpleDicomStorageSCP {
 			out = new BufferedOutputStream(new FileOutputStream(savedFile));
             fmi.write(out);
             copy(in, out, -1);
-            out.close();
-            out = null;
         }
         catch (Exception ex) {
 			logger.warn("Unable to store a received file.",ex);
+			FileUtil.close(out);
+			savedFile.delete();
 			savedFile = null;
 		}
-        finally { FileUtil.close(out); }
+        finally { 
+			FileUtil.close(out);
+		}
         if (savedFile != null) sendFileEvent(savedFile, callingAET);
     }
 }	

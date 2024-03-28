@@ -342,7 +342,7 @@ public class SCPPanel extends BasePanel implements ActionListener, KeyListener, 
 			if (!result.equals("")) {
 				resultsPane.println(Color.red,"Anonymization failed: "+file.getName());
 				logger.warn("Anonymization failed: "+file.getName());
-				return true;
+				return false;
 			}
 			else {
 				// Get the spoke name

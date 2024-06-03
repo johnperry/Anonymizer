@@ -64,12 +64,12 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	PanelField scpAET;
 	PanelField scuAET;
 	BasePanel queryModePanel = null;
-	BasePanel accessionModePanel = null;
-	ColorPane ampCP = null;
+	BasePanel listModePanel = null;
+	ColorPane lmpCP = null;
 	boolean forceIVRLE = false;
 	boolean renameToSOPIUID = false;
 	QueryPanel queryPanel;
-	AccessionQueryResultsPanel aqrrPanel;
+	ListModeQueryResultsPanel lmqrPanel;
 	DicomQRSCU dicomQRSCU = null;
 	JFileChooser chooser = null;
 	CGetCMovePanel getmove = null;
@@ -99,14 +99,14 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		selectAll.addActionListener(this);
 		deselectAll = new JButton("Deselect All");
 		deselectAll.addActionListener(this);
-		switchModes = new JButton("Switch to Accession Mode");
+		switchModes = new JButton("Switch to List Mode");
 		switchModes.addActionListener(this);
 		query = new JButton("Query");
 		query.addActionListener(this);
 		retrieve = new JButton("Import");
 		retrieve.addActionListener(this);
 		//retrieve.setEnabled(false);
-		openFile = new JButton("Open Accession List File");
+		openFile = new JButton("Open List File");
 		openFile.addActionListener(this);
 		openFile.setVisible(false);
 		String scpIPString = config.getProps().getProperty("qrscpIP","");
@@ -164,34 +164,36 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		queryModePanel.add(resultsScrollPane, BorderLayout.CENTER);
 		add(queryModePanel, BorderLayout.CENTER);
 		
-		//Now make the Accession Mode Panel, but don't load it
-		accessionModePanel = new BasePanel();
+		//Now make the List Mode Panel, but don't load it
+		listModePanel = new BasePanel();
 		Border ampInner = BorderFactory.createEmptyBorder(2, 0, 0, 0);
 		Border ampOuter = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-		accessionModePanel.setBorder(BorderFactory.createCompoundBorder(ampOuter, ampInner));
+		listModePanel.setBorder(BorderFactory.createCompoundBorder(ampOuter, ampInner));
 		//Title panel
 		Box ampHeader = Box.createVerticalBox(); //new JPanel(new FlowLayout(FlowLayout.CENTER));
 		ampHeader.setBackground(config.background);
-		JLabel ampTitle = new JLabel("List Accession Numbers for Retrieval");		
+		JLabel ampTitle = new JLabel("List Keys for Retrieval");		
 		ampTitle.setFont( new java.awt.Font( "SansSerif", java.awt.Font.BOLD, 18 ) );
 		ampTitle.setForeground(Color.BLUE);
 		ampTitle.setAlignmentX(0.5f);
 		ampHeader.add(Box.createVerticalStrut(15));
 		ampHeader.add(ampTitle);
 		ampHeader.add(Box.createVerticalStrut(15));
-		accessionModePanel.add(ampHeader, BorderLayout.NORTH);
+		listModePanel.add(ampHeader, BorderLayout.NORTH);
 		//Accession Number list panel
 		JPanel ampListPanel = new JPanel();
-		ampCP = new ColorPane();
-		ampCP.setText("// Enter a list of Accession Numbers, one per line.\n\n");
+		lmpCP = new ColorPane();
+		lmpCP.println("// Enter a list of keys (Accession Numbers or StudyInstanceUIDs), one per line.");
+		lmpCP.println("// StudyInstanceUIDs must be prefixed with \"SI:\".");
+		lmpCP.println("// Accession Numbers have no prefixes.\n");
 		JScrollPane ampScrollPane = new JScrollPane();
 		ampScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-		ampScrollPane.setViewportView(ampCP);
+		ampScrollPane.setViewportView(lmpCP);
 		ampScrollPane.getViewport().setBackground(Color.white);
-		accessionModePanel.add(ampScrollPane, BorderLayout.CENTER);
-		aqrrPanel = new AccessionQueryResultsPanel();
-		accessionModePanel.add(aqrrPanel, BorderLayout.SOUTH);		
-		//add(accessionModePanel, BorderLayout.CENTER);
+		listModePanel.add(ampScrollPane, BorderLayout.CENTER);
+		lmqrPanel = new ListModeQueryResultsPanel();
+		listModePanel.add(lmqrPanel, BorderLayout.SOUTH);		
+		//add(listModePanel, BorderLayout.CENTER);
 		
 		//Footer
 		Box footer = Box.createHorizontalBox();
@@ -219,17 +221,17 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		if (queryMode) {
 			switchModes.setText("Switch to Query Mode");
 			remove(queryModePanel);
-			add(accessionModePanel, BorderLayout.CENTER);
+			add(listModePanel, BorderLayout.CENTER);
 			clear.setVisible(false);
 			selectAll.setVisible(false);
 			deselectAll.setVisible(false);
 			query.setVisible(false);
 			openFile.setVisible(true);
-			ampCP.requestFocus();
+			lmpCP.requestFocus();
 		}
 		else {
-			switchModes.setText("Switch to Accession Mode");
-			remove(accessionModePanel);
+			switchModes.setText("Switch to List Mode");
+			remove(listModePanel);
 			add(queryModePanel, BorderLayout.CENTER);
 			clear.setVisible(true);
 			selectAll.setVisible(true);
@@ -243,7 +245,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 	
 	public void setFocus() {
 		if (queryMode) queryPanel.patientName.requestFocus();
-		else ampCP.requestFocus();
+		else lmpCP.requestFocus();
 	}
 	
 	class CGetCMovePanel extends JPanel implements ActionListener {
@@ -490,16 +492,16 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		}
 	}
 
-	class AccessionQueryResultsPanel extends JPanel {
-		JLabel currentAccNumber = new JLabel("");
+	class ListModeQueryResultsPanel extends JPanel {
+		JLabel currentKey = new JLabel("");
 		JLabel currentNMatches = new JLabel("");
 		JLabel currentNImages = new JLabel("");
 		JLabel currentTime = new JLabel("");
-		JLabel previousAccNumber = new JLabel("");
+		JLabel previousKey = new JLabel("");
 		JLabel previousNMatches = new JLabel("");
 		JLabel previousNImages = new JLabel("");
 		JLabel previousTime = new JLabel("");
-		public AccessionQueryResultsPanel() {
+		public ListModeQueryResultsPanel() {
 			super();
 			setBackground(Configuration.getInstance().background);
 			JPanel jp = new JPanel();
@@ -509,9 +511,9 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			jp.add(new JLabel("Current Query"));
 			jp.add(new JLabel("Previous Query"));
 			jp.add(RowLayout.crlf());
-			jp.add(new JLabel("Accession number:"));
-			jp.add(currentAccNumber);
-			jp.add(previousAccNumber);
+			jp.add(new JLabel("Key:"));
+			jp.add(currentKey);
+			jp.add(previousKey);
 			jp.add(RowLayout.crlf());
 			jp.add(new JLabel("Matches:"));
 			jp.add(currentNMatches);
@@ -527,15 +529,15 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			jp.add(RowLayout.crlf());
 			add(jp);
 		}
-		public void setAccessionNumber(String s) {
+		public void setKey(String s) {
 			final String fs = s;
 			Runnable r = new Runnable() {
 				public void run() {
-					previousAccNumber.setText(currentAccNumber.getText());
+					previousKey.setText(currentKey.getText());
 					previousNMatches.setText(currentNMatches.getText());
 					previousNImages.setText(currentNImages.getText());
 					previousTime.setText(currentTime.getText());
-					currentAccNumber.setText(fs);
+					currentKey.setText(fs);
 					currentNMatches.setText("");
 					currentNImages.setText("");
 					currentTime.setText("");
@@ -607,7 +609,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 			}
 			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 				File file = chooser.getSelectedFile();
-				ampCP.setText(FileUtil.getText(file));
+				lmpCP.setText(FileUtil.getText(file));
 			}
 		}
 		else if (source.equals(query) || (source instanceof PanelField)) {
@@ -627,8 +629,8 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 				}
 			}
 			else {
-				String accNums = ampCP.getText();
-				new AccessionThread(qrURL, accNums, destination).start();
+				String accNums = lmpCP.getText();
+				new ListThread(qrURL, accNums, destination).start();
 			}
 		}
 	}
@@ -703,9 +705,9 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		}
 	}
 	
-	class AccessionThread extends Thread {
+	class ListThread extends Thread {
 		DcmURL qrURL;
-		String accNums;
+		String keys;
 		String destination;
 		DicomQRSCU dicomQRSCU;
 		SCPPanel scpPanel;
@@ -717,9 +719,9 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		long retrySleep = 3000;
 		long successSleep = 100;
 		
-		public AccessionThread(DcmURL qrURL, String accNums, String destination) {
+		public ListThread(DcmURL qrURL, String keys, String destination) {
 			this.qrURL = qrURL;
-			this.accNums = accNums;
+			this.keys = keys;
 			this.destination = destination;
 			useCGet = getmove.isCGet();
 		}
@@ -733,12 +735,12 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		
 		private void doCMove() {
 			List list = null;
-			String[] lines = accNums.split("\n");
-			ampCP.setText("");
+			String[] lines = keys.split("\n");
+			lmpCP.setText("");
 			for (String line : lines) {
-				String an = filter(line);
-				if (!an.equals("")) {
-					aqrrPanel.setAccessionNumber(an);
+				String key = filter(line);
+				if (!key.equals("")) {
+					lmqrPanel.setKey(key);
 					waitForSCPToCatchUp();
 					int tryCount = 0;
 					while (tryCount < maxTries) {
@@ -746,11 +748,17 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 							dicomQRSCU = new DicomQRSCU(qrURL);
 							if (dicomQRSCU.open()) {
 								Hashtable<String,String> params = new Hashtable<String,String>();
-								params.put("AccessionNumber", an);
-								//ampCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
+								if (key.startsWith("SI:")) {
+									key = key.substring(3).trim();
+									params.put("StudyInstanceUID", key);
+								}
+								else {
+									params.put("AccessionNumber", key);
+								}
+								//lmpCP.print(String.format("//%s - %s: ", StringUtil.getTime(":"), an));
 								list = dicomQRSCU.doStudyRootQuery(params);
-								//ampCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
-								aqrrPanel.setMatches(list.size());
+								//lmpCP.print(list.size() + " match" + ((list.size() == 1)?"":"es"));
+								lmqrPanel.setMatches(list.size());
 								int accessionImageCount = 0;
 								boolean ok = true;
 								long time = System.currentTimeMillis();
@@ -766,28 +774,28 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 										}
 										else {
 											String resultString = String.format("%04x", result);
-											logger.warn("C-Move request failed ["+resultString+"]: "+an);
-											ampCP.println("C-Move request failed ["+resultString+"]: "+an);
+											logger.warn("C-Move request failed ["+resultString+"]: "+key);
+											lmpCP.println("C-Move request failed ["+resultString+"]: "+key);
 											ok = false;
 										}
 									}
 									if (ok) {
-										//ampCP.print("; "+accessionImageCount+" images");
-										aqrrPanel.setImages(accessionImageCount);
+										//lmpCP.print("; "+accessionImageCount+" images");
+										lmqrPanel.setImages(accessionImageCount);
 										time = System.currentTimeMillis() - time;
-										//ampCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
-										aqrrPanel.setTime(time);
+										//lmpCP.print(String.format(" [%.3f seconds]", ((double)time)/1000.));
+										lmqrPanel.setTime(time);
 										imageCount += accessionImageCount;
 									}
 								}
-								//ampCP.println("");
+								//lmpCP.println("");
 								close();
 								try { Thread.sleep(successSleep); }
 								catch (Exception ignore) { }
 								break;
 							}
 							else {
-								ampCP.println("Unable to connect to Q/R SCP at "+qrURL);
+								lmpCP.println("Unable to connect to Q/R SCP at "+qrURL);
 								logger.warn("Unable to connect to Q/R SCP at "+qrURL);
 								throw new Exception("Connection failure");
 							}
@@ -795,14 +803,14 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 						catch (Exception unable) {
 							close();
 							tryCount++;
-							logger.warn("Attempt "+tryCount+": retrieve failed for "+an+" ["+qrURL+"]", unable);
+							logger.warn("Attempt "+tryCount+": retrieve failed for "+key+" ["+qrURL+"]", unable);
 							try { Thread.sleep(retrySleep); }
 							catch (Exception ignore) { }
 						}
 					}
 				}
 			}
-			ampCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
+			lmpCP.println("\n" + studyCount + " stud" + ( (studyCount==1)?"y":"ies" ) 
 							+ " with "+imageCount + " image" + ( (imageCount==1)?"":"s" ) + " requested");
 		}
 		
@@ -816,7 +824,7 @@ public class SCUPanel extends BasePanel implements ActionListener, KeyListener {
 		}
 
 		private void doCGet() {
-			ampCP.println("C-GET not implemented");
+			lmpCP.println("C-GET not implemented");
 		}
 		private String filter(String s) {
 			int k = s.indexOf("//");
